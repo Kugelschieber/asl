@@ -8,8 +8,17 @@ type Token struct{
     token string
 }
 
-var delimiter = []byte{'=', ';'}
-var keywords = []string{"var"}
+var delimiter = []byte{'=',
+    ';',
+    '{',
+    '}',
+    '<',
+    '>',
+    '!'}
+
+var keywords = []string{"var",
+    "if"}
+
 var whitespace = []byte{' ', '\n', '\t'}
 
 func Tokenize(code []byte) []Token {
@@ -20,7 +29,10 @@ func Tokenize(code []byte) []Token {
         c := code[i]
         
         if byteArrayContains(delimiter, c) {
-            tokens = append(tokens, Token{token})
+            if token != "" {
+                tokens = append(tokens, Token{token})
+            }
+            
             tokens = append(tokens, Token{string(c)})
             token = ""
         } else if stringArrayContains(keywords, token) {
@@ -32,9 +44,11 @@ func Tokenize(code []byte) []Token {
     }
     
     // TEST
+    fmt.Println("Tokens:")
     for i := range tokens {
         fmt.Println(tokens[i].token)
     }
+    fmt.Println("---")
     
     return tokens
 }
