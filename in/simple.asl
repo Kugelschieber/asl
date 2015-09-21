@@ -1,9 +1,17 @@
 var _a = 1;
 var _b = 2;
 
+func somefunc(_x, _y, _z) {
+    if _x < _y {
+        hint(_z);
+    }
+}
+
 if _a < _b {
-    var _x = 5;
+    somefunc(1, "two", 3);
 }
 else{
-    var _x = 6;
+    _a = 3;
 }
+
+hint("this is a hint");

@@ -1,15 +1,10 @@
 package asl
 
 import (
-    
+    "strconv"
 )
 
 const TAB = "    "
-
-var tokens []Token
-var tokenIndex int
-var out string
-var offset int
 
 func Parse(token []Token) string {
     initParser(token)
@@ -21,13 +16,13 @@ func Parse(token []Token) string {
     return out
 }
 
-// parser functions
-
 func parseBlock() {
-    if get().token == "var" {
+    if accept("var") {
         parseVar()
-    } else if get().token == "if" {
+    } else if accept("if") {
         parseIf()
+    } else if accept("func") {
+        parseFunction()
     } else {
         parseStatement()
     }
@@ -65,65 +60,101 @@ func parseIf() {
         expect("}")
     }
     
-    appendOut("};")
+    appendOut("};\n")
 }
 
 func parseCondition() {
-    for get().token != "{" {
+    for !accept("{") {
         appendOut(get().token)
         next()
         
-        if get().token != "{" {
+        if !accept("{") {
             appendOut(" ")
         }
     }
 }
 
-func parseStatement() {
-    
-}
-
-// helper functions
-
-func initParser(token []Token) {
-    if len(token) == 0 {
-        panic("No tokens provided")
-    }
-    
-    tokens = token
-    tokenIndex = 0
-    out = ""
-    offset = 0
-}
-
-func accept(token string) bool {
-    return tokenEqual(token, get())
-}
-
-func expect(token string) {
-    if !tokenEqual(token, get()) {
-        panic("Parse error, expected '"+token+"' but was '"+get().token+"'")
-    }
-    
+func parseFunction() {
+    expect("func")
+    appendOut(get().token+" = {\n")
     next()
+    expect("(")
+    parseFunctionParameter()
+    expect(")")
+    expect("{")
+    parseBlock()
+    expect("}")
+    appendOut("};\n")
 }
 
-func next() {
-    tokenIndex++
-}
-
-func get() Token {
-    if tokenIndex >= len(tokens) {
-        panic("No more tokens")
+func parseFunctionParameter() {
+    // empty parameter list
+    if accept(")") {
+        return;
     }
     
-    return tokens[tokenIndex]
+    i := int64(0)
+    
+    for !accept(")") {
+        name := get().token
+        next()
+        appendOut(name+" = this select "+strconv.FormatInt(i, 10)+";\n")
+        i++
+        
+        if !accept(")") {
+            expect(",")
+        }
+    }
 }
 
-func tokenEqual(a string, b Token) bool {
-    return a == b.token
+// Everything that does not start with a keyword.
+func parseStatement() {
+    // empty block
+    if accept("}") {
+        return;
+    }
+    
+    // variable or function name
+    name := get().token
+    next()
+    
+    if accept("=") {
+        appendOut(name)
+        parseAssignment()
+    } else {
+        parseFunctionCall()
+        appendOut(name+";\n")
+    }
 }
 
-func appendOut(str string) {
-    out += str
+func parseAssignment() {
+    expect("=")
+    appendOut(" = "+get().token)
+    next()
+    expect(";")
+    appendOut(";\n")
+}
+
+func parseFunctionCall() {
+    expect("(")
+    params := parseParameter()
+    expect(")")
+    expect(";")
+    appendOut("["+params+"] call ")
+}
+
+func parseParameter() string {
+    params := ""
+    
+    for !accept(")") {
+        params += get().token
+        next()
+        
+        if !accept(")") {
+            expect(",")
+            params += ", "
+        }
+    }
+    
+    return params
 }

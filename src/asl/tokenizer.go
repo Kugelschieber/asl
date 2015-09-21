@@ -12,12 +12,16 @@ var delimiter = []byte{'=',
     ';',
     '{',
     '}',
+    '(',
+    ')',
     '<',
     '>',
-    '!'}
+    '!',
+    ','}
 
 var keywords = []string{"var",
-    "if"}
+    "if",
+    "func"}
 
 var whitespace = []byte{' ', '\n', '\t'}
 
