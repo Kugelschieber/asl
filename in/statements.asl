@@ -1,9 +1,7 @@
-var _x = 3;
-
-switch _x {
-    case 1:
-    case 2:
-        somefunc(2);
-    default:
-        somefunc(3);
+for var _x = 5; _x < 5; _x = _x+1; {
+    printSomething("nice");
+    printSomething("nice");
+    printSomething("nice");
+    printSomething("nice");
+    printSomething("nice");
 }

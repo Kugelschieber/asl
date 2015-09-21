@@ -25,6 +25,8 @@ func parseBlock() {
         parseWhile()
     } else if accept("switch") {
         parseSwitch()
+    } else if accept("for") {
+        parseFor()
     } else if accept("func") {
         parseFunction()
     } else {
@@ -119,6 +121,30 @@ func parseSwitchBlock() {
     }
     
     parseSwitchBlock()
+}
+
+func parseFor() {
+    expect("for")
+    appendOut("for [{")
+    
+    // var in first assignment is optional
+    if accept("var") {
+        next()
+    }
+    
+    parseExpression()
+    expect(";")
+    appendOut("}, {")
+    parseExpression()
+    expect(";")
+    appendOut("}, {")
+    parseExpression()
+    expect(";")
+    appendOut("}] do {\n")
+    expect("{")
+    parseBlock()
+    expect("}")
+    appendOut("};\n")
 }
 
 func parseFunction() {

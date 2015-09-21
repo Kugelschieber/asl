@@ -22,3 +22,14 @@ if (_a+_b)/2 > 10 {
 
 myFunc(_a, _b);
 myFunc(_a, _b);
+
+var _x = 3;
+
+switch _x {
+    case 1:
+    case 2:
+        somefunc(2);
+    default:
+        somefunc(3);
+        _x = -1;
+}
