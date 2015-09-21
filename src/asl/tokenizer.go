@@ -21,7 +21,8 @@ var delimiter = []byte{
     ',',
     ':',
     '&',
-    '|'}
+    '|',
+    '$'}
 
 var keywords = []string{
     "var",
@@ -34,7 +35,8 @@ var keywords = []string{
     "true",
     "false",
     "case",
-    "default"}
+    "default",
+    "return"}
 
 var whitespace = []byte{' ', '\n', '\t'}
 

@@ -31,8 +31,14 @@ func parseBlock() {
         parseForeach()
     } else if accept("func") {
         parseFunction()
+    } else if accept("return") {
+        parseReturn()
     } else {
         parseStatement()
+    }
+    
+    if !end() && !accept("}") {
+        parseBlock()
     }
 }
 
@@ -192,6 +198,14 @@ func parseFunctionParameter() {
     }
 }
 
+func parseReturn() {
+    expect("return")
+    appendOut("return ")
+    parseExpression(true)
+    expect(";")
+    appendOut(";\n")
+}
+
 // Everything that does not start with a keyword.
 func parseStatement() {
     // empty block
@@ -206,13 +220,17 @@ func parseStatement() {
     if accept("=") {
         appendOut(name)
         parseAssignment()
+    } else if name == "$" {
+        name = get().token
+        next()
+        parseBuildinFunctionCall(name);
     } else {
         parseFunctionCall()
         appendOut(name+";\n")
     }
     
     if !end() {
-        parseStatement()
+        parseBlock()
     }
 }
 
@@ -231,6 +249,20 @@ func parseFunctionCall() {
     expect(")")
     expect(";")
     appendOut("] call ")
+}
+
+func parseBuildinFunctionCall(name string) {
+    expect("(")
+    appendOut("[")
+    parseParameter()
+    expect(")")
+    appendOut("] ")
+    expect("(")
+    appendOut(name+" [")
+    parseParameter()
+    expect(")")
+    expect(";")
+    appendOut("];\n")
 }
 
 func parseParameter() {
