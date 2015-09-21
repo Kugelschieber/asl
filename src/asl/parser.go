@@ -156,7 +156,7 @@ func parseForeach() {
     appendOut("{\n")
     parseBlock()
     expect("}")
-    appendOut("} forEach ("+expr+");")
+    appendOut("} forEach ("+expr+");\n")
 }
 
 func parseFunction() {
@@ -183,7 +183,7 @@ func parseFunctionParameter() {
     for !accept(")") {
         name := get().token
         next()
-        appendOut(name+" = this select "+strconv.FormatInt(i, 10)+";\n")
+        appendOut(name+" = _this select "+strconv.FormatInt(i, 10)+";\n")
         i++
         
         if !accept(")") {
