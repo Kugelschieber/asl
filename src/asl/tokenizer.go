@@ -2,6 +2,7 @@ package asl
 
 import (
     "strings"
+    "fmt"
 )
 
 type Token struct{
@@ -36,13 +37,18 @@ var keywords = []string{
     "false",
     "case",
     "default",
-    "return"}
+    "return",
+    "sqfstart",
+    "sqf"}
 
 var whitespace = []byte{' ', '\n', '\t'}
 
 func Tokenize(code []byte) []Token {
+    code = removeComments(code)
     tokens := make([]Token, 0)
     token := ""
+    
+    fmt.Println(string(code))
     
     for i := range code {
         c := code[i]
@@ -63,6 +69,54 @@ func Tokenize(code []byte) []Token {
     }
     
     return tokens
+}
+
+func removeComments(code []byte) []byte {
+    newcode := make([]byte, len(code))
+    j := 0
+    
+    for i := 0; i < len(code); i++ {
+        c := code[i]
+        
+        if c == '/' && nextChar(code, i) == '/' {
+            i = skipSingleLineComment(code, i+1)
+            continue
+        } else if c == '/' && nextChar(code, i) == '*' {
+            i = skipMultiLineComment(code, i+1)
+            continue
+        }
+
+        newcode[j] = c
+        j++
+    }
+    
+    return newcode[:j]
+}
+
+func nextChar(code []byte, i int) byte {
+    i++
+    
+    if i < len(code) {
+        return code[i]
+    }
+    
+    return '0'
+}
+
+func skipSingleLineComment(code []byte, i int) int {
+    for i < len(code) && code[i] != '\n' {
+        i++
+    }
+    
+    return i
+}
+
+func skipMultiLineComment(code []byte, i int) int {
+    for i < len(code) && !(code[i] == '*' && nextChar(code, i) == '/') {
+        i++
+    }
+    
+    return i+1
 }
 
 func byteArrayContains(haystack []byte, needle byte) bool {

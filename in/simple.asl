@@ -1,28 +1,23 @@
-if isServer {
-    exitWith();
-}
+// comment
+func Foo(_a, _b) {
+    var _i = 0;
 
-func ZeusGrpPlaced(_curators, _group) {
-    each allCurators-_curators {
-        $addCuratorEditableObjects(_x)(_group, true);
+    // yeah...
+    while _a < _b {
+        /*
+        So this will just compile to plain SQF.
+        */
+        sqf:
+            sleep 3;
+            hint format ["%1", _i];
+        sqf
+        
+        _i = _i+1;
     }
 }
 
-func ZeusObjPlaced(_curators, _unit) {
-    each allCurators-_curators {
-        $addCuratorEditableObjects(_x)([_unit], true);
-    }
-}
+/* comment */
+var _a = 1;
+var _b = 2;
 
-each allCurators {
-    $addCuratorEditableObjects(_x)(allUnits, true);
-    $addCuratorEditableObjects(_x)(allMissionObjects("All"), false);
-    
-    _curator = _x;
-    
-    each allUnits {
-        if vehicle(_x) != _x {
-            $addCuratorEditableObjects(_curator)([vehicle(_x)], true);
-        }
-    }
-}
+Foo(_a, _b);

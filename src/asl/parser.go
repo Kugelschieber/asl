@@ -33,6 +33,8 @@ func parseBlock() {
         parseFunction()
     } else if accept("return") {
         parseReturn()
+    } else if accept("sqf") {
+        parseSqf()
     } else {
         parseStatement()
     }
@@ -204,6 +206,19 @@ func parseReturn() {
     parseExpression(true)
     expect(";")
     appendOut(";\n")
+}
+
+func parseSqf() {
+    expect("sqf")
+    expect(":")
+    
+    for !accept("sqf") {
+        appendOut(get().token)
+        next()
+    }
+    
+    appendOut("\n")
+    expect("sqf")
 }
 
 // Everything that does not start with a keyword.
