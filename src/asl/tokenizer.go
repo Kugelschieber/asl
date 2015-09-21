@@ -2,6 +2,7 @@ package asl
 
 import (
     "fmt"
+    "strings"
 )
 
 type Token struct{
@@ -18,14 +19,19 @@ var delimiter = []byte{'=',
     '>',
     '!',
     ',',
+    ':',
     '&',
     '|'}
 
 var keywords = []string{"var",
     "if",
+    "while",
+    "switch",
     "func",
     "true",
-    "false"}
+    "false",
+    "case",
+    "default"}
 
 var whitespace = []byte{' ', '\n', '\t'}
 
@@ -43,7 +49,7 @@ func Tokenize(code []byte) []Token {
             
             tokens = append(tokens, Token{string(c)})
             token = ""
-        } else if stringArrayContains(keywords, token) {
+        } else if stringArrayContains(keywords, strings.ToLower(token)) {
             tokens = append(tokens, Token{token})
             token = ""
         } else if !byteArrayContains(whitespace, c) {

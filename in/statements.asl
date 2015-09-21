@@ -1,6 +1,9 @@
-if (4 < (5+5)/2 || ((3-3)*10-5)) {
-    hint("hallo welt");
-}
-else {
-    hint("no");
+var _x = 3;
+
+switch _x {
+    case 1:
+    case 2:
+        somefunc(2);
+    default:
+        somefunc(3);
 }

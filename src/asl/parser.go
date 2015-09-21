@@ -21,6 +21,10 @@ func parseBlock() {
         parseVar()
     } else if accept("if") {
         parseIf()
+    } else if accept("while") {
+        parseWhile()
+    } else if accept("switch") {
+        parseSwitch()
     } else if accept("func") {
         parseFunction()
     } else {
@@ -63,6 +67,60 @@ func parseIf() {
     appendOut("};\n")
 }
 
+func parseWhile() {
+    expect("while")
+    appendOut("while {")
+    parseExpression()
+    appendOut("} do {\n")
+    expect("{")
+    parseBlock()
+    expect("}")
+    appendOut("};\n")
+}
+
+func parseSwitch() {
+    expect("switch")
+    appendOut("switch (")
+    parseExpression()
+    appendOut(") do {\n")
+    expect("{")
+    parseSwitchBlock()
+    expect("}")
+    appendOut("};\n")
+}
+
+func parseSwitchBlock() {
+    if accept("}") {
+        return
+    }
+    
+    if accept("case") {
+        expect("case")
+        appendOut("case ")
+        parseExpression()
+        expect(":")
+        appendOut(":\n")
+        
+        if !accept("case") && !accept("}") {
+            appendOut("{\n")
+            parseBlock()
+            appendOut("};\n")
+        }
+    } else if accept("default") {
+        expect("default")
+        expect(":")
+        appendOut("default:\n")
+        
+        if !accept("}") {
+            appendOut("{\n")
+            parseBlock()
+            appendOut("};\n")
+        }
+    }
+    
+    parseSwitchBlock()
+}
+
 func parseFunction() {
     expect("func")
     appendOut(get().token+" = {\n")
@@ -99,7 +157,7 @@ func parseFunctionParameter() {
 // Everything that does not start with a keyword.
 func parseStatement() {
     // empty block
-    if accept("}") {
+    if accept("}") || accept("case") || accept("default") {
         return
     }
     
@@ -151,7 +209,7 @@ func parseParameter() {
 func parseExpression() {
     openingBrackets := 0
     
-    for !accept(",") && !accept(";") && !accept("{") && !accept("}") && (openingBrackets != 0 || !accept(")")) {
+    for !accept(",") && !accept(":") && !accept(";") && !accept("{") && !accept("}") && (openingBrackets != 0 || !accept(")")) {
         current := get().token
         appendOut(current)
         
