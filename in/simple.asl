@@ -1,17 +1,24 @@
 var _a = 1;
 var _b = 2;
 
-func somefunc(_x, _y, _z) {
+func myFunc(_x, _y) {
     if _x < _y {
-        hint(_z);
+        myFunc(_y, _x);
     }
 }
 
 if _a < _b {
-    somefunc(1, "two", 3);
-}
-else{
-    _a = 3;
+    if _b < _a {
+        myFunc(_a, _b+9-(2/2));
+    }
 }
 
-hint("this is a hint");
+if (_a+_b)/2 > 10 {
+    hint("a");
+} else {
+    myFunc("multiple", "statements");
+    hint("b");
+}
+
+myFunc(_a, _b);
+myFunc(_a, _b);

@@ -35,8 +35,8 @@ func parseVar() {
     
     if accept("=") {
         next()
-        appendOut(" = "+get().token)
-        next()
+        appendOut(" = ")
+        parseExpression()
     }
     
     appendOut(";\n")
@@ -46,7 +46,7 @@ func parseVar() {
 func parseIf() {
     expect("if")
     appendOut("if (")
-    parseCondition()
+    parseExpression()
     appendOut(") then {\n")
     expect("{")
     parseBlock()
@@ -61,17 +61,6 @@ func parseIf() {
     }
     
     appendOut("};\n")
-}
-
-func parseCondition() {
-    for !accept("{") {
-        appendOut(get().token)
-        next()
-        
-        if !accept("{") {
-            appendOut(" ")
-        }
-    }
 }
 
 func parseFunction() {
@@ -89,7 +78,7 @@ func parseFunction() {
 
 func parseFunctionParameter() {
     // empty parameter list
-    if accept(")") {
+    if accept("{") {
         return;
     }
     
@@ -111,7 +100,7 @@ func parseFunctionParameter() {
 func parseStatement() {
     // empty block
     if accept("}") {
-        return;
+        return
     }
     
     // variable or function name
@@ -125,6 +114,10 @@ func parseStatement() {
         parseFunctionCall()
         appendOut(name+";\n")
     }
+    
+    if !end() {
+        parseStatement()
+    }
 }
 
 func parseAssignment() {
@@ -137,24 +130,41 @@ func parseAssignment() {
 
 func parseFunctionCall() {
     expect("(")
-    params := parseParameter()
+    appendOut("[")
+    parseParameter()
     expect(")")
     expect(";")
-    appendOut("["+params+"] call ")
+    appendOut("] call ")
 }
 
-func parseParameter() string {
-    params := ""
-    
+func parseParameter() {
     for !accept(")") {
-        params += get().token
-        next()
+        parseExpression()
         
         if !accept(")") {
             expect(",")
-            params += ", "
+            appendOut(", ")
         }
     }
+}
+
+func parseExpression() {
+    openingBrackets := 0
     
-    return params
+    for !accept(",") && !accept(";") && !accept("{") && !accept("}") && (openingBrackets != 0 || !accept(")")) {
+        current := get().token
+        appendOut(current)
+        
+        if accept("(") {
+            openingBrackets++
+        } else if accept(")") {
+            openingBrackets--
+        }
+        
+        next()
+    }
+    
+    if openingBrackets != 0 {
+        //panic("Opening bracket not closed")
+    }
 }

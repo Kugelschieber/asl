@@ -17,7 +17,7 @@ func initParser(token []Token) {
 }
 
 func accept(token string) bool {
-    return tokenEqual(token, get())
+    return tokenIndex < len(tokens) && tokenEqual(token, get())
 }
 
 func expect(token string) {
@@ -38,6 +38,10 @@ func get() Token {
     }
     
     return tokens[tokenIndex]
+}
+
+func end() bool {
+    return tokenIndex == len(tokens)
 }
 
 func tokenEqual(a string, b Token) bool {

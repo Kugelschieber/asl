@@ -17,11 +17,15 @@ var delimiter = []byte{'=',
     '<',
     '>',
     '!',
-    ','}
+    ',',
+    '&',
+    '|'}
 
 var keywords = []string{"var",
     "if",
-    "func"}
+    "func",
+    "true",
+    "false"}
 
 var whitespace = []byte{' ', '\n', '\t'}
 
