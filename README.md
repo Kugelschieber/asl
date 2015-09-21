@@ -6,5 +6,5 @@ This scripting language tries to simplify Arma mod development and eliminate the
 ## Syntax
 
 ```
-...
+coming soon
 ```
