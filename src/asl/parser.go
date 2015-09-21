@@ -27,6 +27,8 @@ func parseBlock() {
         parseSwitch()
     } else if accept("for") {
         parseFor()
+    } else if accept("each") {
+        parseForeach()
     } else if accept("func") {
         parseFunction()
     } else {
@@ -42,7 +44,7 @@ func parseVar() {
     if accept("=") {
         next()
         appendOut(" = ")
-        parseExpression()
+        parseExpression(true)
     }
     
     appendOut(";\n")
@@ -52,7 +54,7 @@ func parseVar() {
 func parseIf() {
     expect("if")
     appendOut("if (")
-    parseExpression()
+    parseExpression(true)
     appendOut(") then {\n")
     expect("{")
     parseBlock()
@@ -72,7 +74,7 @@ func parseIf() {
 func parseWhile() {
     expect("while")
     appendOut("while {")
-    parseExpression()
+    parseExpression(true)
     appendOut("} do {\n")
     expect("{")
     parseBlock()
@@ -83,7 +85,7 @@ func parseWhile() {
 func parseSwitch() {
     expect("switch")
     appendOut("switch (")
-    parseExpression()
+    parseExpression(true)
     appendOut(") do {\n")
     expect("{")
     parseSwitchBlock()
@@ -99,7 +101,7 @@ func parseSwitchBlock() {
     if accept("case") {
         expect("case")
         appendOut("case ")
-        parseExpression()
+        parseExpression(true)
         expect(":")
         appendOut(":\n")
         
@@ -132,19 +134,29 @@ func parseFor() {
         next()
     }
     
-    parseExpression()
+    parseExpression(true)
     expect(";")
     appendOut("}, {")
-    parseExpression()
+    parseExpression(true)
     expect(";")
     appendOut("}, {")
-    parseExpression()
+    parseExpression(true)
     expect(";")
     appendOut("}] do {\n")
     expect("{")
     parseBlock()
     expect("}")
     appendOut("};\n")
+}
+
+func parseForeach() {
+    expect("each")
+    expr := parseExpression(false)
+    expect("{")
+    appendOut("{\n")
+    parseBlock()
+    expect("}")
+    appendOut("} forEach ("+expr+");")
 }
 
 func parseFunction() {
@@ -223,7 +235,7 @@ func parseFunctionCall() {
 
 func parseParameter() {
     for !accept(")") {
-        parseExpression()
+        parseExpression(true)
         
         if !accept(")") {
             expect(",")
@@ -232,12 +244,18 @@ func parseParameter() {
     }
 }
 
-func parseExpression() {
+func parseExpression(out bool) string {
     openingBrackets := 0
+    output := ""
     
     for !accept(",") && !accept(":") && !accept(";") && !accept("{") && !accept("}") && (openingBrackets != 0 || !accept(")")) {
         current := get().token
-        appendOut(current)
+        
+        if out {
+            appendOut(current)
+        } else {
+            output += current
+        }
         
         if accept("(") {
             openingBrackets++
@@ -248,7 +266,5 @@ func parseExpression() {
         next()
     }
     
-    if openingBrackets != 0 {
-        //panic("Opening bracket not closed")
-    }
+    return output
 }

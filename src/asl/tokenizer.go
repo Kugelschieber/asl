@@ -9,7 +9,8 @@ type Token struct{
     token string
 }
 
-var delimiter = []byte{'=',
+var delimiter = []byte{
+    '=',
     ';',
     '{',
     '}',
@@ -23,11 +24,13 @@ var delimiter = []byte{'=',
     '&',
     '|'}
 
-var keywords = []string{"var",
+var keywords = []string{
+    "var",
     "if",
     "while",
     "switch",
     "for",
+    "each",
     "func",
     "true",
     "false",
