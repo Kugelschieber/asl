@@ -1,3 +1,2 @@
-var _x = "This is a string!";
-var _y = "";
-var _z = "\"mask\"";
+var _x = "/* multi line comment */";
+var _y = "// single line comment";

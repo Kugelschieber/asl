@@ -103,21 +103,34 @@ func Tokenize(code []byte) []Token {
 // multi line comments with /* ... */ (slash star, star slash).
 func removeComments(code []byte) []byte {
 	newcode := make([]byte, len(code))
-	j := 0
+	j, mask, isstring := 0, false, false
 
 	for i := 0; i < len(code); i++ {
 		c := code[i]
-
-		if c == '/' && nextChar(code, i) == '/' {
-			i = skipSingleLineComment(code, i+1)
-			continue
-		} else if c == '/' && nextChar(code, i) == '*' {
-			i = skipMultiLineComment(code, i+1)
-			continue
+		
+		// do not remove comments from strings
+		if c == '\\' && !mask {
+		    mask = true
 		}
+		
+		if c == '"' && !mask {
+		    isstring = !isstring
+		}
+
+        // single/multi line comment
+        if !isstring {
+    		if c == '/' && nextChar(code, i) == '/' {
+    			i = skipSingleLineComment(code, i+1)
+    			continue
+    		} else if c == '/' && nextChar(code, i) == '*' {
+    			i = skipMultiLineComment(code, i+1)
+    			continue
+    		}
+        }
 
 		newcode[j] = c
 		j++
+		mask = false
 	}
 
 	return newcode[:j]
