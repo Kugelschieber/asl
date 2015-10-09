@@ -5,6 +5,7 @@ var tokenIndex int
 var out string
 var offset int
 
+// Initilizes the parser.
 func initParser(token []Token) {
 	if len(token) == 0 {
 		panic("No tokens provided")
@@ -16,10 +17,14 @@ func initParser(token []Token) {
 	offset = 0
 }
 
+// Returns true, if current token matches expected one.
+// Does not throw parse errors and checks if token is available.
 func accept(token string) bool {
 	return tokenIndex < len(tokens) && tokenEqual(token, get())
 }
 
+// Hard version of "accept".
+// Throws if current token does not match expected one.
 func expect(token string) {
 	if !tokenEqual(token, get()) {
 		panic("Parse error, expected '" + token + "' but was '" + get().token + "'")
@@ -28,10 +33,12 @@ func expect(token string) {
 	next()
 }
 
+// Increases token counter, so that the next token is compared.
 func next() {
 	tokenIndex++
 }
 
+// Returns current token or throws, if no more tokens are available.
 func get() Token {
 	if tokenIndex >= len(tokens) {
 		panic("No more tokens")
@@ -40,14 +47,17 @@ func get() Token {
 	return tokens[tokenIndex]
 }
 
+// Returns true if the end of input code was reached.
 func end() bool {
 	return tokenIndex == len(tokens)
 }
 
+// Checks if two strings match.
 func tokenEqual(a string, b Token) bool {
 	return a == b.token
 }
 
+// Appends the output string to current SQF code output.
 func appendOut(str string) {
 	out += str
 }

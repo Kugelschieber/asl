@@ -6,6 +6,8 @@ import (
 
 const TAB = "    "
 
+// Parses tokens, validates code to a specific degree
+// and writes SQF code into desired location.
 func Parse(token []Token) string {
 	initParser(token)
 

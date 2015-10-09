@@ -42,34 +42,65 @@ var keywords = []string{
 
 var whitespace = []byte{' ', '\n', '\t'}
 
+// Tokenizes the given byte array into syntax tokens,
+// which can be parsed later.
 func Tokenize(code []byte) []Token {
 	code = removeComments(code)
 	tokens := make([]Token, 0)
-	token := ""
+	token, mask, isstring := "", false, false
 
-	fmt.Println(string(code))
+	fmt.Println("CODE:\n"+string(code)) // TODO: remove
 
 	for i := range code {
 		c := code[i]
-
-		if byteArrayContains(delimiter, c) {
-			if token != "" {
-				tokens = append(tokens, Token{token})
-			}
-
-			tokens = append(tokens, Token{string(c)})
-			token = ""
-		} else if stringArrayContains(keywords, strings.ToLower(token)) {
-			tokens = append(tokens, Token{token})
-			token = ""
-		} else if !byteArrayContains(whitespace, c) {
-			token += string(c)
+		
+		// string masks (backslash)
+		if c == '\\' && !mask {
+		    token += "\\"
+		    mask = true
+		    continue
 		}
+		
+		// string
+		if c == '"' && !mask {
+		    token += "\""
+		    isstring = !isstring
+		    continue
+		}
+		
+		if isstring {
+		    token += string(c)
+		} else {
+            // delimeter, keyword or variable/expression
+    		if byteArrayContains(delimiter, c) {
+    			if token != "" {
+    				tokens = append(tokens, Token{token})
+    			}
+    
+    			tokens = append(tokens, Token{string(c)})
+    			token = ""
+    		} else if stringArrayContains(keywords, strings.ToLower(token)) {
+    			tokens = append(tokens, Token{token})
+    			token = ""
+    		} else if !byteArrayContains(whitespace, c) {
+    			token += string(c)
+    		}
+		}
+		
+		mask = false
+	}
+	
+	fmt.Println("TOKENS:") // TODO: remove
+	for t := range tokens {
+	    fmt.Println(tokens[t].token)
 	}
 
 	return tokens
 }
 
+// Removes all comments from input byte array.
+// Comments are single line comments, starting with // (two slashes),
+// multi line comments with /* ... */ (slash star, star slash).
 func removeComments(code []byte) []byte {
 	newcode := make([]byte, len(code))
 	j := 0
@@ -92,6 +123,8 @@ func removeComments(code []byte) []byte {
 	return newcode[:j]
 }
 
+// Returns the next character in code starting at i.
+// If no character is left, '0' will be returned.
 func nextChar(code []byte, i int) byte {
 	i++
 
@@ -102,6 +135,7 @@ func nextChar(code []byte, i int) byte {
 	return '0'
 }
 
+// Used to skip a line if a single line comment was found.
 func skipSingleLineComment(code []byte, i int) int {
 	for i < len(code) && code[i] != '\n' {
 		i++
@@ -110,6 +144,7 @@ func skipSingleLineComment(code []byte, i int) int {
 	return i
 }
 
+// Used to skip a block of characters if a multi line comment was found
 func skipMultiLineComment(code []byte, i int) int {
 	for i < len(code) && !(code[i] == '*' && nextChar(code, i) == '/') {
 		i++
@@ -118,6 +153,7 @@ func skipMultiLineComment(code []byte, i int) int {
 	return i + 1
 }
 
+// Checks if a byte array (string) contains a delimeter.
 func byteArrayContains(haystack []byte, needle byte) bool {
 	for i := range haystack {
 		if haystack[i] == needle {
@@ -128,6 +164,7 @@ func byteArrayContains(haystack []byte, needle byte) bool {
 	return false
 }
 
+// Checks if a byte array (string) contains a string delimeter.
 func stringArrayContains(haystack []string, needle string) bool {
 	for i := range haystack {
 		if haystack[i] == needle {
