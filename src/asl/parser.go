@@ -269,6 +269,7 @@ func parseFunctionCall() {
 }
 
 func parseBuildinFunctionCall(name string) {
+    // FIXME: does not work for all kind of commands
 	expect("(")
 	appendOut("[")
 	parseParameter()
