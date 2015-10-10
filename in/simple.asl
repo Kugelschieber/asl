@@ -1,5 +1,1 @@
-func foo(a, b) {
-    return a > b;
-}
-
-var x = foo(1, 2);
+var x = (1+(2+3))/(6*(someVariable+99-100))-(20)+anotherVariable+foo();

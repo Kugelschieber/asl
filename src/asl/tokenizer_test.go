@@ -31,7 +31,7 @@ func TestTokenizerWhile(t *testing.T) {
 
 func TestTokenizerFor(t *testing.T) {
     got := getTokens(t, "test/tokenizer_for.asl")
-	want := []string{"for", "var", "i", "=", "0", ";", "i", "<", "100", ";", "i", "=", "i+1", "{", "}"}
+	want := []string{"for", "var", "i", "=", "0", ";", "i", "<", "100", ";", "i", "=", "i", "+", "1", "{", "}"}
 	
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)
@@ -48,6 +48,14 @@ func TestTokenizerEach(t *testing.T) {
 func TestTokenizerFunction(t *testing.T) {
     got := getTokens(t, "test/tokenizer_func.asl")
 	want := []string{"func", "TestFunction", "(", "param0", ",", "param1", ")", "{", "return", "true", ";", "}"}
+	
+	compareLength(t, &got, &want)
+	compareTokens(t, &got, &want)
+}
+
+func TestTokenizerExpression(t *testing.T) {
+    got := getTokens(t, "test/tokenizer_expr.asl")
+	want := []string{"x", "=", "(", "(", "1", "+", "2", "+", "3", ")", "*", "4", "/", "2", ")", "+", "foo", "(", "1", ",", "2", ",", "3", ")", ";"}
 	
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)

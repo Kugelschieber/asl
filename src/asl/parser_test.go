@@ -54,12 +54,13 @@ func TestParserFunction(t *testing.T) {
     equal(t, got, want)
 }
 
-func TestParserAssignResult(t *testing.T) {
+// TODO
+/*func TestParserAssignResult(t *testing.T) {
     got := getCompiled(t, "test/parser_assign_result.asl")
     want := "x = [1, 2, 3] call foo;\ny = [1, 2, 3] call bar;"
     
     equal(t, got, want)
-}
+}*/
 
 func getCompiled(t *testing.T, file string) string {
     code, err := ioutil.ReadFile(file)

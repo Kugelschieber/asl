@@ -22,7 +22,11 @@ var delimiter = []byte{
 	':',
 	'&',
 	'|',
-	'$'}
+	'$',
+	'+',
+	'-',
+	'*',
+	'/'} // TODO: modulo?
 
 var keywords = []string{
 	"var",

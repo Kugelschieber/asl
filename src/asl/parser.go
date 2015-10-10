@@ -57,8 +57,8 @@ func parseVar() {
 		parseExpression(true)
 	}
 
+    expect(";")
 	appendOut(";", true)
-	expect(";")
 }
 
 func parseIf() {
@@ -241,7 +241,7 @@ func parseStatement() {
 		next()
 		parseBuildinFunctionCall(name)
 	} else {
-		parseFunctionCall()
+		parseFunctionCall(true)
 		appendOut(name + ";", true)
 	}
 
@@ -258,13 +258,20 @@ func parseAssignment() {
 	appendOut(";", true)
 }
 
-func parseFunctionCall() {
+func parseFunctionCall(out bool) string {
+    output := "["
+    
 	expect("(")
-	appendOut("[", false)
-	parseParameter()
+	//output += parseParameter()
 	expect(")")
-	expect(";")
-	appendOut("] call ", false)
+	//expect(";")
+	output += "] call "
+	
+	if out {
+	    appendOut(output, true)
+	}
+	
+	return output
 }
 
 func parseBuildinFunctionCall(name string) {
@@ -294,7 +301,7 @@ func parseParameter() {
 }
 
 func parseExpression(out bool) string {
-	openingBrackets := 0
+	/*openingBrackets := 0
 	output := ""
 
 	for !accept(",") && !accept(":") && !accept(";") && !accept("{") && !accept("}") && (openingBrackets != 0 || !accept(")")) {
@@ -315,5 +322,70 @@ func parseExpression(out bool) string {
 		next()
 	}
 
+	return output*/
+	
+	output := parseFactor()
+	
+    for accept("+") || accept("-") {
+        if accept("+") {
+            output += "+"
+            next()
+            output += parseExpression(false)
+        } else {
+            output += "-"
+            next()
+            output += parseExpression(false)
+        }
+    }
+	
+	if out {
+	    appendOut(output, false)
+	}
+	
 	return output
+}
+
+func parseIdentifier() string {
+    output := ""
+    
+    if seek("(") {
+        name := get().token
+        next()
+        output = "("+parseFunctionCall(false)+name+")"
+    } else {
+        output = get().token
+        next()
+    }
+    
+    return output
+}
+
+func parseTerm() string {
+    if accept("(") {
+        expect("(")
+        output := "("+parseExpression(false)+")"
+        expect(")")
+        
+        return output
+    }
+    
+    return parseIdentifier()
+} 
+
+func parseFactor() string {
+    output := parseTerm()
+    
+    for accept("*") || accept("/") { // TODO: modulo?
+        if accept("*") {
+            output += "*"
+            next()
+            output += parseExpression(false)
+        } else {
+            output += "/"
+            next()
+            output += parseExpression(false)
+        }
+    }
+    
+    return output
 }

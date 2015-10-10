@@ -37,13 +37,13 @@ func expect(token string) {
 
 // Returns true, if the next token matches expected one.
 // Does not throw parse errors and checks if token is available.
-/*func seek(token string) bool {
+func seek(token string) bool {
     if tokenIndex+1 >= len(tokens) {
         return false
     }
     
     return tokenEqual(token, tokens[tokenIndex+1])
-}*/
+}
 
 // Increases token counter, so that the next token is compared.
 func next() {
