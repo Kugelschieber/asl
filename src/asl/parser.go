@@ -312,7 +312,7 @@ func parseExpression(out bool) string {
 		} else if accept(")") {
 			openingBrackets--
 		}
-
+		
 		next()
 	}
 

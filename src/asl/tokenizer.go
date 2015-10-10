@@ -1,7 +1,6 @@
 package asl
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -49,8 +48,6 @@ func Tokenize(code []byte) []Token {
 	tokens := make([]Token, 0)
 	token, mask, isstring := "", false, false
 
-	fmt.Println("CODE:\n"+string(code)) // TODO: remove
-
 	for i := range code {
 		c := code[i]
 		
@@ -88,11 +85,6 @@ func Tokenize(code []byte) []Token {
 		}
 		
 		mask = false
-	}
-	
-	fmt.Println("TOKENS:") // TODO: remove
-	for t := range tokens {
-	    fmt.Println(tokens[t].token)
 	}
 
 	return tokens
