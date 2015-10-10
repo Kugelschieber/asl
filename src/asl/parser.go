@@ -151,7 +151,6 @@ func parseFor() {
 	expect(";")
 	appendOut("}, {", false)
 	parseExpression(true)
-	expect(";")
 	appendOut("}] do {", true)
 	expect("{")
 	parseBlock()

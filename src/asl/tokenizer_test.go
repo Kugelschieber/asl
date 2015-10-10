@@ -5,7 +5,7 @@ import (
     "io/ioutil"
 )
 
-func TestVar(t *testing.T) {
+func TestTokenizerVar(t *testing.T) {
     got := getTokens(t, "test/tokenizer_var.asl")
 	want := []string{"var", "x", "=", "1", ";"}
 	
@@ -13,7 +13,7 @@ func TestVar(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
-func TestIf(t *testing.T) {
+func TestTokenizerIf(t *testing.T) {
     got := getTokens(t, "test/tokenizer_if.asl")
 	want := []string{"if", "a", "<", "b", "{", "}"}
 	
@@ -21,7 +21,7 @@ func TestIf(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
-func TestWhile(t *testing.T) {
+func TestTokenizerWhile(t *testing.T) {
     got := getTokens(t, "test/tokenizer_while.asl")
 	want := []string{"while", "true", "{", "}"}
 	
@@ -29,9 +29,7 @@ func TestWhile(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
-//for var i = 0; i < 100; i = i+1 {
-//}
-func TestFor(t *testing.T) {
+func TestTokenizerFor(t *testing.T) {
     got := getTokens(t, "test/tokenizer_for.asl")
 	want := []string{"for", "var", "i", "=", "0", ";", "i", "<", "100", ";", "i", "=", "i+1", "{", "}"}
 	
@@ -39,7 +37,7 @@ func TestFor(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
-func TestEach(t *testing.T) {
+func TestTokenizerEach(t *testing.T) {
     got := getTokens(t, "test/tokenizer_each.asl")
 	want := []string{"each", "allUnits", "{", "}"}
 	
@@ -47,7 +45,7 @@ func TestEach(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
-func TestFunction(t *testing.T) {
+func TestTokenizerFunction(t *testing.T) {
     got := getTokens(t, "test/tokenizer_func.asl")
 	want := []string{"func", "TestFunction", "(", "param0", ",", "param1", ")", "{", "return", "true", ";", "}"}
 	
