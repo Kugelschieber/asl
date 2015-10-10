@@ -8,8 +8,8 @@ const TAB = "    "
 
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
-func Parse(token []Token) string {
-	initParser(token)
+func Parse(token []Token, prettyPrinting bool) string {
+	initParser(token, prettyPrinting)
 
 	for tokenIndex < len(token) {
 		parseBlock()
@@ -48,24 +48,24 @@ func parseBlock() {
 
 func parseVar() {
 	expect("var")
-	appendOut(get().token)
+	appendOut(get().token, false)
 	next()
 
 	if accept("=") {
 		next()
-		appendOut(" = ")
+		appendOut(" = ", false)
 		parseExpression(true)
 	}
 
-	appendOut(";\n")
+	appendOut(";", true)
 	expect(";")
 }
 
 func parseIf() {
 	expect("if")
-	appendOut("if (")
+	appendOut("if (", false)
 	parseExpression(true)
-	appendOut(") then {\n")
+	appendOut(") then {", true)
 	expect("{")
 	parseBlock()
 	expect("}")
@@ -73,34 +73,34 @@ func parseIf() {
 	if accept("else") {
 		next()
 		expect("{")
-		appendOut("} else {\n")
+		appendOut("} else {", true)
 		parseBlock()
 		expect("}")
 	}
 
-	appendOut("};\n")
+	appendOut("};", true)
 }
 
 func parseWhile() {
 	expect("while")
-	appendOut("while {")
+	appendOut("while {", false)
 	parseExpression(true)
-	appendOut("} do {\n")
+	appendOut("} do {", true)
 	expect("{")
 	parseBlock()
 	expect("}")
-	appendOut("};\n")
+	appendOut("};", false)
 }
 
 func parseSwitch() {
 	expect("switch")
-	appendOut("switch (")
+	appendOut("switch (", false)
 	parseExpression(true)
-	appendOut(") do {\n")
+	appendOut(") do {", true)
 	expect("{")
 	parseSwitchBlock()
 	expect("}")
-	appendOut("};\n")
+	appendOut("};", true)
 }
 
 func parseSwitchBlock() {
@@ -110,25 +110,25 @@ func parseSwitchBlock() {
 
 	if accept("case") {
 		expect("case")
-		appendOut("case ")
+		appendOut("case ", false)
 		parseExpression(true)
 		expect(":")
-		appendOut(":\n")
+		appendOut(":", true)
 
 		if !accept("case") && !accept("}") {
-			appendOut("{\n")
+			appendOut("{", true)
 			parseBlock()
-			appendOut("};\n")
+			appendOut("};", true)
 		}
 	} else if accept("default") {
 		expect("default")
 		expect(":")
-		appendOut("default:\n")
+		appendOut("default:", true)
 
 		if !accept("}") {
-			appendOut("{\n")
+			appendOut("{", true)
 			parseBlock()
-			appendOut("};\n")
+			appendOut("};", true)
 		}
 	}
 
@@ -137,7 +137,7 @@ func parseSwitchBlock() {
 
 func parseFor() {
 	expect("for")
-	appendOut("for [{")
+	appendOut("for [{", false)
 
 	// var in first assignment is optional
 	if accept("var") {
@@ -146,32 +146,32 @@ func parseFor() {
 
 	parseExpression(true)
 	expect(";")
-	appendOut("}, {")
+	appendOut("}, {", false)
 	parseExpression(true)
 	expect(";")
-	appendOut("}, {")
+	appendOut("}, {", false)
 	parseExpression(true)
 	expect(";")
-	appendOut("}] do {\n")
+	appendOut("}] do {", true)
 	expect("{")
 	parseBlock()
 	expect("}")
-	appendOut("};\n")
+	appendOut("};", true)
 }
 
 func parseForeach() {
 	expect("each")
 	expr := parseExpression(false)
 	expect("{")
-	appendOut("{\n")
+	appendOut("{", true)
 	parseBlock()
 	expect("}")
-	appendOut("} forEach (" + expr + ");\n")
+	appendOut("} forEach (" + expr + ");", true)
 }
 
 func parseFunction() {
 	expect("func")
-	appendOut(get().token + " = {\n")
+	appendOut(get().token + " = {", true)
 	next()
 	expect("(")
 	parseFunctionParameter()
@@ -179,7 +179,7 @@ func parseFunction() {
 	expect("{")
 	parseBlock()
 	expect("}")
-	appendOut("};\n")
+	appendOut("};", true)
 }
 
 func parseFunctionParameter() {
@@ -193,7 +193,7 @@ func parseFunctionParameter() {
 	for !accept(")") {
 		name := get().token
 		next()
-		appendOut(name + " = _this select " + strconv.FormatInt(i, 10) + ";\n")
+		appendOut(name + " = _this select " + strconv.FormatInt(i, 10) + ";", true)
 		i++
 
 		if !accept(")") {
@@ -204,10 +204,10 @@ func parseFunctionParameter() {
 
 func parseReturn() {
 	expect("return")
-	appendOut("return ")
+	appendOut("return ", false)
 	parseExpression(true)
 	expect(";")
-	appendOut(";\n")
+	appendOut(";", true)
 }
 
 func parseSqf() {
@@ -215,11 +215,11 @@ func parseSqf() {
 	expect(":")
 
 	for !accept("sqf") {
-		appendOut(get().token)
+		appendOut(get().token, false)
 		next()
 	}
 
-	appendOut("\n")
+	appendOut("", true)
 	expect("sqf")
 }
 
@@ -235,7 +235,7 @@ func parseStatement() {
 	next()
 
 	if accept("=") {
-		appendOut(name)
+		appendOut(name, false)
 		parseAssignment()
 	} else if name == "$" {
 		name = get().token
@@ -243,7 +243,7 @@ func parseStatement() {
 		parseBuildinFunctionCall(name)
 	} else {
 		parseFunctionCall()
-		appendOut(name + ";\n")
+		appendOut(name + ";", true)
 	}
 
 	if !end() {
@@ -253,34 +253,34 @@ func parseStatement() {
 
 func parseAssignment() {
 	expect("=")
-	appendOut(" = " + get().token)
+	appendOut(" = " + get().token, false)
 	next()
 	expect(";")
-	appendOut(";\n")
+	appendOut(";", true)
 }
 
 func parseFunctionCall() {
 	expect("(")
-	appendOut("[")
+	appendOut("[", false)
 	parseParameter()
 	expect(")")
 	expect(";")
-	appendOut("] call ")
+	appendOut("] call ", false)
 }
 
 func parseBuildinFunctionCall(name string) {
     // FIXME: does not work for all kind of commands
 	expect("(")
-	appendOut("[")
+	appendOut("[", false)
 	parseParameter()
 	expect(")")
-	appendOut("] ")
+	appendOut("] ", false)
 	expect("(")
-	appendOut(name + " [")
+	appendOut(name + " [", false)
 	parseParameter()
 	expect(")")
 	expect(";")
-	appendOut("];\n")
+	appendOut("];", true)
 }
 
 func parseParameter() {
@@ -289,7 +289,7 @@ func parseParameter() {
 
 		if !accept(")") {
 			expect(",")
-			appendOut(", ")
+			appendOut(", ", false)
 		}
 	}
 }
@@ -300,9 +300,9 @@ func parseExpression(out bool) string {
 
 	for !accept(",") && !accept(":") && !accept(";") && !accept("{") && !accept("}") && (openingBrackets != 0 || !accept(")")) {
 		current := get().token
-
+		
 		if out {
-			appendOut(current)
+			appendOut(current, false)
 		} else {
 			output += current
 		}

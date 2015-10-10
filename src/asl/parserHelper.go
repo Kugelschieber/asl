@@ -4,10 +4,10 @@ var tokens []Token
 var tokenIndex int
 var out string
 var offset int
-//var pretty bool
+var pretty bool
 
 // Initilizes the parser.
-func initParser(token []Token) {
+func initParser(token []Token, prettyPrinting bool) {
 	if len(token) == 0 {
 		panic("No tokens provided")
 	}
@@ -16,6 +16,7 @@ func initParser(token []Token) {
 	tokenIndex = 0
 	out = ""
 	offset = 0
+	pretty = prettyPrinting
 }
 
 // Returns true, if current token matches expected one.
@@ -36,13 +37,13 @@ func expect(token string) {
 
 // Returns true, if the next token matches expected one.
 // Does not throw parse errors and checks if token is available.
-func seek(token string) bool {
+/*func seek(token string) bool {
     if tokenIndex+1 >= len(tokens) {
         return false
     }
     
     return tokenEqual(token, tokens[tokenIndex+1])
-}
+}*/
 
 // Increases token counter, so that the next token is compared.
 func next() {
@@ -69,6 +70,10 @@ func tokenEqual(a string, b Token) bool {
 }
 
 // Appends the output string to current SQF code output.
-func appendOut(str string) {
+func appendOut(str string, newLine bool) {
 	out += str
+	
+	if newLine && pretty {
+	    out += "\n"
+	}
 }
