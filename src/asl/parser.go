@@ -67,7 +67,7 @@ func parseIf() {
 	parseExpression(true)
 	appendOut(") then {", true)
 	expect("{")
-	parseBlock()
+	parseExpression(true)
 	expect("}")
 
 	if accept("else") {
@@ -301,42 +301,35 @@ func parseParameter() {
 }
 
 func parseExpression(out bool) string {
-	/*openingBrackets := 0
-	output := ""
-
-	for !accept(",") && !accept(":") && !accept(";") && !accept("{") && !accept("}") && (openingBrackets != 0 || !accept(")")) {
-		current := get().token
-		
-		if out {
-			appendOut(current, false)
-		} else {
-			output += current
-		}
-
-		if accept("(") {
-			openingBrackets++
-		} else if accept(")") {
-			openingBrackets--
-		}
-		
-		next()
+	output := parseArith()
+	
+	for accept("<") || accept(">") || accept("&") || accept("|") || accept("=") {
+	    if accept("<") {
+	        output += "<"
+	        next()
+	    } else if accept(">") {
+	        output += ">"
+	        next()
+	    } else if accept("&") {
+	        next()
+	        expect("&")
+	        output += "&&"
+	    } else if accept("|") {
+	        next()
+	        expect("|")
+	        output += "||"
+	    } else {
+	        output += "="
+	        next()
+	    }
+	    
+	    if accept("=") {
+	        output += "="
+	        next()
+	    }
+	    
+	    output += parseExpression(false)
 	}
-
-	return output*/
-	
-	output := parseFactor()
-	
-    for accept("+") || accept("-") {
-        if accept("+") {
-            output += "+"
-            next()
-            output += parseExpression(false)
-        } else {
-            output += "-"
-            next()
-            output += parseExpression(false)
-        }
-    }
 	
 	if out {
 	    appendOut(output, false)
@@ -370,7 +363,7 @@ func parseTerm() string {
     }
     
     return parseIdentifier()
-} 
+}
 
 func parseFactor() string {
     output := parseTerm()
@@ -378,14 +371,30 @@ func parseFactor() string {
     for accept("*") || accept("/") { // TODO: modulo?
         if accept("*") {
             output += "*"
-            next()
-            output += parseExpression(false)
         } else {
             output += "/"
-            next()
-            output += parseExpression(false)
         }
+        
+        next()
+        output += parseExpression(false)
     }
     
     return output
+}
+
+func parseArith() string {
+    output := parseFactor()
+	
+    for accept("+") || accept("-") {
+        if accept("+") {
+            output += "+"
+        } else {
+            output += "-"
+        }
+        
+        next()
+        output += parseExpression(false)
+    }
+	
+	return output
 }

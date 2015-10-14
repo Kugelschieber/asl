@@ -55,12 +55,26 @@ func TestParserFunction(t *testing.T) {
 }
 
 // TODO
-/*func TestParserAssignResult(t *testing.T) {
+func TestParserAssignResult(t *testing.T) {
     got := getCompiled(t, "test/parser_assign_result.asl")
     want := "x = [1, 2, 3] call foo;\ny = [1, 2, 3] call bar;"
     
     equal(t, got, want)
-}*/
+}
+
+func TestExpression(t *testing.T) {
+    got := getCompiled(t, "test/parser_expression.asl")
+    want := "x = (1+(2+3))/(6*(someVariable+99-100))-(20)+anotherVariable+([] call foo);\n"
+    
+    equal(t, got, want)
+}
+
+func TestExpression2(t *testing.T) {
+    got := getCompiled(t, "test/parser_expression2.asl")
+    want := "x = true||(3>=4&&5<8);\n"
+    
+    equal(t, got, want)
+}
 
 func getCompiled(t *testing.T, file string) string {
     code, err := ioutil.ReadFile(file)
