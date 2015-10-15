@@ -7,7 +7,7 @@ import (
 
 func TestTokenizerVar(t *testing.T) {
     got := getTokens(t, "test/tokenizer_var.asl")
-	want := []string{"var", "x", "=", "1", ";"}
+	want := []string{"var", "x", "=", "1", ";", "var", "array", "=", "[", "1", ",", "2", ",", "3", "]", ";"}
 	
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)
@@ -41,6 +41,14 @@ func TestTokenizerEach(t *testing.T) {
     got := getTokens(t, "test/tokenizer_each.asl")
 	want := []string{"each", "allUnits", "{", "}"}
 	
+	compareLength(t, &got, &want)
+	compareTokens(t, &got, &want)
+}
+
+func TestTokenizerSwitch(t *testing.T) {
+    got := getTokens(t, "test/tokenizer_switch.asl")
+	want := []string{"switch", "x", "{", "case", "1", ":", "x", "=", "1", ";", "break", ";", "case", "2", ":", "x", "=", "2", ";", "break", ";", "default", ":", "x", "=", "3", ";", "}"}
+
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)
 }

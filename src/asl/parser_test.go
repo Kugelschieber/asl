@@ -1,13 +1,14 @@
-package asl
+package asl_test
 
 import (
     "testing"
     "io/ioutil"
+    "asl"
 )
 
 func TestParserDeclaration(t *testing.T) {
     got := getCompiled(t, "test/tokenizer_var.asl")
-    want := "x = 1;\n"
+    want := "x = 1;\narray = [1,2,3];\n"
     
     equal(t, got, want)
 }
@@ -47,6 +48,10 @@ func TestParserEach(t *testing.T) {
     equal(t, got, want)
 }
 
+func TestParserSwitch(t *testing.T) {
+    
+}
+
 func TestParserFunction(t *testing.T) {
     got := getCompiled(t, "test/tokenizer_func.asl")
     want := "TestFunction = {\nparam0 = _this select 0;\nparam1 = _this select 1;\nreturn true;\n};\n"
@@ -55,12 +60,12 @@ func TestParserFunction(t *testing.T) {
 }
 
 // TODO
-func TestParserAssignResult(t *testing.T) {
+/*func TestParserAssignResult(t *testing.T) {
     got := getCompiled(t, "test/parser_assign_result.asl")
     want := "x = [1, 2, 3] call foo;\ny = [1, 2, 3] call bar;"
     
     equal(t, got, want)
-}
+}*/
 
 func TestExpression(t *testing.T) {
     got := getCompiled(t, "test/parser_expression.asl")
@@ -84,9 +89,9 @@ func getCompiled(t *testing.T, file string) string {
         t.FailNow()
     }
     
-	tokens := Tokenize(code)
+	tokens := asl.Tokenize(code)
 	
-	return Parse(tokens, true)
+	return asl.Parse(tokens, true)
 }
 
 func equal(t *testing.T, got, want string) {

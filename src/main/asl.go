@@ -23,5 +23,5 @@ func main() {
 	token := asl.Tokenize(code)
 	out := asl.Parse(token, true)
 
-	fmt.Println("OUTPUT:\n-------\n"+out)
+	fmt.Print("OUTPUT:\n-------\n"+out)
 }

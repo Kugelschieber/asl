@@ -2,6 +2,7 @@ package asl
 
 import (
 	"strconv"
+	"fmt" // TODO: remove
 )
 
 const TAB = "    "
@@ -9,6 +10,8 @@ const TAB = "    "
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
 func Parse(token []Token, prettyPrinting bool) string {
+    fmt.Print("")
+    
 	initParser(token, prettyPrinting)
 
 	for tokenIndex < len(token) {
@@ -54,11 +57,34 @@ func parseVar() {
 	if accept("=") {
 		next()
 		appendOut(" = ", false)
-		parseExpression(true)
+		
+		if accept("[") {
+            parseArray()
+		} else {
+		    parseExpression(true)
+		}
 	}
 
     expect(";")
 	appendOut(";", true)
+}
+
+func parseArray() {
+    expect("[")
+    appendOut("[", false)
+    
+    if !accept("]") {
+        parseExpression(true)
+        
+        for accept(",") {
+            next()
+            appendOut(",", false)
+            parseExpression(true)
+        }
+    }
+    
+    expect("]")
+    appendOut("]", false)
 }
 
 func parseIf() {
@@ -67,7 +93,7 @@ func parseIf() {
 	parseExpression(true)
 	appendOut(") then {", true)
 	expect("{")
-	parseExpression(true)
+	parseBlock()
 	expect("}")
 
 	if accept("else") {
@@ -103,13 +129,14 @@ func parseSwitch() {
 	appendOut("};", true)
 }
 
+// FIXME
 func parseSwitchBlock() {
 	if accept("}") {
 		return
 	}
 
 	if accept("case") {
-		expect("case")
+		next()
 		appendOut("case ", false)
 		parseExpression(true)
 		expect(":")
@@ -121,7 +148,7 @@ func parseSwitchBlock() {
 			appendOut("};", true)
 		}
 	} else if accept("default") {
-		expect("default")
+		next()
 		expect(":")
 		appendOut("default:", true)
 
