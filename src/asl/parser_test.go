@@ -59,13 +59,12 @@ func TestParserFunction(t *testing.T) {
     equal(t, got, want)
 }
 
-// TODO
-/*func TestParserAssignResult(t *testing.T) {
+func TestParserAssignResult(t *testing.T) {
     got := getCompiled(t, "test/parser_assign_result.asl")
     want := "x = [1, 2, 3] call foo;\ny = [1, 2, 3] call bar;"
     
     equal(t, got, want)
-}*/
+}
 
 func TestExpression(t *testing.T) {
     got := getCompiled(t, "test/parser_expression.asl")
@@ -77,6 +76,13 @@ func TestExpression(t *testing.T) {
 func TestExpression2(t *testing.T) {
     got := getCompiled(t, "test/parser_expression2.asl")
     want := "x = true||(3>=4&&5<8);\n"
+    
+    equal(t, got, want)
+}
+
+func TestFunctionCall(t *testing.T) {
+    got := getCompiled(t, "test/parser_func_call.asl")
+    want := "myFunc = {\na = _this select 0;\nb = _this select 1;\nreturn a>b;\n};\n[1+3/4, 2-(66*22)/3-((123))] call myFunc;\n"
     
     equal(t, got, want)
 }

@@ -2,7 +2,6 @@ package asl
 
 import (
 	"strconv"
-	"fmt" // TODO: remove
 )
 
 const TAB = "    "
@@ -10,8 +9,6 @@ const TAB = "    "
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
 func Parse(token []Token, prettyPrinting bool) string {
-    fmt.Print("")
-    
 	initParser(token, prettyPrinting)
 
 	for tokenIndex < len(token) {
@@ -40,6 +37,8 @@ func parseBlock() {
 		parseReturn()
 	} else if accept("sqf") {
 		parseSqf()
+	} else if accept("case") || accept("default") {
+	    return
 	} else {
 		parseStatement()
 	}
@@ -129,7 +128,6 @@ func parseSwitch() {
 	appendOut("};", true)
 }
 
-// FIXME
 func parseSwitchBlock() {
 	if accept("}") {
 		return
@@ -142,7 +140,7 @@ func parseSwitchBlock() {
 		expect(":")
 		appendOut(":", true)
 
-		if !accept("case") && !accept("}") {
+		if !accept("case") && !accept("}") && !accept("default") {
 			appendOut("{", true)
 			parseBlock()
 			appendOut("};", true)
@@ -289,13 +287,13 @@ func parseFunctionCall(out bool) string {
     output := "["
     
 	expect("(")
-	//output += parseParameter()
+	output += parseParameter(false)
 	expect(")")
-	//expect(";")
+	expect(";")
 	output += "] call "
 	
 	if out {
-	    appendOut(output, true)
+	    appendOut(output, false)
 	}
 	
 	return output
@@ -305,26 +303,34 @@ func parseBuildinFunctionCall(name string) {
     // FIXME: does not work for all kind of commands
 	expect("(")
 	appendOut("[", false)
-	parseParameter()
+	parseParameter(true)
 	expect(")")
 	appendOut("] ", false)
 	expect("(")
 	appendOut(name + " [", false)
-	parseParameter()
+	parseParameter(true)
 	expect(")")
 	expect(";")
 	appendOut("];", true)
 }
 
-func parseParameter() {
+func parseParameter(out bool) string {
+    output := ""
+    
 	for !accept(")") {
-		parseExpression(true)
+		output += parseExpression(out)
 
 		if !accept(")") {
 			expect(",")
-			appendOut(", ", false)
+			output += ", "
 		}
 	}
+	
+	if out {
+	    appendOut(output, false)
+	}
+	
+	return output
 }
 
 func parseExpression(out bool) string {
