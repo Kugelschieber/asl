@@ -19,7 +19,7 @@ func usage() {
 
 func main() {
 	// read test file
-	code, _ := ioutil.ReadFile("in/simple.asl")
+	code, _ := ioutil.ReadFile("in/complex.asl")
 	token := asl.Tokenize(code)
 	out := asl.Parse(token, true)
 

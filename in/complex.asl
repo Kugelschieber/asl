@@ -1,28 +1,13 @@
-if isServer {
-    exitWith();
+diag_log()("easyHC: started");
+publicVariable()("easyHCpresent");
+
+if isNil()("easyHCpresent") {
+    easyHCpresent = 1; // HC client ID
 }
 
-func ZeusGrpPlaced(_curators, _group) {
-    each allCurators-_curators {
-        $addCuratorEditableObjects(_x)(_group, true);
-    }
+if isServer()() && hasInterface()() {
+    easyHCpresent = owner()(player);
+    //diag_log()(format()("easyHC: found headless client with ID %1.", easyHCpresent));
 }
 
-func ZeusObjPlaced(_curators, _unit) {
-    each allCurators-_curators {
-        $addCuratorEditableObjects(_x)([_unit], true);
-    }
-}
-
-each allCurators {
-    $addCuratorEditableObjects(_x)(allUnits, true);
-    $addCuratorEditableObjects(_x)(allMissionObjects("All"), false);
-    
-    _curator = _x;
-    
-    each allUnits {
-        if vehicle(_x) != _x {
-            $addCuratorEditableObjects(_curator)([vehicle(_x)], true);
-        }
-    }
-}
+// ...
