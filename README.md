@@ -122,7 +122,7 @@ someUnit addItem "NVGoogles";
 is equivalent to:
 
 ```
-$addItem(someUnit)("NVGoogles");
+addItem(someUnit)("NVGoogles");
 ```
 
 ## Contribute

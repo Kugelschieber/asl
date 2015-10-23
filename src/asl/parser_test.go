@@ -61,28 +61,35 @@ func TestParserFunction(t *testing.T) {
 
 func TestParserAssignResult(t *testing.T) {
     got := getCompiled(t, "test/parser_assign_result.asl")
-    want := "x = [1, 2, 3] call foo;\ny = [1, 2, 3] call bar;"
+    want := "x = ([1, 2, 3] call foo);\ny = ([1, 2, 3] call bar);\n"
     
     equal(t, got, want)
 }
 
-func TestExpression(t *testing.T) {
+func TestParserExpression(t *testing.T) {
     got := getCompiled(t, "test/parser_expression.asl")
     want := "x = (1+(2+3))/(6*(someVariable+99-100))-(20)+anotherVariable+([] call foo);\n"
     
     equal(t, got, want)
 }
 
-func TestExpression2(t *testing.T) {
+func TestParserExpression2(t *testing.T) {
     got := getCompiled(t, "test/parser_expression2.asl")
     want := "x = true||(3>=4&&5<8);\n"
     
     equal(t, got, want)
 }
 
-func TestFunctionCall(t *testing.T) {
+func TestParserFunctionCall(t *testing.T) {
     got := getCompiled(t, "test/parser_func_call.asl")
     want := "myFunc = {\na = _this select 0;\nb = _this select 1;\nreturn a>b;\n};\n[1+3/4, 2-(66*22)/3-((123))] call myFunc;\n"
+    
+    equal(t, got, want)
+}
+
+func TestParserBuildinFunctionCall(t *testing.T) {
+    got := getCompiled(t, "test/parser_buildin_func.asl")
+    want := "_x = (setHit \"head\");\n"
     
     equal(t, got, want)
 }

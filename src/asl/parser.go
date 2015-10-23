@@ -261,13 +261,10 @@ func parseStatement() {
 	if accept("=") {
 		appendOut(name, false)
 		parseAssignment()
-	} else if name == "$" {
-		name = get().token
-		next()
-		parseBuildinFunctionCall(name)
 	} else {
-		parseFunctionCall(true)
-		appendOut(name + ";", true)
+		parseFunctionCall(true, name)
+		expect(";")
+		appendOut(";", true)
 	}
 
 	if !end() {
@@ -277,20 +274,41 @@ func parseStatement() {
 
 func parseAssignment() {
 	expect("=")
-	appendOut(" = " + get().token, false)
-	next()
+	appendOut(" = ", false)
+	parseExpression(true)
 	expect(";")
 	appendOut(";", true)
 }
 
-func parseFunctionCall(out bool) string {
-    output := "["
+func parseFunctionCall(out bool, name string) string {
+    output := ""
     
 	expect("(")
-	output += parseParameter(false)
+	leftParams, leftParamCount := parseParameter(false)
 	expect(")")
-	expect(";")
-	output += "] call "
+	
+	if accept("(") {
+	    // buildin function
+	    next()
+	    rightParams, rightParamCount := parseParameter(false)
+	    expect(")")
+	    
+	    if leftParamCount > 1 {
+	        leftParams = "["+leftParams+"]"
+	    }
+	    
+	    if rightParamCount > 1 {
+	        rightParams = "["+rightParams+"]"
+	    }
+	    
+	    if leftParamCount > 1 {
+	        output = leftParams+" "+name+" "+rightParams
+	    } else {
+	        output = name+" "+rightParams
+	    }
+	} else {
+	    output = "["+leftParams+"] call "+name
+	}
 	
 	if out {
 	    appendOut(output, false)
@@ -299,26 +317,13 @@ func parseFunctionCall(out bool) string {
 	return output
 }
 
-func parseBuildinFunctionCall(name string) {
-    // FIXME: does not work for all kind of commands
-	expect("(")
-	appendOut("[", false)
-	parseParameter(true)
-	expect(")")
-	appendOut("] ", false)
-	expect("(")
-	appendOut(name + " [", false)
-	parseParameter(true)
-	expect(")")
-	expect(";")
-	appendOut("];", true)
-}
-
-func parseParameter(out bool) string {
+func parseParameter(out bool) (string, int) {
     output := ""
+    count := 0
     
 	for !accept(")") {
 		output += parseExpression(out)
+		count++
 
 		if !accept(")") {
 			expect(",")
@@ -330,7 +335,7 @@ func parseParameter(out bool) string {
 	    appendOut(output, false)
 	}
 	
-	return output
+	return output, count
 }
 
 func parseExpression(out bool) string {
@@ -377,7 +382,7 @@ func parseIdentifier() string {
     if seek("(") {
         name := get().token
         next()
-        output = "("+parseFunctionCall(false)+name+")"
+        output = "("+parseFunctionCall(false, name)+")"
     } else {
         output = get().token
         next()

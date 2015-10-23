@@ -1,7 +1,4 @@
-func myFunc(a, b) {
-    return a > b;
-}
-
-myFunc(1+3/4, 2-(66*22)/3-((123)));
-
+// TODO:
+//var _x = setHitIndex(vehicle()(player))(1, 1);
+var _x = setHit(player)("head");
 foo();
