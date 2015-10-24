@@ -41,8 +41,7 @@ var keywords = []string{
 	"false",
 	"case",
 	"default",
-	"return",
-	"sqf"}
+	"return"}
 
 var whitespace = []byte{' ', '\n', '\t'}
 

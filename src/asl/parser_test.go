@@ -89,7 +89,7 @@ func TestParserFunctionCall(t *testing.T) {
 
 func TestParserBuildinFunctionCall(t *testing.T) {
     got := getCompiled(t, "test/parser_buildin_func.asl")
-    want := "_x = (setHit \"head\");\n"
+    want := "_x = (([player, foo] getVar bar) setHit [\"head\", \"tail\"]);\n"
     
     equal(t, got, want)
 }

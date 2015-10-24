@@ -35,8 +35,6 @@ func parseBlock() {
 		parseFunction()
 	} else if accept("return") {
 		parseReturn()
-	} else if accept("sqf") {
-		parseSqf()
 	} else if accept("case") || accept("default") {
 	    return
 	} else {
@@ -234,19 +232,6 @@ func parseReturn() {
 	appendOut(";", true)
 }
 
-func parseSqf() {
-	expect("sqf")
-	expect(":")
-
-	for !accept("sqf") {
-		appendOut(get().token, false)
-		next()
-	}
-
-	appendOut("", true)
-	expect("sqf")
-}
-
 // Everything that does not start with a keyword.
 func parseStatement() {
 	// empty block
@@ -301,7 +286,7 @@ func parseFunctionCall(out bool, name string) string {
 	        rightParams = "["+rightParams+"]"
 	    }
 	    
-	    if leftParamCount > 1 {
+	    if leftParamCount > 0 {
 	        output = leftParams+" "+name+" "+rightParams
 	    } else {
 	        output = name+" "+rightParams

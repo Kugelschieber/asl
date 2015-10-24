@@ -1,1 +1,1 @@
-var _x = setHit(player)("head");
+var _x = setHit(getVar(player, foo)(bar))("head", "tail");

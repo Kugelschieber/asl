@@ -8,5 +8,6 @@
 * ~~usage~~
 * recursive compiling
 * concurrent compiling
-* inline buildin function call -> foo(a)(bar(x)(y));
+* ~~inline buildin function call -> foo(a)(bar(x)(y));~~
 * ~~negative values e.g. -1, operator !~~
+* tokenizer splits commands like "format" -> for, mat
