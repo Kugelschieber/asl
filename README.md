@@ -83,33 +83,6 @@ var _x = add(1, 2);
 // result is 3
 ```
 
-### Embed SQF Code
-
-To allow copy and paste of SQF code and reduce migration costs, it is possible (but not recommended) to embed SQF code.
-To start a SQF block, use *SQF:* or *sqf:*. To end it use *SQF* or *sqf*.
-
-```
-var _a = 1;
-var _b = 2;
-
-if _a < _b {
-    SQF:
-        hint format ["%1 is lower than %2", _a, _b];    
-    SQF
-}
-```
-
-This will compile to:
-
-```
-_a = 1;
-_b = 2;
-
-if(_a < _b) then {
-    hint format ["%1 is lower than %2", _a, _b];
-};
-```
-
 ### Call build in commands
 
 To call SQF build in commands (like hint, getDir, addItem, ...) we have to call them differently.
@@ -123,6 +96,14 @@ is equivalent to:
 
 ```
 addItem(someUnit)("NVGoogles");
+```
+
+Where the first brackets contain the parameters used in front of SQF command and the second ones behind SQF command. If more than one parameter is passed, it will be converted to an array.
+
+```
+foo(x, y, z)(1, 2, 3);
+// will be:
+[x, y, z] foo [1, 2, 3];
 ```
 
 ## Contribute
