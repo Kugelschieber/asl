@@ -68,7 +68,7 @@ func TestParserAssignResult(t *testing.T) {
 
 func TestParserExpression(t *testing.T) {
     got := getCompiled(t, "test/parser_expression.asl")
-    want := "x = (1+(2+3))/(6*(someVariable+99-100))-(20)+anotherVariable+([] call foo);\n"
+    want := "x = -(1+(2+3))/(6*(someVariable+99-100))-(20)+!anotherVariable+([] call foo);\n"
     
     equal(t, got, want)
 }

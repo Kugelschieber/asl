@@ -9,4 +9,4 @@
 * recursive compiling
 * concurrent compiling
 * inline buildin function call -> foo(a)(bar(x)(y));
-* negative values e.g. -1, operator !
+* ~~negative values e.g. -1, operator !~~

@@ -379,10 +379,20 @@ func parseExpression(out bool) string {
 func parseIdentifier() string {
     output := ""
     
-    if seek("(") {
+    if seek("(") && !accept("!") && !accept("-") {
         name := get().token
         next()
         output = "("+parseFunctionCall(false, name)+")"
+    } else if accept("!") || accept("-") {
+        output = get().token
+        next()
+        
+        if !accept("(") {
+            output += get().token
+            next()
+        } else {
+            output += parseTerm()
+        }
     } else {
         output = get().token
         next()
