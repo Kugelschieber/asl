@@ -11,6 +11,9 @@
 * ~~negative values e.g. -1, operator !~~
 * ~~tokenizer splits commands like "format" -> for, mat~~
 * ~~try ... catch~~
+* better error reporting
+    - recover panic
+    - line, column
 
 ## Special cases
 

@@ -7,9 +7,9 @@ var offset int
 var pretty bool
 
 // Initilizes the parser.
-func initParser(token []Token, prettyPrinting bool) {
+func initParser(token []Token, prettyPrinting bool) bool {
 	if len(token) == 0 {
-		panic("No tokens provided")
+		return false
 	}
 
 	tokens = token
@@ -17,6 +17,8 @@ func initParser(token []Token, prettyPrinting bool) {
 	out = ""
 	offset = 0
 	pretty = prettyPrinting
+	
+	return true
 }
 
 // Returns true, if current token matches expected one.

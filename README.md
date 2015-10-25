@@ -28,8 +28,8 @@ asl [-v|-r|-pretty|--help] <input directory> <output directory>
 | -r | optional | Read input directory recursively. |
 | -pretty | optional | Enable pretty printing to SQF. |
 | --help | optional | Show usage. |
-| <input directory> | required | Directory to read ASL files from. |
-| <output directory> | required | Directory for SQF output. Can be the same as input directory. |
+| input directory | required | Directory to read ASL files from. |
+| output directory | required | Directory for SQF output. Can be the same as input directory. |
 
 **Example:**
 

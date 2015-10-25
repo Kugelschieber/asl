@@ -9,7 +9,9 @@ const TAB = "    "
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
 func Parse(token []Token, prettyPrinting bool) string {
-	initParser(token, prettyPrinting)
+	if !initParser(token, prettyPrinting) {
+	    return ""
+	}
 
 	for tokenIndex < len(token) {
 		parseBlock()
