@@ -1,6 +1,6 @@
 # ASL
 
-ASL stands for Arma Scripting Language, a C-style scripting language compiled to SQF.
+ASL stands for Arma Scripting Language, a case sensitive C-style scripting language compiled to SQF.
 ASL is intended to simplify Arma 3 mod and mission development and eliminate the pain of SQF's bad syntax.
 
 Main reasons for ASL:
@@ -12,11 +12,9 @@ Main reasons for ASL:
 * full replacement of SQF
 * compatible with Arma wiki and commands
 
-The compiler is written in Go and implemented as a simple recursive decent parser and uses concurrency to compile multiple files at once, which makes it really fast.
-
 ## Usage
 
-ASL is a command line tool. After you have downloaded it, execute it using the terminal/"cmd" by navigating to the binary or setting PATH variable and executing the following statement:
+ASL is a command line tool. After you have downloaded it, navigation to the binary and execute it:
 
 ```
 asl [-v|-r|-pretty|--help] <input directory> <output directory>
@@ -28,8 +26,8 @@ asl [-v|-r|-pretty|--help] <input directory> <output directory>
 | -r | optional | Read input directory recursively. |
 | -pretty | optional | Enable pretty printing to SQF. |
 | --help | optional | Show usage. |
-| input directory | required | Directory to read ASL files from. |
-| output directory | required | Directory for SQF output. Can be the same as input directory. |
+| input directory | required | Directory to read ASL files from (use ./ for relative paths). |
+| output directory | required | Directory for SQF output. Can be the same as input directory (use ./ for relative paths). |
 
 **Example:**
 
@@ -41,7 +39,7 @@ asl ./missions/myMission/myScripts ./missions/myMission/compiledScripts
 
 ### Comments
 
-Comments are declared exactly like in SQF:
+Comments are written exactly like in SQF:
 
 ```
 // single line comment
@@ -67,7 +65,7 @@ var array = [1, 2, 3];
 
 ### Control structures
 
-Controll structure syntax is C-like. Notice they are all using the same brackets and do not require to set a semicolon at the end.
+Controll structure syntax is C-like. Notice they are all using the same brackets and do not require to set a semicolon at the end, unlike in SQF.
 
 ```
 if 1 < 2 {
@@ -116,29 +114,26 @@ func add(_a, _b) {
 // Call it:
 
 var _x = add(1, 2);
-// result is 3
+// result in _x is 3
 ```
 
 ### Call build in commands
 
-To call SQF build in commands (like hint, getDir, addItem, ...) we have to call them differently.
-Since SQF commands can take arguments in the front and behind the keyword, we use a special syntax. So this SQF code:
-
-```
-someUnit addItem "NVGoogles";
-```
-
-is equivalent to:
+To call SQF build in commands (like hint, getDir, addItem, ...) we have to use a different syntax.
 
 ```
 addItem(someUnit)("NVGoogles");
+
+// output:
+someUnit addItem "NVGoogles";
 ```
 
 Where the first brackets contain the parameters used in front of SQF command and the second ones behind SQF command. If more than one parameter is passed, it will be converted to an array.
 
 ```
 foo(x, y, z)(1, 2, 3);
-// will be:
+
+// output:
 [x, y, z] foo [1, 2, 3];
 ```
 
@@ -149,7 +144,7 @@ There are some special functions in SQF, which also require special syntax in AS
 **exitWith**
 
 ```
-exitwith {
+exitwith { // NOT exitWith!
     // your code
 }
 
@@ -162,7 +157,7 @@ if (true) exitWith {
 **waitUntil**
 
 ```
-waituntil(condition);
+waituntil(condition); // NOT waitUntil!
 // or
 waituntil(expression;condition);
 
@@ -174,7 +169,7 @@ waitUntil {expression;condition};
 
 ## List of all keywords
 
-Keywords should not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in functions should not be used neither.
+Keywords should not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in function names should not be used neither.
 
 | Keyword |
 | ------- |
