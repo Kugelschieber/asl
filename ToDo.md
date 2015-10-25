@@ -10,7 +10,7 @@
 * ~~inline buildin function call -> foo(a)(bar(x)(y));~~
 * ~~negative values e.g. -1, operator !~~
 * ~~tokenizer splits commands like "format" -> for, mat~~
-* try ... catch
+* ~~try ... catch~~
 
 ## Special cases
 

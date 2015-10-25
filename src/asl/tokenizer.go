@@ -41,7 +41,9 @@ var keywords = []string{
 	"false",
 	"case",
 	"default",
-	"return"}
+	"return",
+	"try",
+	"catch"}
 
 var whitespace = []byte{' ', '\n', '\t'}
 var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"

@@ -1,3 +1,6 @@
-// TODO:
-//var _x = setHitIndex(vehicle()(player))(1, 1);
-
+try {
+    var x = 100;
+    doSomething(x);
+} catch {
+    errorHandling();
+}

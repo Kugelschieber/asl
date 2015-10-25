@@ -101,6 +101,13 @@ func TestParserOperator(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserTryCatch(t *testing.T) {
+	got := getCompiled(t, "test/parser_try_catch.asl")
+	want := "try {\n} catch {\n};\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 

@@ -35,6 +35,8 @@ func parseBlock() {
 		parseFunction()
 	} else if accept("return") {
 		parseReturn()
+	} else if accept("try") {
+	    parseTryCatch()
 	} else if accept("case") || accept("default") {
 		return
 	} else {
@@ -230,6 +232,20 @@ func parseReturn() {
 	parseExpression(true)
 	expect(";")
 	appendOut(";", true)
+}
+
+func parseTryCatch() {
+    expect("try")
+    expect("{")
+    appendOut("try {", true)
+    parseBlock()
+    expect("}")
+    expect("catch")
+    expect("{")
+    appendOut("} catch {", true)
+    parseBlock()
+    expect("}")
+    appendOut("};", true)
 }
 
 // Everything that does not start with a keyword.
