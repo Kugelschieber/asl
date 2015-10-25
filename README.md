@@ -156,7 +156,7 @@ waitUntil {expression;condition};
 Keywords should not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in functions should not be used neither.
 
 | Keyword |
-| - |
+| ------- |
 | var |
 | if |
 | while |
