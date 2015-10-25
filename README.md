@@ -44,7 +44,7 @@ var string = "string";
 var array = [1, 2, 3];
 ```
 
-### Controll structures
+### Control structures
 
 Controll structure syntax is C-like. Notice they are all using the same brackets and do not require to set a semicolon at the end.
 
@@ -64,6 +64,17 @@ for var _i = 0; _i < 100; _i = _i+1 { // var before identifier is optional
 each allUnits { // foreach, iterates over all units in this case
     // element is available as _x here
 }
+
+switch x {
+    case 1:
+        // ...
+        break;
+    case 2:
+        // ...
+        break;
+    default:
+        // ...
+}
 ```
 
 ### Functions
@@ -74,11 +85,9 @@ Functions are declared using the keyword *func*. The parameters will be availabl
 func add(_a, _b) {
     return _a+_b;
 }
-```
 
-Call it:
+// Call it:
 
-```
 var _x = add(1, 2);
 // result is 3
 ```
