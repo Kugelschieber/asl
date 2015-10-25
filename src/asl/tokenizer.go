@@ -47,7 +47,7 @@ var keywords = []string{
 	"exitwith",
 	"waituntil"}
 
-var whitespace = []byte{' ', '\n', '\t'}
+var whitespace = []byte{' ', '\n', '\t', '\r'}
 var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
 
 // Tokenizes the given byte array into syntax tokens,

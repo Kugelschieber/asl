@@ -76,6 +76,6 @@ func appendOut(str string, newLine bool) {
 	out += str
 
 	if newLine && pretty {
-		out += "\n"
+		out += "\r\n"
 	}
 }
