@@ -1,7 +1,5 @@
 # ASL
 
-**ASL is under heavy development and not production ready, the features listed here are not fully implemented. Please visit again when the final version is releaesed. If you like to contribute or if you are just interested, go on.**
-
 ASL stands for Arma Scripting Language, a C-style scripting language compiled to SQF.
 ASL is intended to simplify Arma 3 mod and mission development and eliminate the pain of SQF's bad syntax.
 
@@ -15,6 +13,29 @@ Main reasons for ASL:
 * compatible with Arma wiki and commands
 
 The compiler is written in Go and implemented as a simple recursive decent parser and uses concurrency to compile multiple files at once, which makes it really fast.
+
+## Usage
+
+ASL is a command line tool. After you have downloaded it, execute it using the terminal/"cmd" by navigating to the binary or setting PATH variable and executing the following statement:
+
+```
+asl [-v|-r|-pretty|--help] <input directory> <output directory>
+```
+
+| Parameter | Optional/Required | Meaning |
+| --------- | ----------------- | ------- |
+| -v | optional | Shows ASL version. |
+| -r | optional | Read input directory recursively. |
+| -pretty | optional | Enable pretty printing to SQF. |
+| --help | optional | Show usage. |
+| <input directory> | required | Directory to read ASL files from. |
+| <output directory> | required | Directory for SQF output. Can be the same as input directory. |
+
+**Example:**
+
+```
+asl ./missions/myMission/myScripts ./missions/myMission/compiledScripts
+```
 
 ## Syntax
 

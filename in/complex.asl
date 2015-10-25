@@ -22,13 +22,13 @@ if (!isNil _getunit) then { // unit exists?
 */
 
 if !isServer && player != player {
-    exit()(); // does not work for SQF, need to implement exitWith...
+    waituntil(player == player);
 }
 
 var _getunit = select(_this)(0);
 var _file = select(_this)(1);
 
-if !(isNil()(_getunit)) {
+if !isNil()(_getunit) {
     var _unit = objNull;
     call()(compile()(format()("_unit = %1", _getunit)));
     

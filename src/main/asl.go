@@ -4,24 +4,140 @@ import (
 	"asl"
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
+	"os"
+	"strings"
 )
 
-const version = "0.1"
+const version = "1.0.0"
+const extension = ".asl"
+const sqfextension = ".sqf"
+
+type ASLFile struct {
+    in string
+    out string
+    newname string
+}
+
+var recursive bool = false
+var pretty bool = false
+var exit bool = false
+var aslFiles []ASLFile
+var inDir string
 
 func usage() {
-	fmt.Println("Usage: asl [-v|-r|-pretty] <input file/folder> [<output file/folder>]\n")
+	fmt.Println("Usage: asl [-v|-r|-pretty|--help] <input directory> <output directory>\n")
 	fmt.Println("-v (optional) shows asl version")
 	fmt.Println("-r (optional) recursivly compile all asl files in folder")
 	fmt.Println("-pretty (optional) activates pretty printing\n")
-	fmt.Println("<input file/folder> file or directory to compile")
-	fmt.Println("<output file/folder> (optional) output file/folder, if not set, files will be created alongside their asl files")
+	fmt.Println("--help (optional) shows usage\n")
+	fmt.Println("<input directory> directory to compile")
+	fmt.Println("<output directory> output directory, directory structure will be created corresponding to input directory")
+}
+
+func flags(flag string) bool {
+    flag = strings.ToLower(flag)
+    
+    if flag[0] == '-' {
+        if flag == "-v" {
+            fmt.Println("asl version "+version)
+            exit = true
+        } else if flag == "-r" {
+            recursive = true
+        } else if flag == "-pretty" {
+            pretty = true
+        } else if flag == "--help" {
+            usage()
+            exit = true
+        }
+        
+        return true
+    }
+    
+    return false
+}
+
+func readAslFiles(path string) {
+    dir, err := ioutil.ReadDir(path)
+    
+    if err != nil {
+        fmt.Println("Error reading in directory!")
+        return
+    }
+    
+    for i := 0; i < len(dir); i++ {
+        name := dir[i].Name()
+        
+        if dir[i].IsDir() && recursive {
+            readAslFiles(path+"/"+name)
+            continue
+        }
+
+        if !dir[i].IsDir() && strings.ToLower(filepath.Ext(name)) == extension {
+            in := path+"/"+dir[i].Name()
+            out := "./"+path[len(inDir):len(path)]
+            newname := name[:len(name)-len(filepath.Ext(name))] 
+            
+            file := ASLFile{in, out, newname}
+            aslFiles = append(aslFiles, file)
+        }
+    }
+}
+
+func compile(path string) {
+    for i := 0; i < len(aslFiles); i++ {
+        out := path+"/"+aslFiles[i].out+"/"+aslFiles[i].newname+sqfextension
+        fmt.Println(aslFiles[i].in+" -> "+out)
+        code, err := ioutil.ReadFile(aslFiles[i].in)
+        
+        if err != nil {
+            fmt.Println("Error reading file: "+aslFiles[i].in)
+            continue
+        }
+        
+    	token := asl.Tokenize(code)
+    	sqf := asl.Parse(token, pretty)
+    	
+    	os.MkdirAll(path+"/"+aslFiles[i].out, 0777)
+    	err = ioutil.WriteFile(out, []byte(sqf), 0666)
+    	
+    	if err != nil {
+    	    fmt.Println("Error writing file: "+aslFiles[i].out)
+    	    fmt.Println(err)
+    	}
+    }
 }
 
 func main() {
-	// read test file
-	code, _ := ioutil.ReadFile("in/simple.asl")
-	token := asl.Tokenize(code)
-	out := asl.Parse(token, true)
-
-	fmt.Print("OUTPUT:\n-------\n" + out)
+	args := os.Args
+	
+	// flags
+	if len(args) < 2 {
+	    usage()
+	    return
+	}
+	
+	var i int
+	for i = 1; i < len(args) && flags(args[i]); i++ {}
+	
+	if exit {
+	    return
+	}
+	
+	// in/out parameter
+	out := ""
+	
+	if i < len(args) {
+	    inDir = args[i]
+	    i++
+	} else {
+	    return
+	}
+	
+	if i < len(args) {
+	    out = args[i]
+	}
+	
+	readAslFiles(inDir)
+	compile(out)
 }
