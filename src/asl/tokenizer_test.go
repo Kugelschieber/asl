@@ -37,9 +37,9 @@ func TestTokenizerFor(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
-func TestTokenizerEach(t *testing.T) {
-    got := getTokens(t, "test/tokenizer_each.asl")
-	want := []string{"each", "allUnits", "{", "}"}
+func TestTokenizerForach(t *testing.T) {
+    got := getTokens(t, "test/tokenizer_foreach.asl")
+	want := []string{"foreach", "allUnits", "{", "}"}
 	
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)
@@ -64,6 +64,14 @@ func TestTokenizerFunction(t *testing.T) {
 func TestTokenizerExpression(t *testing.T) {
     got := getTokens(t, "test/tokenizer_expr.asl")
 	want := []string{"x", "=", "(", "(", "1", "+", "2", "+", "3", ")", "*", "4", "/", "2", ")", "+", "foo", "(", "1", ",", "2", ",", "3", ")", ";"}
+	
+	compareLength(t, &got, &want)
+	compareTokens(t, &got, &want)
+}
+
+func TestTokenizerIdentifier(t *testing.T) {
+    got := getTokens(t, "test/tokenizer_identifier.asl")
+	want := []string{"var", "format", "=", "\"should not be for mat!\"", ";"}
 	
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)

@@ -35,7 +35,7 @@ var keywords = []string{
 	"while",
 	"switch",
 	"for",
-	"each",
+	"foreach",
 	"func",
 	"true",
 	"false",
@@ -44,6 +44,7 @@ var keywords = []string{
 	"return"}
 
 var whitespace = []byte{' ', '\n', '\t'}
+var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
 
 // Tokenizes the given byte array into syntax tokens,
 // which can be parsed later.
@@ -51,7 +52,7 @@ func Tokenize(code []byte) []Token {
 	code = removeComments(code)
 	tokens := make([]Token, 0)
 	token, mask, isstring := "", false, false
-
+	
 	for i := range code {
 		c := code[i]
 		
@@ -80,7 +81,7 @@ func Tokenize(code []byte) []Token {
     
     			tokens = append(tokens, Token{string(c)})
     			token = ""
-    		} else if stringArrayContains(keywords, strings.ToLower(token)) {
+    		} else if stringArrayContains(keywords, strings.ToLower(token)) && !isIdentifierCharacter(c) {
     			tokens = append(tokens, Token{token})
     			token = ""
     		} else if !byteArrayContains(whitespace, c) {
@@ -182,4 +183,15 @@ func stringArrayContains(haystack []string, needle string) bool {
 	}
 
 	return false
+}
+
+// Checks if a character is allowed for identifiers.
+func isIdentifierCharacter(c byte) bool {
+    for i := range identifier {
+        if identifier[i] == c {
+            return true
+        }
+    }
+    
+    return false
 }

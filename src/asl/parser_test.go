@@ -41,8 +41,8 @@ func TestParserFor(t *testing.T) {
     equal(t, got, want)
 }
 
-func TestParserEach(t *testing.T) {
-    got := getCompiled(t, "test/tokenizer_each.asl")
+func TestParserForeach(t *testing.T) {
+    got := getCompiled(t, "test/tokenizer_foreach.asl")
     want := "{\n} forEach (allUnits);\n"
     
     equal(t, got, want)

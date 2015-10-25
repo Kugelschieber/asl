@@ -29,7 +29,7 @@ func parseBlock() {
 		parseSwitch()
 	} else if accept("for") {
 		parseFor()
-	} else if accept("each") {
+	} else if accept("foreach") {
 		parseForeach()
 	} else if accept("func") {
 		parseFunction()
@@ -182,7 +182,7 @@ func parseFor() {
 }
 
 func parseForeach() {
-	expect("each")
+	expect("foreach")
 	expr := parseExpression(false)
 	expect("{")
 	appendOut("{", true)
