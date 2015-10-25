@@ -85,7 +85,7 @@ func Tokenize(code []byte) []Token {
 
 				tokens = append(tokens, Token{string(c)})
 				token = ""
-			} else if stringArrayContains(keywords, strings.ToLower(token)) && !isIdentifierCharacter(c) {
+			} else if stringArrayContains(strings.ToLower(token)) && !isIdentifierCharacter(c) {
 				tokens = append(tokens, Token{token})
 				token = ""
 			} else if !byteArrayContains(whitespace, c) {
@@ -179,9 +179,9 @@ func byteArrayContains(haystack []byte, needle byte) bool {
 }
 
 // Checks if a byte array (string) contains a string delimeter.
-func stringArrayContains(haystack []string, needle string) bool {
-	for i := range haystack {
-		if haystack[i] == needle {
+func stringArrayContains(needle string) bool {
+	for i := range keywords {
+		if keywords[i] == needle {
 			return true
 		}
 	}
