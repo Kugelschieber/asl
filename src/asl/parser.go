@@ -420,6 +420,12 @@ func parseIdentifier() string {
 		name := get().token
 		next()
 		output = "(" + parseFunctionCall(false, name) + ")"
+	} else if seek("[") {
+	    output += "("+get().token
+	    next()
+	    expect("[")
+	    output += " select "+parseExpression(false)+")"
+	    expect("]")
 	} else if accept("!") || accept("-") {
 		output = get().token
 		next()

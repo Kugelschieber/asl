@@ -129,6 +129,13 @@ func TestParserWaitUntil(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserArray(t *testing.T) {
+	got := getCompiled(t, "test/parser_array.asl")
+	want := "x = [1,2,3];\ny = (x select 1);\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 

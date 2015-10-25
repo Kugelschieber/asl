@@ -1,8 +1,6 @@
-waituntil(x = x+1; x < 100);
+var array = [1, 2, 3];
+var x = array[0];
 
-if timeIsOver {
-    exitwith {
-        foo();
-        bar();
-    }
+if array[1] == 2 {
+    foo();
 }

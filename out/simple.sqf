@@ -1,7 +1,5 @@
-waitUntil {x=x+1;x<100};
-if (timeIsOver) then {
-if (true) exitWith {
+array = [1,2,3];
+x = (array select 0);
+if ((array select 1)==2) then {
 [] call foo;
-[] call bar;
-};
 };
