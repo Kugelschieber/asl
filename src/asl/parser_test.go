@@ -131,7 +131,7 @@ func TestParserWaitUntil(t *testing.T) {
 
 func TestParserArray(t *testing.T) {
 	got := getCompiled(t, "test/parser_array.asl")
-	want := "x = [1,2,3];\ny = (x select 1);\n"
+	want := "x = [1,2,3];\ny = (x select (1));\n"
 
 	equal(t, got, want)
 }

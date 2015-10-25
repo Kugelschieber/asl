@@ -61,6 +61,12 @@ var number = 123;
 var floatingPointNumber = 1.23;
 var string = "string";
 var array = [1, 2, 3];
+
+// accessing array elements:
+var one = array[0];
+
+// accessing using a statement:
+var zwo = array[33/3-2];
 ```
 
 ### Control structures

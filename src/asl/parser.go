@@ -424,7 +424,7 @@ func parseIdentifier() string {
 	    output += "("+get().token
 	    next()
 	    expect("[")
-	    output += " select "+parseExpression(false)+")"
+	    output += " select ("+parseExpression(false)+"))"
 	    expect("]")
 	} else if accept("!") || accept("-") {
 		output = get().token
