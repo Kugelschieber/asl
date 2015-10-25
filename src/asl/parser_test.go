@@ -94,6 +94,13 @@ func TestParserBuildinFunctionCall(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserOperator(t *testing.T) {
+	got := getCompiled(t, "test/parser_operator.asl")
+	want := "if (x==y&&x!=y&&x<=y&&x>=y&&x<y&&x>y) then {\n};\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 

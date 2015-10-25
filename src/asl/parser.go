@@ -326,7 +326,7 @@ func parseParameter(out bool) (string, int) {
 func parseExpression(out bool) string {
 	output := parseArith()
 
-	for accept("<") || accept(">") || accept("&") || accept("|") || accept("=") {
+	for accept("<") || accept(">") || accept("&") || accept("|") || accept("=") || accept("!") {
 		if accept("<") {
 			output += "<"
 			next()
@@ -341,9 +341,13 @@ func parseExpression(out bool) string {
 			next()
 			expect("|")
 			output += "||"
-		} else {
+		} else if accept("=") {
 			output += "="
 			next()
+		} else {
+		    next()
+		    expect("=")
+		    output += "!="
 		}
 
 		if accept("=") {
