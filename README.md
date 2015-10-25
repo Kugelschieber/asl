@@ -75,6 +75,12 @@ switch x {
     default:
         // ...
 }
+
+try {
+    // ...
+} catch {
+    // ...
+}
 ```
 
 ### Functions
@@ -114,6 +120,59 @@ foo(x, y, z)(1, 2, 3);
 // will be:
 [x, y, z] foo [1, 2, 3];
 ```
+
+### Special functions
+
+There are some special functions in SQF, which also require special syntax in ASL. The examples presented here show how they are written in ASL and what the output will look like. Remember that ASL is case sensitive!
+
+**exitWith**
+
+```
+exitwith {
+    // your code
+}
+
+// output:
+if (true) exitWith {
+    // your code
+};
+```
+
+**waitUntil**
+
+```
+waituntil(condition);
+// or
+waituntil(expression;condition);
+
+// output:
+waitUntil {condition};
+// or
+waitUntil {expression;condition};
+```
+
+## List of all keywords
+
+Keywords should not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in functions should not be used neither.
+
+| Keyword |
+| - |
+| var |
+| if |
+| while |
+| witch |
+| for |
+| foreach |
+| func |
+| true |
+| false |
+| case |
+| default |
+| return |
+| try |
+| catch |
+| exitwith |
+| waituntil |
 
 ## Contribute
 

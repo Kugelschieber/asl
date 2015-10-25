@@ -14,6 +14,6 @@
 
 ## Special cases
 
-* exitWith...
-* waitUntil...
+* ~~exitWith...~~
+* ~~waitUntil...~~
 * ~~!buildInFunc()()...~~

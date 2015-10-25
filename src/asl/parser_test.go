@@ -115,6 +115,20 @@ func TestParserNegationFunctionCall(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserExitWith(t *testing.T) {
+	got := getCompiled(t, "test/parser_exitwith.asl")
+	want := "if (true) exitWith {\n};\n"
+
+	equal(t, got, want)
+}
+
+func TestParserWaitUntil(t *testing.T) {
+	got := getCompiled(t, "test/parser_waituntil.asl")
+	want := "waitUntil {x=x+1;x<100};\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 

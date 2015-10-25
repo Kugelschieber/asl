@@ -37,6 +37,10 @@ func parseBlock() {
 		parseReturn()
 	} else if accept("try") {
 		parseTryCatch()
+	} else if accept("exitwith") {
+	    parseExitWith()
+	} else if accept("waituntil") {
+	    parseWaitUntil()
 	} else if accept("case") || accept("default") {
 		return
 	} else {
@@ -246,6 +250,32 @@ func parseTryCatch() {
 	parseBlock()
 	expect("}")
 	appendOut("};", true)
+}
+
+func parseExitWith() {
+    expect("exitwith")
+    expect("{")
+    appendOut("if (true) exitWith {", true)
+    parseBlock()
+    expect("}")
+    appendOut("};", true)
+}
+
+func parseWaitUntil() {
+    expect("waituntil")
+    expect("(")
+    appendOut("waitUntil {", false)
+    parseExpression(true)
+    
+    if accept(";") {
+        next()
+        appendOut(";", false)
+        parseExpression(true)
+    }
+    
+    expect(")")
+    expect(";")
+    appendOut("};", true)
 }
 
 // Everything that does not start with a keyword.
