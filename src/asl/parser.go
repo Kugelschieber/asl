@@ -36,7 +36,7 @@ func parseBlock() {
 	} else if accept("return") {
 		parseReturn()
 	} else if accept("case") || accept("default") {
-	    return
+		return
 	} else {
 		parseStatement()
 	}
@@ -54,34 +54,34 @@ func parseVar() {
 	if accept("=") {
 		next()
 		appendOut(" = ", false)
-		
+
 		if accept("[") {
-            parseArray()
+			parseArray()
 		} else {
-		    parseExpression(true)
+			parseExpression(true)
 		}
 	}
 
-    expect(";")
+	expect(";")
 	appendOut(";", true)
 }
 
 func parseArray() {
-    expect("[")
-    appendOut("[", false)
-    
-    if !accept("]") {
-        parseExpression(true)
-        
-        for accept(",") {
-            next()
-            appendOut(",", false)
-            parseExpression(true)
-        }
-    }
-    
-    expect("]")
-    appendOut("]", false)
+	expect("[")
+	appendOut("[", false)
+
+	if !accept("]") {
+		parseExpression(true)
+
+		for accept(",") {
+			next()
+			appendOut(",", false)
+			parseExpression(true)
+		}
+	}
+
+	expect("]")
+	appendOut("]", false)
 }
 
 func parseIf() {
@@ -188,12 +188,12 @@ func parseForeach() {
 	appendOut("{", true)
 	parseBlock()
 	expect("}")
-	appendOut("} forEach (" + expr + ");", true)
+	appendOut("} forEach ("+expr+");", true)
 }
 
 func parseFunction() {
 	expect("func")
-	appendOut(get().token + " = {", true)
+	appendOut(get().token+" = {", true)
 	next()
 	expect("(")
 	parseFunctionParameter()
@@ -215,7 +215,7 @@ func parseFunctionParameter() {
 	for !accept(")") {
 		name := get().token
 		next()
-		appendOut(name + " = _this select " + strconv.FormatInt(i, 10) + ";", true)
+		appendOut(name+" = _this select "+strconv.FormatInt(i, 10)+";", true)
 		i++
 
 		if !accept(")") {
@@ -266,46 +266,46 @@ func parseAssignment() {
 }
 
 func parseFunctionCall(out bool, name string) string {
-    output := ""
-    
+	output := ""
+
 	expect("(")
 	leftParams, leftParamCount := parseParameter(false)
 	expect(")")
-	
+
 	if accept("(") {
-	    // buildin function
-	    next()
-	    rightParams, rightParamCount := parseParameter(false)
-	    expect(")")
-	    
-	    if leftParamCount > 1 {
-	        leftParams = "["+leftParams+"]"
-	    }
-	    
-	    if rightParamCount > 1 {
-	        rightParams = "["+rightParams+"]"
-	    }
-	    
-	    if leftParamCount > 0 {
-	        output = leftParams+" "+name+" "+rightParams
-	    } else {
-	        output = name+" "+rightParams
-	    }
+		// buildin function
+		next()
+		rightParams, rightParamCount := parseParameter(false)
+		expect(")")
+
+		if leftParamCount > 1 {
+			leftParams = "[" + leftParams + "]"
+		}
+
+		if rightParamCount > 1 {
+			rightParams = "[" + rightParams + "]"
+		}
+
+		if leftParamCount > 0 {
+			output = leftParams + " " + name + " " + rightParams
+		} else {
+			output = name + " " + rightParams
+		}
 	} else {
-	    output = "["+leftParams+"] call "+name
+		output = "[" + leftParams + "] call " + name
 	}
-	
+
 	if out {
-	    appendOut(output, false)
+		appendOut(output, false)
 	}
-	
+
 	return output
 }
 
 func parseParameter(out bool) (string, int) {
-    output := ""
-    count := 0
-    
+	output := ""
+	count := 0
+
 	for !accept(")") {
 		output += parseExpression(out)
 		count++
@@ -315,119 +315,119 @@ func parseParameter(out bool) (string, int) {
 			output += ", "
 		}
 	}
-	
+
 	if out {
-	    appendOut(output, false)
+		appendOut(output, false)
 	}
-	
+
 	return output, count
 }
 
 func parseExpression(out bool) string {
 	output := parseArith()
-	
+
 	for accept("<") || accept(">") || accept("&") || accept("|") || accept("=") {
-	    if accept("<") {
-	        output += "<"
-	        next()
-	    } else if accept(">") {
-	        output += ">"
-	        next()
-	    } else if accept("&") {
-	        next()
-	        expect("&")
-	        output += "&&"
-	    } else if accept("|") {
-	        next()
-	        expect("|")
-	        output += "||"
-	    } else {
-	        output += "="
-	        next()
-	    }
-	    
-	    if accept("=") {
-	        output += "="
-	        next()
-	    }
-	    
-	    output += parseExpression(false)
+		if accept("<") {
+			output += "<"
+			next()
+		} else if accept(">") {
+			output += ">"
+			next()
+		} else if accept("&") {
+			next()
+			expect("&")
+			output += "&&"
+		} else if accept("|") {
+			next()
+			expect("|")
+			output += "||"
+		} else {
+			output += "="
+			next()
+		}
+
+		if accept("=") {
+			output += "="
+			next()
+		}
+
+		output += parseExpression(false)
 	}
-	
+
 	if out {
-	    appendOut(output, false)
+		appendOut(output, false)
 	}
-	
+
 	return output
 }
 
 func parseIdentifier() string {
-    output := ""
-    
-    if seek("(") && !accept("!") && !accept("-") {
-        name := get().token
-        next()
-        output = "("+parseFunctionCall(false, name)+")"
-    } else if accept("!") || accept("-") {
-        output = get().token
-        next()
-        
-        if !accept("(") {
-            output += get().token
-            next()
-        } else {
-            output += parseTerm()
-        }
-    } else {
-        output = get().token
-        next()
-    }
-    
-    return output
+	output := ""
+
+	if seek("(") && !accept("!") && !accept("-") {
+		name := get().token
+		next()
+		output = "(" + parseFunctionCall(false, name) + ")"
+	} else if accept("!") || accept("-") {
+		output = get().token
+		next()
+
+		if !accept("(") {
+			output += get().token
+			next()
+		} else {
+			output += parseTerm()
+		}
+	} else {
+		output = get().token
+		next()
+	}
+
+	return output
 }
 
 func parseTerm() string {
-    if accept("(") {
-        expect("(")
-        output := "("+parseExpression(false)+")"
-        expect(")")
-        
-        return output
-    }
-    
-    return parseIdentifier()
+	if accept("(") {
+		expect("(")
+		output := "(" + parseExpression(false) + ")"
+		expect(")")
+
+		return output
+	}
+
+	return parseIdentifier()
 }
 
 func parseFactor() string {
-    output := parseTerm()
-    
-    for accept("*") || accept("/") { // TODO: modulo?
-        if accept("*") {
-            output += "*"
-        } else {
-            output += "/"
-        }
-        
-        next()
-        output += parseExpression(false)
-    }
-    
-    return output
+	output := parseTerm()
+
+	for accept("*") || accept("/") { // TODO: modulo?
+		if accept("*") {
+			output += "*"
+		} else {
+			output += "/"
+		}
+
+		next()
+		output += parseExpression(false)
+	}
+
+	return output
 }
 
 func parseArith() string {
-    output := parseFactor()
-	
-    for accept("+") || accept("-") {
-        if accept("+") {
-            output += "+"
-        } else {
-            output += "-"
-        }
-        
-        next()
-        output += parseExpression(false)
-    }
-	
+	output := parseFactor()
+
+	for accept("+") || accept("-") {
+		if accept("+") {
+			output += "+"
+		} else {
+			output += "-"
+		}
+
+		next()
+		output += parseExpression(false)
+	}
+
 	return output
 }

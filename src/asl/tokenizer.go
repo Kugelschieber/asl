@@ -52,43 +52,43 @@ func Tokenize(code []byte) []Token {
 	code = removeComments(code)
 	tokens := make([]Token, 0)
 	token, mask, isstring := "", false, false
-	
+
 	for i := range code {
 		c := code[i]
-		
+
 		// string masks (backslash)
 		if c == '\\' && !mask {
-		    token += "\\"
-		    mask = true
-		    continue
+			token += "\\"
+			mask = true
+			continue
 		}
-		
+
 		// string
 		if c == '"' && !mask {
-		    token += "\""
-		    isstring = !isstring
-		    continue
+			token += "\""
+			isstring = !isstring
+			continue
 		}
-		
+
 		if isstring {
-		    token += string(c)
+			token += string(c)
 		} else {
-            // delimeter, keyword or variable/expression
-    		if byteArrayContains(delimiter, c) {
-    			if token != "" {
-    				tokens = append(tokens, Token{token})
-    			}
-    
-    			tokens = append(tokens, Token{string(c)})
-    			token = ""
-    		} else if stringArrayContains(keywords, strings.ToLower(token)) && !isIdentifierCharacter(c) {
-    			tokens = append(tokens, Token{token})
-    			token = ""
-    		} else if !byteArrayContains(whitespace, c) {
-    			token += string(c)
-    		}
+			// delimeter, keyword or variable/expression
+			if byteArrayContains(delimiter, c) {
+				if token != "" {
+					tokens = append(tokens, Token{token})
+				}
+
+				tokens = append(tokens, Token{string(c)})
+				token = ""
+			} else if stringArrayContains(keywords, strings.ToLower(token)) && !isIdentifierCharacter(c) {
+				tokens = append(tokens, Token{token})
+				token = ""
+			} else if !byteArrayContains(whitespace, c) {
+				token += string(c)
+			}
 		}
-		
+
 		mask = false
 	}
 
@@ -104,26 +104,26 @@ func removeComments(code []byte) []byte {
 
 	for i := 0; i < len(code); i++ {
 		c := code[i]
-		
+
 		// do not remove comments from strings
 		if c == '\\' && !mask {
-		    mask = true
-		}
-		
-		if c == '"' && !mask {
-		    isstring = !isstring
+			mask = true
 		}
 
-        // single/multi line comment
-        if !isstring {
-    		if c == '/' && nextChar(code, i) == '/' {
-    			i = skipSingleLineComment(code, i+1)
-    			continue
-    		} else if c == '/' && nextChar(code, i) == '*' {
-    			i = skipMultiLineComment(code, i+1)
-    			continue
-    		}
-        }
+		if c == '"' && !mask {
+			isstring = !isstring
+		}
+
+		// single/multi line comment
+		if !isstring {
+			if c == '/' && nextChar(code, i) == '/' {
+				i = skipSingleLineComment(code, i+1)
+				continue
+			} else if c == '/' && nextChar(code, i) == '*' {
+				i = skipMultiLineComment(code, i+1)
+				continue
+			}
+		}
 
 		newcode[j] = c
 		j++
@@ -187,11 +187,11 @@ func stringArrayContains(haystack []string, needle string) bool {
 
 // Checks if a character is allowed for identifiers.
 func isIdentifierCharacter(c byte) bool {
-    for i := range identifier {
-        if identifier[i] == c {
-            return true
-        }
-    }
-    
-    return false
+	for i := range identifier {
+		if identifier[i] == c {
+			return true
+		}
+	}
+
+	return false
 }
