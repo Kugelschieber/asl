@@ -108,6 +108,13 @@ func TestParserTryCatch(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserNegationFunctionCall(t *testing.T) {
+	got := getCompiled(t, "test/parser_negation.asl")
+	want := "x = !([] call foo);\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 

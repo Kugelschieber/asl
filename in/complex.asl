@@ -33,7 +33,10 @@ if !(isNil()(_getunit)) {
     call()(compile()(format()("_unit = %1", _getunit)));
     
     if local()(_unit) {
-        // try...catch
+        try {
         execVM(_unit)(_file);
+        } catch {
+            // do nothing
+        }
     }
 }

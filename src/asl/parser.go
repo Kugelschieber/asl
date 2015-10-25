@@ -36,7 +36,7 @@ func parseBlock() {
 	} else if accept("return") {
 		parseReturn()
 	} else if accept("try") {
-	    parseTryCatch()
+		parseTryCatch()
 	} else if accept("case") || accept("default") {
 		return
 	} else {
@@ -235,17 +235,17 @@ func parseReturn() {
 }
 
 func parseTryCatch() {
-    expect("try")
-    expect("{")
-    appendOut("try {", true)
-    parseBlock()
-    expect("}")
-    expect("catch")
-    expect("{")
-    appendOut("} catch {", true)
-    parseBlock()
-    expect("}")
-    appendOut("};", true)
+	expect("try")
+	expect("{")
+	appendOut("try {", true)
+	parseBlock()
+	expect("}")
+	expect("catch")
+	expect("{")
+	appendOut("} catch {", true)
+	parseBlock()
+	expect("}")
+	appendOut("};", true)
 }
 
 // Everything that does not start with a keyword.
@@ -361,9 +361,9 @@ func parseExpression(out bool) string {
 			output += "="
 			next()
 		} else {
-		    next()
-		    expect("=")
-		    output += "!="
+			next()
+			expect("=")
+			output += "!="
 		}
 
 		if accept("=") {
@@ -391,13 +391,7 @@ func parseIdentifier() string {
 	} else if accept("!") || accept("-") {
 		output = get().token
 		next()
-
-		if !accept("(") {
-			output += get().token
-			next()
-		} else {
-			output += parseTerm()
-		}
+		output += parseTerm()
 	} else {
 		output = get().token
 		next()
