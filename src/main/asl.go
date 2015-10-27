@@ -22,7 +22,7 @@ type ASLFile struct {
 var recursive bool = false
 var pretty bool = false
 var exit bool = false
-var function bool = false;
+var function bool = false
 var aslFiles []ASLFile
 var inDir string
 
@@ -118,8 +118,8 @@ func compile(path string) {
     }    
 }
 
-func functions(path string) {
-    functionText := "//class cfgFunctions {\nclass asl {\n    class asl {\n"
+func functions(path, functionName string) {
+    functionText := "//class cfgFunctions {\nclass "+functionName+" {\n    class "+functionName+" {\n"
 
     for i := 0; i < len(aslFiles); i++ {
         functionText +="        class "+aslFiles[i].newname+";\n"
@@ -127,7 +127,7 @@ func functions(path string) {
 
     functionText +="    }\n}\n//}"
     ioutil.WriteFile(filepath.FromSlash(path+"/"+"functions.hpp"), []byte(functionText), 0666)
-    fmt.Println("functions"+" -> "+path+"/"+"functions.hpp")
+    fmt.Println("functions"+" -> "+path+"\\"+"functions.hpp")
 }
 
 func main() {
@@ -171,6 +171,11 @@ func main() {
     }
 	
     if function {
-        functions(out)
+        functionName := "asl"
+        if i < len(args) {
+            functionName = args[i]
+        }
+
+        functions(out, functionName)
     }
 }
