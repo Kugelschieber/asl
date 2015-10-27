@@ -196,6 +196,25 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 | exitwith |
 | waituntil |
 
+## What's missing?
+
+The following features are not implemented yet, but will be in 1.1.0 or a future version:
+
+* inlining code
+* preprocessor and constants
+* arrays within expressions (like someArray-[someEntity])
+
+There is a simple workaround for arrays within expressions:
+
+```
+// want: ... forEach allCurators-[myCurator];
+
+var myCuratorArray = [myCurator]; // or a more complex expression within array
+foreach allCurators-myCuratorArray {
+	// ...
+}
+```
+
 ## Contribute
 
 To contribute please create pull requests or explain your ideas in the issue section on GitHub. Report any bugs or incompatible ASL <-> SQF syntax you can find.
