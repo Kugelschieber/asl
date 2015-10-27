@@ -140,7 +140,7 @@ func main() {
 	}
 	
 	var i int
-	for i = 1; i <= len(args) && flags(args[i]); i++ {}
+	for i = 1; i < len(args) && flags(args[i]); i++ {}
 	
 	if exit {
 	    return
