@@ -24,6 +24,7 @@ asl [-v|-r|-pretty|--help] <input directory> <output directory>
 | --------- | ----------------- | ------- |
 | -v | optional | Shows ASL version. |
 | -r | optional | Read input directory recursively. |
+| -f | optional | Output SQF as function library |
 | -pretty | optional | Enable pretty printing to SQF. |
 | --help | optional | Show usage. |
 | input directory | required | Directory to read ASL files from (use ./ for relative paths). |
