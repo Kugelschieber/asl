@@ -8,42 +8,42 @@ import (
 
 func TestParserDeclaration(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_var.asl")
-	want := "x = 1;\narray = [1,2,3];\n"
+	want := "x = 1;\r\narray = [1,2,3];\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserAssignment(t *testing.T) {
 	got := getCompiled(t, "test/parser_assignment.asl")
-	want := "x = 1;\n"
+	want := "x = 1;\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserIf(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_if.asl")
-	want := "if (a<b) then {\n};\n"
+	want := "if (a<b) then {\r\n};\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserWhile(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_while.asl")
-	want := "while {true} do {\n};"
+	want := "while {true} do {\r\n};"
 
 	equal(t, got, want)
 }
 
 func TestParserFor(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_for.asl")
-	want := "for [{i=0}, {i<100}, {i=i+1}] do {\n};\n"
+	want := "for [{i=0}, {i<100}, {i=i+1}] do {\r\n};\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserForeach(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_foreach.asl")
-	want := "{\n} forEach (allUnits);\n"
+	want := "{\r\n} forEach (allUnits);\r\n"
 
 	equal(t, got, want)
 }
@@ -54,84 +54,84 @@ func TestParserSwitch(t *testing.T) {
 
 func TestParserFunction(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_func.asl")
-	want := "TestFunction = {\nparam0 = _this select 0;\nparam1 = _this select 1;\nreturn true;\n};\n"
+	want := "TestFunction = {\r\nparam0 = _this select 0;\r\nparam1 = _this select 1;\r\nreturn true;\r\n};\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserAssignResult(t *testing.T) {
 	got := getCompiled(t, "test/parser_assign_result.asl")
-	want := "x = ([1, 2, 3] call foo);\ny = ([1, 2, 3] call bar);\n"
+	want := "x = ([1, 2, 3] call foo);\r\ny = ([1, 2, 3] call bar);\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserExpression(t *testing.T) {
 	got := getCompiled(t, "test/parser_expression.asl")
-	want := "x = -(1+(2+3))/(6*(someVariable+99-100))-(20)+!anotherVariable+([] call foo);\n"
+	want := "x = -(1+(2+3))/(6*(someVariable+99-100))-(20)+!anotherVariable+([] call foo);\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserExpression2(t *testing.T) {
 	got := getCompiled(t, "test/parser_expression2.asl")
-	want := "x = true||(3>=4&&5<8);\n"
+	want := "x = true||(3>=4&&5<8);\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserFunctionCall(t *testing.T) {
 	got := getCompiled(t, "test/parser_func_call.asl")
-	want := "myFunc = {\na = _this select 0;\nb = _this select 1;\nreturn a>b;\n};\n[1+3/4, 2-(66*22)/3-((123))] call myFunc;\n"
+	want := "myFunc = {\r\na = _this select 0;\r\nb = _this select 1;\r\nreturn a>b;\r\n};\r\n[1+3/4, 2-(66*22)/3-((123))] call myFunc;\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserBuildinFunctionCall(t *testing.T) {
 	got := getCompiled(t, "test/parser_buildin_func.asl")
-	want := "_x = (([player, foo] getVar bar) setHit [\"head\", \"tail\"]);\n"
+	want := "_x = (([player, foo] getVar bar) setHit [\"head\", \"tail\"]);\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserOperator(t *testing.T) {
 	got := getCompiled(t, "test/parser_operator.asl")
-	want := "if (x==y&&x!=y&&x<=y&&x>=y&&x<y&&x>y) then {\n};\n"
+	want := "if (x==y&&x!=y&&x<=y&&x>=y&&x<y&&x>y) then {\r\n};\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserTryCatch(t *testing.T) {
 	got := getCompiled(t, "test/parser_try_catch.asl")
-	want := "try {\n} catch {\n};\n"
+	want := "try {\r\n} catch {\r\n};\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserNegationFunctionCall(t *testing.T) {
 	got := getCompiled(t, "test/parser_negation.asl")
-	want := "x = !([] call foo);\n"
+	want := "x = !([] call foo);\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserExitWith(t *testing.T) {
 	got := getCompiled(t, "test/parser_exitwith.asl")
-	want := "if (true) exitWith {\n};\n"
+	want := "if (true) exitWith {\r\n};\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserWaitUntil(t *testing.T) {
 	got := getCompiled(t, "test/parser_waituntil.asl")
-	want := "waitUntil {x=x+1;x<100};\n"
+	want := "waitUntil {x=x+1;x<100};\r\n"
 
 	equal(t, got, want)
 }
 
 func TestParserArray(t *testing.T) {
 	got := getCompiled(t, "test/parser_array.asl")
-	want := "x = [1,2,3];\ny = (x select (1));\n"
+	want := "x = [1,2,3];\r\ny = (x select (1));\r\n"
 
 	equal(t, got, want)
 }
