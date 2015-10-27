@@ -166,7 +166,7 @@ func main() {
     if len(aslFiles) > 0 {
         compile(out)
     } else {
-        fmt.Println("No files asl files found from "+inDir)
+        fmt.Println("No asl files found from "+inDir)
         return
     }
 	
