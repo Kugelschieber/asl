@@ -223,7 +223,15 @@ func parseFunctionParameter() {
 	for !accept(")") {
 		name := get().token
 		next()
-		appendOut("\""+name+"\"", false)
+		
+		if accept("=") {
+		    next()
+		    value := get().token
+		    next()
+		    appendOut("[\""+name+"\","+value+"]", false)
+		} else {
+		    appendOut("\""+name+"\"", false)
+		}
 
 		if !accept(")") {
 			expect(",")

@@ -1,3 +1,3 @@
-func myFunc(a, b) {
+func myFunc(a = 1, b = "string") {
     // ...
 }

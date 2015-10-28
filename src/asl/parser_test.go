@@ -139,6 +139,13 @@ func TestParserArray(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserFunctionParams(t *testing.T) {
+	got := getCompiled(t, "test/parser_func_params.asl")
+	want := "myFunc = {\r\nparams [[\"a\",1],[\"b\",2]];\r\nreturn a+b;\r\n};\r\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 
