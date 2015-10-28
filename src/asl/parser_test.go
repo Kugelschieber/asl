@@ -146,6 +146,13 @@ func TestParserFunctionParams(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserInlineCode(t *testing.T) {
+	got := getCompiled(t, "test/parser_code.asl")
+	want := "inline_code = {a = 1;b = 2;if (a<b) then {[] call foo;};};\r\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 
