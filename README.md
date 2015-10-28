@@ -121,6 +121,19 @@ var _x = add(1, 2);
 // result in _x is 3
 ```
 
+Functions support optional parameters by predefining them:
+
+```
+func add(_a = 0, _b = 0) {
+    return _a+_b;
+}
+
+// Call it:
+
+var _x = add();
+// result in _x is 0
+```
+
 ### Call build in commands
 
 To call SQF build in commands (like hint, getDir, addItem, ...) we have to use a different syntax.
