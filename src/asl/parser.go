@@ -1,7 +1,7 @@
 package asl
 
 import (
-	"strconv"
+	
 )
 
 const TAB = "    "
@@ -217,19 +217,29 @@ func parseFunctionParameter() {
 	if accept("{") {
 		return
 	}
-
-	i := int64(0)
+	
+	appendOut("params [", false)
 
 	for !accept(")") {
 		name := get().token
 		next()
-		appendOut(name+" = _this select "+strconv.FormatInt(i, 10)+";", true)
-		i++
+		
+		if accept("=") {
+		    next()
+		    value := get().token
+		    next()
+		    appendOut("[\""+name+"\","+value+"]", false)
+		} else {
+		    appendOut("\""+name+"\"", false)
+		}
 
 		if !accept(")") {
 			expect(",")
+			appendOut(",", false)
 		}
 	}
+	
+	appendOut("];", true)
 }
 
 func parseReturn() {

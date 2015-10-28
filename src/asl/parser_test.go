@@ -57,7 +57,7 @@ func TestParserSwitch(t *testing.T) {
 
 func TestParserFunction(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_func.asl")
-	want := "TestFunction = {\r\nparam0 = _this select 0;\r\nparam1 = _this select 1;\r\nreturn true;\r\n};\r\n"
+	want := "TestFunction = {\r\nparams [\"param0\",\"param1\"];\r\nreturn true;\r\n};\r\n"
 
 	equal(t, got, want)
 }
@@ -85,7 +85,7 @@ func TestParserExpression2(t *testing.T) {
 
 func TestParserFunctionCall(t *testing.T) {
 	got := getCompiled(t, "test/parser_func_call.asl")
-	want := "myFunc = {\r\na = _this select 0;\r\nb = _this select 1;\r\nreturn a>b;\r\n};\r\n[1+3/4, 2-(66*22)/3-((123))] call myFunc;\r\n"
+	want := "myFunc = {\r\nparams [\"a\",\"b\"];\r\nreturn a>b;\r\n};\r\n[1+3/4, 2-(66*22)/3-((123))] call myFunc;\r\n"
 
 	equal(t, got, want)
 }
@@ -135,6 +135,13 @@ func TestParserWaitUntil(t *testing.T) {
 func TestParserArray(t *testing.T) {
 	got := getCompiled(t, "test/parser_array.asl")
 	want := "x = [1,2,3];\r\ny = (x select (1));\r\n"
+
+	equal(t, got, want)
+}
+
+func TestParserFunctionParams(t *testing.T) {
+	got := getCompiled(t, "test/parser_func_params.asl")
+	want := "myFunc = {\r\nparams [[\"a\",1],[\"b\",2]];\r\nreturn a+b;\r\n};\r\n"
 
 	equal(t, got, want)
 }
