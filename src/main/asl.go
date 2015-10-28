@@ -22,6 +22,7 @@ type ASLFile struct {
 var recursive bool = false
 var pretty bool = false
 var exit bool = false
+var function bool = false
 var aslFiles []ASLFile
 var inDir string
 
@@ -44,6 +45,8 @@ func flags(flag string) bool {
             exit = true
         } else if flag == "-r" {
             recursive = true
+        } else if flag == "-f" {
+            function = true
         } else if flag == "-pretty" {
             pretty = true
         } else if flag == "--help" {
@@ -75,8 +78,12 @@ func readAslFiles(path string) {
 
         if !dir[i].IsDir() && strings.ToLower(filepath.Ext(name)) == extension {
             in := filepath.FromSlash(path+"/"+dir[i].Name())
+            newname := name[:len(name)-len(filepath.Ext(name))]
+
             out := filepath.FromSlash("./"+path[len(inDir):len(path)])
-            newname := name[:len(name)-len(filepath.Ext(name))] 
+            if function {
+                out = filepath.FromSlash("./functions/"+path[len(inDir):len(path)])
+            }   
             
             file := ASLFile{in, out, newname}
             aslFiles = append(aslFiles, file)
@@ -86,10 +93,13 @@ func readAslFiles(path string) {
 
 func compile(path string) {
     for i := 0; i < len(aslFiles); i++ {
-        out := filepath.FromSlash(path+"/"+aslFiles[i].out+"/"+aslFiles[i].newname+sqfextension)
+        out := filepath.FromSlash(path+aslFiles[i].out+aslFiles[i].newname+sqfextension)
+        if function {
+            out = filepath.FromSlash(path+aslFiles[i].out+"fn_"+aslFiles[i].newname+sqfextension)
+        }
+        
         fmt.Println(aslFiles[i].in+" -> "+out)
         code, err := ioutil.ReadFile(aslFiles[i].in)
-        
         if err != nil {
             fmt.Println("Error reading file: "+aslFiles[i].in)
             continue
@@ -105,7 +115,19 @@ func compile(path string) {
     	    fmt.Println("Error writing file: "+aslFiles[i].out)
     	    fmt.Println(err)
     	}
+    }    
+}
+
+func functions(path, functionName string) {
+    functionText := "//class cfgFunctions {\r\nclass "+functionName+" {\r\n    class "+functionName+" {\n"
+
+    for i := 0; i < len(aslFiles); i++ {
+        functionText +="        class "+aslFiles[i].newname+";\n"
     }
+
+    functionText +="    }\r\n}\r\n//}"
+    ioutil.WriteFile(filepath.FromSlash(path+"/"+"functions.hpp"), []byte(functionText), 0666)
+    fmt.Println("functions"+" -> "+path+"\\"+"functions.hpp")
 }
 
 func main() {
@@ -126,7 +148,7 @@ func main() {
 	
 	// in/out parameter
 	out := ""
-	
+
 	if i < len(args) {
 	    inDir = args[i]
 	    i++
@@ -136,8 +158,24 @@ func main() {
 	
 	if i < len(args) {
 	    out = args[i]
+        i++
 	}
 	
 	readAslFiles(inDir)
-	compile(out)
+
+    if len(aslFiles) > 0 {
+        compile(out)
+    } else {
+        fmt.Println("No asl files found from "+inDir)
+        return
+    }
+	
+    if function {
+        functionName := "asl"
+        if i < len(args) {
+            functionName = args[i]
+        }
+
+        functions(out, functionName)
+    }
 }

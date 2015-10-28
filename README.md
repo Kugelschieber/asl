@@ -17,17 +17,19 @@ Main reasons for ASL:
 ASL is a command line tool. After you have downloaded it, navigation to the binary and execute it:
 
 ```
-asl [-v|-r|-pretty|--help] <input directory> <output directory>
+asl [-v|-r|-f|-pretty|--help] <input directory> <output directory> <function name>
 ```
 
 | Parameter | Optional/Required | Meaning |
 | --------- | ----------------- | ------- |
 | -v | optional | Shows ASL version. |
 | -r | optional | Read input directory recursively. |
+| -f | optional | Output SQF as function library |
 | -pretty | optional | Enable pretty printing to SQF. |
 | --help | optional | Show usage. |
 | input directory | required | Directory to read ASL files from (use ./ for relative paths). |
 | output directory | required | Directory for SQF output. Can be the same as input directory (use ./ for relative paths). |
+| function name | optional | Name of function for function library (default "asl") |
 
 **Example:**
 
