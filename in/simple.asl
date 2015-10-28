@@ -1,1 +1,1 @@
-var inline_code = code("var x = 5;");
+var inline_code = code("");

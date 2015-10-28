@@ -205,6 +205,7 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 | catch |
 | exitwith |
 | waituntil |
+| code |
 
 ## What's missing?
 

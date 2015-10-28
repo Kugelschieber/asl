@@ -4,8 +4,6 @@ import (
 	
 )
 
-const TAB = "    "
-
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
 func Parse(token []Token, prettyPrinting bool) string {
@@ -290,6 +288,23 @@ func parseWaitUntil() {
     appendOut("};", true)
 }
 
+func parseInlineCode() string {
+    expect("code")
+    expect("(")
+    
+    code := get().token
+    next()
+    output := "{}"
+    
+    if len(code) > 2 {
+        output = "{"+Parse(Tokenize([]byte(code[1:len(code)-1])), pretty)+"}"
+    }
+    
+    expect(")")
+    
+    return output
+}
+
 // Everything that does not start with a keyword.
 func parseStatement() {
 	// empty block
@@ -426,7 +441,9 @@ func parseExpression(out bool) string {
 func parseIdentifier() string {
 	output := ""
 
-	if seek("(") && !accept("!") && !accept("-") {
+	if accept("code") {
+	    output += parseInlineCode()
+	} else if seek("(") && !accept("!") && !accept("-") {
 		name := get().token
 		next()
 		output = "(" + parseFunctionCall(false, name) + ")"
