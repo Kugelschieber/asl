@@ -1,4 +1,1 @@
-switch x {
-    case 1:
-        x = 1;
-}
+var inline_code = code("var x = 5;");

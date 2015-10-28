@@ -77,6 +77,14 @@ func TestTokenizerIdentifier(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
+func TestTokenizerInlineCode(t *testing.T) {
+	got := getTokens(t, "test/tokenizer_code.asl")
+	want := []string{"var", "x", "=", "code", "(", "\"var x = 5;\"", ")", ";"}
+
+	compareLength(t, &got, &want)
+	compareTokens(t, &got, &want)
+}
+
 func compareLength(t *testing.T, got *[]Token, want *[]string) {
 	if len(*got) != len(*want) {
 		t.Error("Length of tokens got and expected tokens not equal, was:")

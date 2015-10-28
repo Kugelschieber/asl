@@ -171,6 +171,18 @@ waitUntil {condition};
 waitUntil {expression;condition};
 ```
 
+**code**
+
+The code function is used to compile inline code. This does **not** replace SQF compile buildin function, but will return the contained ASL code as SQF.
+
+```
+// input:
+var x = code("var y = 5;"); // pass as string
+
+// output:
+x = {y = 5;};
+```
+
 ## List of all keywords
 
 Keywords should not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in function names should not be used neither.
