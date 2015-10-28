@@ -1,6 +1,4 @@
-var array = [1, 2, 3];
-var x = array[0];
-
-if array[(1-1)+10/10] == 2 {
-    foo();
+switch x {
+    case 1:
+        x = 1;
 }

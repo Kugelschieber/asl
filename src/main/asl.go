@@ -22,11 +22,13 @@ type ASLFile struct {
     newname string
 }
 
-var recursive bool = false
-var pretty bool = false
-var exit bool = false
-var aslFiles []ASLFile
-var inDir string
+var (
+    recursive bool = false
+    pretty bool = false
+    exit bool = false
+    aslFiles []ASLFile
+    inDir string
+)
 
 func usage() {
 	fmt.Println("Usage: asl [-v|-r|-pretty|--help] <input directory> <output directory>\n")

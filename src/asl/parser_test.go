@@ -49,7 +49,10 @@ func TestParserForeach(t *testing.T) {
 }
 
 func TestParserSwitch(t *testing.T) {
-
+    got := getCompiled(t, "test/tokenizer_switch.asl")
+	want := "switch (x) do {\r\ncase 1:\r\n{\r\nx = 1;\r\n};\r\ncase 2:\r\n{\r\nx = 2;\r\n};\r\ndefault:\r\n{\r\nx = 3;\r\n};\r\n};\r\n"
+	
+	equal(t, got, want)
 }
 
 func TestParserFunction(t *testing.T) {

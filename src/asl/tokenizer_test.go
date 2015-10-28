@@ -47,7 +47,7 @@ func TestTokenizerForach(t *testing.T) {
 
 func TestTokenizerSwitch(t *testing.T) {
 	got := getTokens(t, "test/tokenizer_switch.asl")
-	want := []string{"switch", "x", "{", "case", "1", ":", "x", "=", "1", ";", "break", ";", "case", "2", ":", "x", "=", "2", ";", "break", ";", "default", ":", "x", "=", "3", ";", "}"}
+	want := []string{"switch", "x", "{", "case", "1", ":", "x", "=", "1", ";", "case", "2", ":", "x", "=", "2", ";", "default", ":", "x", "=", "3", ";", "}"}
 
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)

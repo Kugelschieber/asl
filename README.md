@@ -90,13 +90,11 @@ each allUnits { // foreach, iterates over all units in this case
     // element is available as _x here
 }
 
-switch x {
+switch x { // there is no "break" in SQF
     case 1:
         // ...
-        break;
     case 2:
         // ...
-        break;
     default:
         // ...
 }
