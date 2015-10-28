@@ -9,9 +9,12 @@ import (
 	"strings"
 )
 
-const version = "1.0.0"
-const extension = ".asl"
-const sqfextension = ".sqf"
+const (
+    version = "1.0.0"
+    extension = ".asl"
+    sqfextension = ".sqf"
+    PathSeparator = string(os.PathSeparator)
+)
 
 type ASLFile struct {
     in string
@@ -69,12 +72,12 @@ func readAslFiles(path string) {
         name := dir[i].Name()
         
         if dir[i].IsDir() && recursive {
-            readAslFiles(filepath.FromSlash(path+"/"+name))
+            readAslFiles(filepath.FromSlash(path+PathSeparator+name))
             continue
         }
 
         if !dir[i].IsDir() && strings.ToLower(filepath.Ext(name)) == extension {
-            in := filepath.FromSlash(path+"/"+dir[i].Name())
+            in := filepath.FromSlash(path+PathSeparator+dir[i].Name())
             out := filepath.FromSlash("./"+path[len(inDir):len(path)])
             newname := name[:len(name)-len(filepath.Ext(name))] 
             
@@ -86,7 +89,7 @@ func readAslFiles(path string) {
 
 func compile(path string) {
     for i := 0; i < len(aslFiles); i++ {
-        out := filepath.FromSlash(path+"/"+aslFiles[i].out+"/"+aslFiles[i].newname+sqfextension)
+        out := filepath.FromSlash(path+PathSeparator+aslFiles[i].out+PathSeparator+aslFiles[i].newname+sqfextension)
         fmt.Println(aslFiles[i].in+" -> "+out)
         code, err := ioutil.ReadFile(aslFiles[i].in)
         
@@ -98,7 +101,7 @@ func compile(path string) {
     	token := asl.Tokenize(code)
     	sqf := asl.Parse(token, pretty)
     	
-    	os.MkdirAll(filepath.FromSlash(path+"/"+aslFiles[i].out), 0777)
+    	os.MkdirAll(filepath.FromSlash(path+PathSeparator+aslFiles[i].out), 0777)
     	err = ioutil.WriteFile(out, []byte(sqf), 0666)
     	
     	if err != nil {
