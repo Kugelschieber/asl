@@ -101,7 +101,8 @@ func compile(path string) {
         }
         
     	token := asl.Tokenize(code)
-    	sqf := asl.Parse(token, pretty)
+    	compiler := asl.Compiler{}
+    	sqf := compiler.Parse(token, pretty)
     	
     	os.MkdirAll(filepath.FromSlash(path+PathSeparator+aslFiles[i].out), 0777)
     	err = ioutil.WriteFile(out, []byte(sqf), 0666)

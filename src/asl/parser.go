@@ -6,350 +6,350 @@ import (
 
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
-func Parse(token []Token, prettyPrinting bool) string {
-	if !initParser(token, prettyPrinting) {
+func (c *Compiler) Parse(token []Token, prettyPrinting bool) string {
+	if !c.initParser(token, prettyPrinting) {
 	    return ""
 	}
 
-	for tokenIndex < len(token) {
-		parseBlock()
+	for c.tokenIndex < len(token) {
+		c.parseBlock()
 	}
 
-	return out
+	return c.out
 }
 
-func parseBlock() {
-	if accept("var") {
-		parseVar()
-	} else if accept("if") {
-		parseIf()
-	} else if accept("while") {
-		parseWhile()
-	} else if accept("switch") {
-		parseSwitch()
-	} else if accept("for") {
-		parseFor()
-	} else if accept("foreach") {
-		parseForeach()
-	} else if accept("func") {
-		parseFunction()
-	} else if accept("return") {
-		parseReturn()
-	} else if accept("try") {
-		parseTryCatch()
-	} else if accept("exitwith") {
-	    parseExitWith()
-	} else if accept("waituntil") {
-	    parseWaitUntil()
-	} else if accept("case") || accept("default") {
+func (c *Compiler) parseBlock() {
+	if c.accept("var") {
+		c.parseVar()
+	} else if c.accept("if") {
+		c.parseIf()
+	} else if c.accept("while") {
+		c.parseWhile()
+	} else if c.accept("switch") {
+		c.parseSwitch()
+	} else if c.accept("for") {
+		c.parseFor()
+	} else if c.accept("foreach") {
+		c.parseForeach()
+	} else if c.accept("func") {
+		c.parseFunction()
+	} else if c.accept("return") {
+		c.parseReturn()
+	} else if c.accept("try") {
+		c.parseTryCatch()
+	} else if c.accept("exitwith") {
+	    c.parseExitWith()
+	} else if c.accept("waituntil") {
+	    c.parseWaitUntil()
+	} else if c.accept("case") || c.accept("default") {
 		return
 	} else {
-		parseStatement()
+		c.parseStatement()
 	}
 
-	if !end() && !accept("}") {
-		parseBlock()
+	if !c.end() && !c.accept("}") {
+		c.parseBlock()
 	}
 }
 
-func parseVar() {
-	expect("var")
-	appendOut(get().token, false)
-	next()
+func (c *Compiler) parseVar() {
+	c.expect("var")
+	c.appendOut(c.get().token, false)
+	c.next()
 
-	if accept("=") {
-		next()
-		appendOut(" = ", false)
+	if c.accept("=") {
+		c.next()
+		c.appendOut(" = ", false)
 
-		if accept("[") {
-			parseArray()
+		if c.accept("[") {
+			c.parseArray()
 		} else {
-			parseExpression(true)
+			c.parseExpression(true)
 		}
 	}
 
-	expect(";")
-	appendOut(";", true)
+	c.expect(";")
+	c.appendOut(";", true)
 }
 
-func parseArray() {
-	expect("[")
-	appendOut("[", false)
+func (c *Compiler) parseArray() {
+	c.expect("[")
+	c.appendOut("[", false)
 
-	if !accept("]") {
-		parseExpression(true)
+	if !c.accept("]") {
+		c.parseExpression(true)
 
-		for accept(",") {
-			next()
-			appendOut(",", false)
-			parseExpression(true)
+		for c.accept(",") {
+			c.next()
+			c.appendOut(",", false)
+			c.parseExpression(true)
 		}
 	}
 
-	expect("]")
-	appendOut("]", false)
+	c.expect("]")
+	c.appendOut("]", false)
 }
 
-func parseIf() {
-	expect("if")
-	appendOut("if (", false)
-	parseExpression(true)
-	appendOut(") then {", true)
-	expect("{")
-	parseBlock()
-	expect("}")
+func (c *Compiler) parseIf() {
+	c.expect("if")
+	c.appendOut("if (", false)
+	c.parseExpression(true)
+	c.appendOut(") then {", true)
+	c.expect("{")
+	c.parseBlock()
+	c.expect("}")
 
-	if accept("else") {
-		next()
-		expect("{")
-		appendOut("} else {", true)
-		parseBlock()
-		expect("}")
+	if c.accept("else") {
+		c.next()
+		c.expect("{")
+		c.appendOut("} else {", true)
+		c.parseBlock()
+		c.expect("}")
 	}
 
-	appendOut("};", true)
+	c.appendOut("};", true)
 }
 
-func parseWhile() {
-	expect("while")
-	appendOut("while {", false)
-	parseExpression(true)
-	appendOut("} do {", true)
-	expect("{")
-	parseBlock()
-	expect("}")
-	appendOut("};", false)
+func (c *Compiler) parseWhile() {
+	c.expect("while")
+	c.appendOut("while {", false)
+	c.parseExpression(true)
+	c.appendOut("} do {", true)
+	c.expect("{")
+	c.parseBlock()
+	c.expect("}")
+	c.appendOut("};", false)
 }
 
-func parseSwitch() {
-	expect("switch")
-	appendOut("switch (", false)
-	parseExpression(true)
-	appendOut(") do {", true)
-	expect("{")
-	parseSwitchBlock()
-	expect("}")
-	appendOut("};", true)
+func (c *Compiler) parseSwitch() {
+	c.expect("switch")
+	c.appendOut("switch (", false)
+	c.parseExpression(true)
+	c.appendOut(") do {", true)
+	c.expect("{")
+	c.parseSwitchBlock()
+	c.expect("}")
+	c.appendOut("};", true)
 }
 
-func parseSwitchBlock() {
-	if accept("}") {
+func (c *Compiler) parseSwitchBlock() {
+	if c.accept("}") {
 		return
 	}
 
-	if accept("case") {
-		next()
-		appendOut("case ", false)
-		parseExpression(true)
-		expect(":")
-		appendOut(":", true)
+	if c.accept("case") {
+		c.next()
+		c.appendOut("case ", false)
+		c.parseExpression(true)
+		c.expect(":")
+		c.appendOut(":", true)
 
-		if !accept("case") && !accept("}") && !accept("default") {
-			appendOut("{", true)
-			parseBlock()
-			appendOut("};", true)
+		if !c.accept("case") && !c.accept("}") && !c.accept("default") {
+			c.appendOut("{", true)
+			c.parseBlock()
+			c.appendOut("};", true)
 		}
-	} else if accept("default") {
-		next()
-		expect(":")
-		appendOut("default:", true)
+	} else if c.accept("default") {
+		c.next()
+		c.expect(":")
+		c.appendOut("default:", true)
 
-		if !accept("}") {
-			appendOut("{", true)
-			parseBlock()
-			appendOut("};", true)
+		if !c.accept("}") {
+			c.appendOut("{", true)
+			c.parseBlock()
+			c.appendOut("};", true)
 		}
 	}
 
-	parseSwitchBlock()
+	c.parseSwitchBlock()
 }
 
-func parseFor() {
-	expect("for")
-	appendOut("for [{", false)
+func (c *Compiler) parseFor() {
+	c.expect("for")
+	c.appendOut("for [{", false)
 
 	// var in first assignment is optional
-	if accept("var") {
-		next()
+	if c.accept("var") {
+		c.next()
 	}
 
-	parseExpression(true)
-	expect(";")
-	appendOut("}, {", false)
-	parseExpression(true)
-	expect(";")
-	appendOut("}, {", false)
-	parseExpression(true)
-	appendOut("}] do {", true)
-	expect("{")
-	parseBlock()
-	expect("}")
-	appendOut("};", true)
+	c.parseExpression(true)
+	c.expect(";")
+	c.appendOut("}, {", false)
+	c.parseExpression(true)
+	c.expect(";")
+	c.appendOut("}, {", false)
+	c.parseExpression(true)
+	c.appendOut("}] do {", true)
+	c.expect("{")
+	c.parseBlock()
+	c.expect("}")
+	c.appendOut("};", true)
 }
 
-func parseForeach() {
-	expect("foreach")
-	expr := parseExpression(false)
-	expect("{")
-	appendOut("{", true)
-	parseBlock()
-	expect("}")
-	appendOut("} forEach ("+expr+");", true)
+func (c *Compiler) parseForeach() {
+	c.expect("foreach")
+	expr := c.parseExpression(false)
+	c.expect("{")
+	c.appendOut("{", true)
+	c.parseBlock()
+	c.expect("}")
+	c.appendOut("} forEach ("+expr+");", true)
 }
 
-func parseFunction() {
-	expect("func")
-	appendOut(get().token+" = {", true)
-	next()
-	expect("(")
-	parseFunctionParameter()
-	expect(")")
-	expect("{")
-	parseBlock()
-	expect("}")
-	appendOut("};", true)
+func (c *Compiler) parseFunction() {
+	c.expect("func")
+	c.appendOut(c.get().token+" = {", true)
+	c.next()
+	c.expect("(")
+	c.parseFunctionParameter()
+	c.expect(")")
+	c.expect("{")
+	c.parseBlock()
+	c.expect("}")
+	c.appendOut("};", true)
 }
 
-func parseFunctionParameter() {
+func (c *Compiler) parseFunctionParameter() {
 	// empty parameter list
-	if accept("{") {
+	if c.accept("{") {
 		return
 	}
 	
-	appendOut("params [", false)
+	c.appendOut("params [", false)
 
-	for !accept(")") {
-		name := get().token
-		next()
+	for !c.accept(")") {
+		name := c.get().token
+		c.next()
 		
-		if accept("=") {
-		    next()
-		    value := get().token
-		    next()
-		    appendOut("[\""+name+"\","+value+"]", false)
+		if c.accept("=") {
+		    c.next()
+		    value := c.get().token
+		    c.next()
+		    c.appendOut("[\""+name+"\","+value+"]", false)
 		} else {
-		    appendOut("\""+name+"\"", false)
+		    c.appendOut("\""+name+"\"", false)
 		}
 
-		if !accept(")") {
-			expect(",")
-			appendOut(",", false)
+		if !c.accept(")") {
+			c.expect(",")
+			c.appendOut(",", false)
 		}
 	}
 	
-	appendOut("];", true)
+	c.appendOut("];", true)
 }
 
-func parseReturn() {
-	expect("return")
-	appendOut("return ", false)
-	parseExpression(true)
-	expect(";")
-	appendOut(";", true)
+func (c *Compiler) parseReturn() {
+	c.expect("return")
+	c.appendOut("return ", false)
+	c.parseExpression(true)
+	c.expect(";")
+	c.appendOut(";", true)
 }
 
-func parseTryCatch() {
-	expect("try")
-	expect("{")
-	appendOut("try {", true)
-	parseBlock()
-	expect("}")
-	expect("catch")
-	expect("{")
-	appendOut("} catch {", true)
-	parseBlock()
-	expect("}")
-	appendOut("};", true)
+func (c *Compiler) parseTryCatch() {
+	c.expect("try")
+	c.expect("{")
+	c.appendOut("try {", true)
+	c.parseBlock()
+	c.expect("}")
+	c.expect("catch")
+	c.expect("{")
+	c.appendOut("} catch {", true)
+	c.parseBlock()
+	c.expect("}")
+	c.appendOut("};", true)
 }
 
-func parseExitWith() {
-    expect("exitwith")
-    expect("{")
-    appendOut("if (true) exitWith {", true)
-    parseBlock()
-    expect("}")
-    appendOut("};", true)
+func (c *Compiler) parseExitWith() {
+    c.expect("exitwith")
+    c.expect("{")
+    c.appendOut("if (true) exitWith {", true)
+    c.parseBlock()
+    c.expect("}")
+    c.appendOut("};", true)
 }
 
-func parseWaitUntil() {
-    expect("waituntil")
-    expect("(")
-    appendOut("waitUntil {", false)
-    parseExpression(true)
+func (c *Compiler) parseWaitUntil() {
+    c.expect("waituntil")
+    c.expect("(")
+    c.appendOut("waitUntil {", false)
+    c.parseExpression(true)
     
-    if accept(";") {
-        next()
-        appendOut(";", false)
-        parseExpression(true)
+    if c.accept(";") {
+        c.next()
+        c.appendOut(";", false)
+        c.parseExpression(true)
     }
     
-    expect(")")
-    expect(";")
-    appendOut("};", true)
+    c.expect(")")
+    c.expect(";")
+    c.appendOut("};", true)
 }
 
-func parseInlineCode() string {
-    expect("code")
-    expect("(")
+func (c *Compiler) parseInlineCode() string {
+    c.expect("code")
+    c.expect("(")
     
-    code := get().token
-    next()
+    code := c.get().token
+    c.next()
     output := "{}"
     
     if len(code) > 2 {
-        output = "{"+Parse(Tokenize([]byte(code[1:len(code)-1])), pretty)+"}"
+        //output = "{"+Parse(Tokenize([]byte(code[1:len(code)-1])), pretty)+"}"
     }
     
-    expect(")")
+    c.expect(")")
     
     return output
 }
 
 // Everything that does not start with a keyword.
-func parseStatement() {
+func (c *Compiler) parseStatement() {
 	// empty block
-	if accept("}") || accept("case") || accept("default") {
+	if c.accept("}") || c.accept("case") || c.accept("default") {
 		return
 	}
 
 	// variable or function name
-	name := get().token
-	next()
+	name := c.get().token
+	c.next()
 
-	if accept("=") {
-		appendOut(name, false)
-		parseAssignment()
+	if c.accept("=") {
+		c.appendOut(name, false)
+		c.parseAssignment()
 	} else {
-		parseFunctionCall(true, name)
-		expect(";")
-		appendOut(";", true)
+		c.parseFunctionCall(true, name)
+		c.expect(";")
+		c.appendOut(";", true)
 	}
 
-	if !end() {
-		parseBlock()
+	if !c.end() {
+		c.parseBlock()
 	}
 }
 
-func parseAssignment() {
-	expect("=")
-	appendOut(" = ", false)
-	parseExpression(true)
-	expect(";")
-	appendOut(";", true)
+func (c *Compiler) parseAssignment() {
+	c.expect("=")
+	c.appendOut(" = ", false)
+	c.parseExpression(true)
+	c.expect(";")
+	c.appendOut(";", true)
 }
 
-func parseFunctionCall(out bool, name string) string {
+func (c *Compiler) parseFunctionCall(out bool, name string) string {
 	output := ""
 
-	expect("(")
-	leftParams, leftParamCount := parseParameter(false)
-	expect(")")
+	c.expect("(")
+	leftParams, leftParamCount := c.parseParameter(false)
+	c.expect(")")
 
-	if accept("(") {
+	if c.accept("(") {
 		// buildin function
-		next()
-		rightParams, rightParamCount := parseParameter(false)
-		expect(")")
+		c.next()
+		rightParams, rightParamCount := c.parseParameter(false)
+		c.expect(")")
 
 		if leftParamCount > 1 {
 			leftParams = "[" + leftParams + "]"
@@ -369,143 +369,143 @@ func parseFunctionCall(out bool, name string) string {
 	}
 
 	if out {
-		appendOut(output, false)
+		c.appendOut(output, false)
 	}
 
 	return output
 }
 
-func parseParameter(out bool) (string, int) {
+func (c *Compiler) parseParameter(out bool) (string, int) {
 	output := ""
 	count := 0
 
-	for !accept(")") {
-		output += parseExpression(out)
+	for !c.accept(")") {
+		output += c.parseExpression(out)
 		count++
 
-		if !accept(")") {
-			expect(",")
+		if !c.accept(")") {
+			c.expect(",")
 			output += ", "
 		}
 	}
 
 	if out {
-		appendOut(output, false)
+		c.appendOut(output, false)
 	}
 
 	return output, count
 }
 
-func parseExpression(out bool) string {
-	output := parseArith()
+func (c *Compiler) parseExpression(out bool) string {
+	output := c.parseArith()
 
-	for accept("<") || accept(">") || accept("&") || accept("|") || accept("=") || accept("!") {
-		if accept("<") {
+	for c.accept("<") || c.accept(">") || c.accept("&") || c.accept("|") || c.accept("=") || c.accept("!") {
+		if c.accept("<") {
 			output += "<"
-			next()
-		} else if accept(">") {
+			c.next()
+		} else if c.accept(">") {
 			output += ">"
-			next()
-		} else if accept("&") {
-			next()
-			expect("&")
+			c.next()
+		} else if c.accept("&") {
+			c.next()
+			c.expect("&")
 			output += "&&"
-		} else if accept("|") {
-			next()
-			expect("|")
+		} else if c.accept("|") {
+			c.next()
+			c.expect("|")
 			output += "||"
-		} else if accept("=") {
+		} else if c.accept("=") {
 			output += "="
-			next()
+			c.next()
 		} else {
-			next()
-			expect("=")
+			c.next()
+			c.expect("=")
 			output += "!="
 		}
 
-		if accept("=") {
+		if c.accept("=") {
 			output += "="
-			next()
+			c.next()
 		}
 
-		output += parseExpression(false)
+		output += c.parseExpression(false)
 	}
 
 	if out {
-		appendOut(output, false)
+		c.appendOut(output, false)
 	}
 
 	return output
 }
 
-func parseIdentifier() string {
+func (c *Compiler) parseIdentifier() string {
 	output := ""
 
-	if accept("code") {
-	    output += parseInlineCode()
-	} else if seek("(") && !accept("!") && !accept("-") {
-		name := get().token
-		next()
-		output = "(" + parseFunctionCall(false, name) + ")"
-	} else if seek("[") {
-	    output += "("+get().token
-	    next()
-	    expect("[")
-	    output += " select ("+parseExpression(false)+"))"
-	    expect("]")
-	} else if accept("!") || accept("-") {
-		output = get().token
-		next()
-		output += parseTerm()
+	if c.accept("code") {
+	    output += c.parseInlineCode()
+	} else if c.seek("(") && !c.accept("!") && !c.accept("-") {
+		name := c.get().token
+		c.next()
+		output = "(" + c.parseFunctionCall(false, name) + ")"
+	} else if c.seek("[") {
+	    output += "("+c.get().token
+	    c.next()
+	    c.expect("[")
+	    output += " select ("+c.parseExpression(false)+"))"
+	    c.expect("]")
+	} else if c.accept("!") || c.accept("-") {
+		output = c.get().token
+		c.next()
+		output += c.parseTerm()
 	} else {
-		output = get().token
-		next()
+		output = c.get().token
+		c.next()
 	}
 
 	return output
 }
 
-func parseTerm() string {
-	if accept("(") {
-		expect("(")
-		output := "(" + parseExpression(false) + ")"
-		expect(")")
+func (c *Compiler) parseTerm() string {
+	if c.accept("(") {
+		c.expect("(")
+		output := "(" + c.parseExpression(false) + ")"
+		c.expect(")")
 
 		return output
 	}
 
-	return parseIdentifier()
+	return c.parseIdentifier()
 }
 
-func parseFactor() string {
-	output := parseTerm()
+func (c *Compiler) parseFactor() string {
+	output := c.parseTerm()
 
-	for accept("*") || accept("/") { // TODO: modulo?
-		if accept("*") {
+	for c.accept("*") || c.accept("/") { // TODO: modulo?
+		if c.accept("*") {
 			output += "*"
 		} else {
 			output += "/"
 		}
 
-		next()
-		output += parseExpression(false)
+		c.next()
+		output += c.parseExpression(false)
 	}
 
 	return output
 }
 
-func parseArith() string {
-	output := parseFactor()
+func (c *Compiler) parseArith() string {
+	output := c.parseFactor()
 
-	for accept("+") || accept("-") {
-		if accept("+") {
+	for c.accept("+") || c.accept("-") {
+		if c.accept("+") {
 			output += "+"
 		} else {
 			output += "-"
 		}
 
-		next()
-		output += parseExpression(false)
+		c.next()
+		output += c.parseExpression(false)
 	}
 
 	return output

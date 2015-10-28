@@ -155,8 +155,9 @@ func getCompiled(t *testing.T, file string) string {
 	}
 
 	tokens := asl.Tokenize(code)
+	compiler := asl.Compiler{}
 
-	return asl.Parse(tokens, true)
+	return compiler.Parse(tokens, true)
 }
 
 func equal(t *testing.T, got, want string) {
