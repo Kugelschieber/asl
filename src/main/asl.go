@@ -119,13 +119,13 @@ func compile(path string) {
 }
 
 func functions(path, functionName string) {
-    functionText := "//class cfgFunctions {\nclass "+functionName+" {\n    class "+functionName+" {\n"
+    functionText := "//class cfgFunctions {\r\nclass "+functionName+" {\r\n    class "+functionName+" {\n"
 
     for i := 0; i < len(aslFiles); i++ {
         functionText +="        class "+aslFiles[i].newname+";\n"
     }
 
-    functionText +="    }\n}\n//}"
+    functionText +="    }\r\n}\r\n//}"
     ioutil.WriteFile(filepath.FromSlash(path+"/"+"functions.hpp"), []byte(functionText), 0666)
     fmt.Println("functions"+" -> "+path+"\\"+"functions.hpp")
 }
