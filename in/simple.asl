@@ -1,3 +1,0 @@
-func myFunc(a, b) {
-
-}
