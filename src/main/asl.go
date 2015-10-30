@@ -1,4 +1,4 @@
-package asl
+package main
 
 import (
 	"parser"
