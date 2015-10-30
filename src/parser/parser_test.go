@@ -1,7 +1,8 @@
-package asl_test
+package parser_test
 
 import (
-	"asl"
+    "tokenizer"
+	"parser"
 	"io/ioutil"
 	"testing"
 )
@@ -161,8 +162,8 @@ func getCompiled(t *testing.T, file string) string {
 		t.FailNow()
 	}
 
-	tokens := asl.Tokenize(code)
-	compiler := asl.Compiler{}
+	tokens := tokenizer.Tokenize(code)
+	compiler := parser.Compiler{}
 
 	return compiler.Parse(tokens, true)
 }

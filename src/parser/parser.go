@@ -1,12 +1,12 @@
-package asl
+package parser
 
 import (
-	
+	"tokenizer"
 )
 
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
-func (c *Compiler) Parse(token []Token, prettyPrinting bool) string {
+func (c *Compiler) Parse(token []tokenizer.Token, prettyPrinting bool) string {
 	if !c.initParser(token, prettyPrinting) {
 	    return ""
 	}
@@ -54,7 +54,7 @@ func (c *Compiler) parseBlock() {
 
 func (c *Compiler) parseVar() {
 	c.expect("var")
-	c.appendOut(c.get().token, false)
+	c.appendOut(c.get().Token, false)
 	c.next()
 
 	if c.accept("=") {
@@ -199,7 +199,7 @@ func (c *Compiler) parseForeach() {
 
 func (c *Compiler) parseFunction() {
 	c.expect("func")
-	c.appendOut(c.get().token+" = {", true)
+	c.appendOut(c.get().Token+" = {", true)
 	c.next()
 	c.expect("(")
 	c.parseFunctionParameter()
@@ -219,12 +219,12 @@ func (c *Compiler) parseFunctionParameter() {
 	c.appendOut("params [", false)
 
 	for !c.accept(")") {
-		name := c.get().token
+		name := c.get().Token
 		c.next()
 		
 		if c.accept("=") {
 		    c.next()
-		    value := c.get().token
+		    value := c.get().Token
 		    c.next()
 		    c.appendOut("[\""+name+"\","+value+"]", false)
 		} else {
@@ -292,13 +292,13 @@ func (c *Compiler) parseInlineCode() string {
     c.expect("code")
     c.expect("(")
     
-    code := c.get().token
+    code := c.get().Token
     c.next()
     output := "{}"
     
     if len(code) > 2 {
         compiler := Compiler{}
-        output = "{"+compiler.Parse(Tokenize([]byte(code[1:len(code)-1])), false)+"}"
+        output = "{"+compiler.Parse(tokenizer.Tokenize([]byte(code[1:len(code)-1])), false)+"}"
     }
     
     c.expect(")")
@@ -314,7 +314,7 @@ func (c *Compiler) parseStatement() {
 	}
 
 	// variable or function name
-	name := c.get().token
+	name := c.get().Token
 	c.next()
 
 	if c.accept("=") {
@@ -445,21 +445,21 @@ func (c *Compiler) parseIdentifier() string {
 	if c.accept("code") {
 	    output += c.parseInlineCode()
 	} else if c.seek("(") && !c.accept("!") && !c.accept("-") {
-		name := c.get().token
+		name := c.get().Token
 		c.next()
 		output = "(" + c.parseFunctionCall(false, name) + ")"
 	} else if c.seek("[") {
-	    output += "("+c.get().token
+	    output += "("+c.get().Token
 	    c.next()
 	    c.expect("[")
 	    output += " select ("+c.parseExpression(false)+"))"
 	    c.expect("]")
 	} else if c.accept("!") || c.accept("-") {
-		output = c.get().token
+		output = c.get().Token
 		c.next()
 		output += c.parseTerm()
 	} else {
-		output = c.get().token
+		output = c.get().Token
 		c.next()
 	}
 

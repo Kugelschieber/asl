@@ -1,6 +1,7 @@
-package asl
+package tokenizer_test
 
 import (
+    "tokenizer"
 	"io/ioutil"
 	"testing"
 )
@@ -85,13 +86,13 @@ func TestTokenizerInlineCode(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
-func compareLength(t *testing.T, got *[]Token, want *[]string) {
+func compareLength(t *testing.T, got *[]tokenizer.Token, want *[]string) {
 	if len(*got) != len(*want) {
 		t.Error("Length of tokens got and expected tokens not equal, was:")
 		gotlist, wantlist := "", ""
 
 		for i := range *got {
-			gotlist += (*got)[i].token + " "
+			gotlist += (*got)[i].Token + " "
 		}
 
 		for i := range *want {
@@ -105,15 +106,15 @@ func compareLength(t *testing.T, got *[]Token, want *[]string) {
 	}
 }
 
-func compareTokens(t *testing.T, got *[]Token, want *[]string) {
+func compareTokens(t *testing.T, got *[]tokenizer.Token, want *[]string) {
 	for i := range *got {
-		if (*got)[i].token != (*want)[i] {
-			t.Error("Tokens do not match: " + (*got)[i].token + " != " + (*want)[i])
+		if (*got)[i].Token != (*want)[i] {
+			t.Error("Tokens do not match: " + (*got)[i].Token + " != " + (*want)[i])
 		}
 	}
 }
 
-func getTokens(t *testing.T, file string) []Token {
+func getTokens(t *testing.T, file string) []tokenizer.Token {
 	code, err := ioutil.ReadFile(file)
 
 	if err != nil {
@@ -121,5 +122,5 @@ func getTokens(t *testing.T, file string) []Token {
 		t.FailNow()
 	}
 
-	return Tokenize(code)
+	return tokenizer.Tokenize(code)
 }

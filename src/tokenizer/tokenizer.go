@@ -1,11 +1,11 @@
-package asl
+package tokenizer
 
 import (
 	"strings"
 )
 
 type Token struct {
-	token string
+	Token string
 }
 
 var delimiter = []byte{

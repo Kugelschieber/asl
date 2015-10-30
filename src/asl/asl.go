@@ -1,7 +1,8 @@
-package main
+package asl
 
 import (
-	"asl"
+	"parser"
+	"tokenizer"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -100,8 +101,8 @@ func compile(path string) {
             continue
         }
         
-    	token := asl.Tokenize(code)
-    	compiler := asl.Compiler{}
+    	token := tokenizer.Tokenize(code)
+    	compiler := parser.Compiler{}
     	sqf := compiler.Parse(token, pretty)
     	
     	os.MkdirAll(filepath.FromSlash(path+PathSeparator+aslFiles[i].out), 0777)
