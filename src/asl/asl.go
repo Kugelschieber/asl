@@ -11,7 +11,7 @@ import (
 )
 
 const (
-    version = "1.0.0"
+    version = "1.1.0"
     extension = ".asl"
     sqfextension = ".sqf"
     PathSeparator = string(os.PathSeparator)
