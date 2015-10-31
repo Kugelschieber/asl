@@ -156,7 +156,7 @@ func TestParserInlineCode(t *testing.T) {
 
 func TestParserPreprocessor(t *testing.T) {
 	got := getCompiled(t, "test/tokenizer_preprocessor.asl")
-	want := "#define HELLO_WORLD \"Hello World!\"\r\nhint HELLO_WORLD;\r\n"
+	want := "\r\n#define HELLO_WORLD \"Hello World!\"\r\nhint HELLO_WORLD;\r\n"
 
 	equal(t, got, want)
 }

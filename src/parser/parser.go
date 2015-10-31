@@ -57,8 +57,8 @@ func (c *Compiler) parseBlock() {
 }
 
 func (c *Compiler) parsePreprocessor() {
-    // we definitely want a new line here
-    c.appendOut(c.get().Token+new_line, false)
+    // we definitely want a new line before and after
+    c.appendOut(new_line+c.get().Token+new_line, false)
     c.next()
 }
 

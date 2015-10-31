@@ -196,6 +196,29 @@ var x = code("var y = 5;"); // pass as string
 x = {y = 5;};
 ```
 
+## Preprocessor
+
+The preprocessor works like the original one, with some limitations.
+Please visit the link at the bottom, to read about the preprocessor and how to use it. Generally, preprocessor lines must start with the hash key (#) and must stay in their own line. They are always printed as seperate lines.
+These features are not supported:
+
+* replacing parts of words
+* multi line preprocessor commands
+* __EXEC (not used in SQF anyway)
+
+If you use *__EXEC*, it will be replaced by a function call to it ([] call __EXEC).
+*__LINE__* and *__FILE__* can be used, since they are identifiers:
+
+```
+if __LINE__ == 22 {
+    // ...
+}
+
+if __FILE__ == "myScript.sqf" {
+    // ...
+}
+```
+
 ## List of all keywords
 
 Keywords should not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in function names should not be used neither.
@@ -248,6 +271,7 @@ For further information you can read the SQF tutorial and documentation of scrip
 
 * [Arma Wiki](https://community.bistudio.com/wiki/Main_Page)
 * [Scripting commands](https://community.bistudio.com/wiki/Category:Scripting_Commands_Arma_3)
+* [Scripting preprocessor](https://community.bistudio.com/wiki/PreProcessor_Commands)
 
 ## License
 
