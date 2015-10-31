@@ -154,6 +154,13 @@ func TestParserInlineCode(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserPreprocessor(t *testing.T) {
+	got := getCompiled(t, "test/tokenizer_preprocessor.asl")
+	want := "#define HELLO_WORLD \"Hello World!\"\r\nhint HELLO_WORLD;\r\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 

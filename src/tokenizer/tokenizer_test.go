@@ -86,6 +86,14 @@ func TestTokenizerInlineCode(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
+func TestTokenizerPreprocessor(t *testing.T) {
+	got := getTokens(t, "test/tokenizer_preprocessor.asl")
+	want := []string{"#define HELLO_WORLD \"Hello World!\"", "hint", "(", ")", "(", "HELLO_WORLD", ")", ";"}
+
+	compareLength(t, &got, &want)
+	compareTokens(t, &got, &want)
+}
+
 func compareLength(t *testing.T, got *[]tokenizer.Token, want *[]string) {
 	if len(*got) != len(*want) {
 		t.Error("Length of tokens got and expected tokens not equal, was:")

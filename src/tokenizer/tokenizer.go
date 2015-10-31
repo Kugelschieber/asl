@@ -6,6 +6,7 @@ import (
 
 type Token struct {
 	Token string
+	Preprocessor bool
 }
 
 var delimiter = []byte{
@@ -50,6 +51,8 @@ var keywords = []string{
 
 var whitespace = []byte{' ', '\n', '\t', '\r'}
 var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+var preprocessor = byte('#')
+var new_line = []byte{'\r', '\n'}
 
 // Tokenizes the given byte array into syntax tokens,
 // which can be parsed later.
@@ -58,7 +61,7 @@ func Tokenize(code []byte) []Token {
 	tokens := make([]Token, 0)
 	token, mask, isstring := "", false, false
 
-	for i := range code {
+	for i := 0; i < len(code); i++ {
 		c := code[i]
 
 		// string masks (backslash)
@@ -78,16 +81,19 @@ func Tokenize(code []byte) []Token {
 		if isstring {
 			token += string(c)
 		} else {
-			// delimeter, keyword or variable/expression
-			if byteArrayContains(delimiter, c) {
+			// preprocessor, delimeter, keyword or variable/expression
+			if c == preprocessor {
+			    tokens = append(tokens, preprocessorLine(code, &i))
+			    token = ""
+			} else if byteArrayContains(delimiter, c) {
 				if token != "" {
-					tokens = append(tokens, Token{token})
+					tokens = append(tokens, Token{token, false})
 				}
 
-				tokens = append(tokens, Token{string(c)})
+				tokens = append(tokens, Token{string(c), false})
 				token = ""
 			} else if stringArrayContains(strings.ToLower(token)) && !isIdentifierCharacter(c) {
-				tokens = append(tokens, Token{token})
+				tokens = append(tokens, Token{token, false})
 				token = ""
 			} else if !byteArrayContains(whitespace, c) {
 				token += string(c)
@@ -136,6 +142,35 @@ func removeComments(code []byte) []byte {
 	}
 
 	return newcode[:j]
+}
+
+// Reads preprocessor command until end of line
+func preprocessorLine(code []byte, i *int) Token {
+    c := byte('0')
+    var line string
+    
+    for *i < len(code) {
+        c = code[*i]
+        
+        if byteArrayContains(new_line, c) {
+            break
+        }
+        
+        line += string(c)
+        (*i)++
+    }
+    
+    // read all new line characters (\r and \n)
+    c = code[*i]
+    
+    for byteArrayContains(new_line, c) {
+        (*i)++
+        c = code[*i]
+    }
+    
+    (*i)-- // for will count up 1, so subtract it here
+    
+    return Token{line, true}
 }
 
 // Returns the next character in code starting at i.

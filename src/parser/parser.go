@@ -4,6 +4,8 @@ import (
 	"tokenizer"
 )
 
+const new_line = "\r\n"
+
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
 func (c *Compiler) Parse(token []tokenizer.Token, prettyPrinting bool) string {
@@ -19,7 +21,9 @@ func (c *Compiler) Parse(token []tokenizer.Token, prettyPrinting bool) string {
 }
 
 func (c *Compiler) parseBlock() {
-	if c.accept("var") {
+    if c.get().Preprocessor {
+        c.parsePreprocessor()
+    } else if c.accept("var") {
 		c.parseVar()
 	} else if c.accept("if") {
 		c.parseIf()
@@ -50,6 +54,12 @@ func (c *Compiler) parseBlock() {
 	if !c.end() && !c.accept("}") {
 		c.parseBlock()
 	}
+}
+
+func (c *Compiler) parsePreprocessor() {
+    // we definitely want a new line here
+    c.appendOut(c.get().Token+new_line, false)
+    c.next()
 }
 
 func (c *Compiler) parseVar() {
