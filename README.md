@@ -86,8 +86,9 @@ for var _i = 0; _i < 100; _i = _i+1 { // var before identifier is optional
     // ...
 }
 
-each allUnits { // foreach, iterates over all units in this case
-    // element is available as _x here
+foreach unit => allUnits { // foreach, iterates over all units in this case
+    // element is available as "unit" here
+    // _x is still available due to how SQF works!
 }
 
 switch x { // there is no "break" in SQF
@@ -242,6 +243,7 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 | exitwith |
 | waituntil |
 | code |
+| in |
 
 ## What's missing?
 

@@ -1,3 +1,3 @@
-foreach allUnits {
+foreach unit => allUnits {
     // ...
 }

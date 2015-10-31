@@ -199,9 +199,14 @@ func (c *Compiler) parseFor() {
 
 func (c *Compiler) parseForeach() {
 	c.expect("foreach")
+	element := c.get().Token
+	c.next()
+	c.expect("=")
+	c.expect(">")
 	expr := c.parseExpression(false)
 	c.expect("{")
 	c.appendOut("{", true)
+	c.appendOut(element+" = _x;", true)
 	c.parseBlock()
 	c.expect("}")
 	c.appendOut("} forEach ("+expr+");", true)

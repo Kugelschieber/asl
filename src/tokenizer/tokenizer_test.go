@@ -40,7 +40,7 @@ func TestTokenizerFor(t *testing.T) {
 
 func TestTokenizerForach(t *testing.T) {
 	got := getTokens(t, "test/tokenizer_foreach.asl")
-	want := []string{"foreach", "allUnits", "{", "}"}
+	want := []string{"foreach", "unit", "=", ">", "allUnits", "{", "}"}
 
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)
