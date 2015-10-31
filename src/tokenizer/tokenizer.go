@@ -7,6 +7,8 @@ import (
 type Token struct {
 	Token string
 	Preprocessor bool
+	Line int
+	Column int
 }
 
 var delimiter = []byte{
@@ -60,10 +62,16 @@ var new_line = []byte{'\r', '\n'}
 func Tokenize(code []byte) []Token {
 	code = removeComments(code)
 	tokens := make([]Token, 0)
-	token, mask, isstring := "", false, false
+	token, mask, isstring, line, column := "", false, false, 0, 0
 
 	for i := 0; i < len(code); i++ {
 		c := code[i]
+		column++
+		
+		if byteArrayContains(new_line, c) {
+		    line++
+		    column = 0
+		}
 
 		// string masks (backslash)
 		if c == '\\' && !mask {
@@ -84,17 +92,17 @@ func Tokenize(code []byte) []Token {
 		} else {
 			// preprocessor, delimeter, keyword or variable/expression
 			if c == preprocessor {
-			    tokens = append(tokens, preprocessorLine(code, &i))
+			    tokens = append(tokens, preprocessorLine(code, &i, line, column))
 			    token = ""
 			} else if byteArrayContains(delimiter, c) {
 				if token != "" {
-					tokens = append(tokens, Token{token, false})
+					tokens = append(tokens, Token{token, false, line, column})
 				}
 
-				tokens = append(tokens, Token{string(c), false})
+				tokens = append(tokens, Token{string(c), false, line, column})
 				token = ""
 			} else if stringArrayContains(strings.ToLower(token)) && !isIdentifierCharacter(c) {
-				tokens = append(tokens, Token{token, false})
+				tokens = append(tokens, Token{token, false, line, column})
 				token = ""
 			} else if !byteArrayContains(whitespace, c) {
 				token += string(c)
@@ -146,7 +154,7 @@ func removeComments(code []byte) []byte {
 }
 
 // Reads preprocessor command until end of line
-func preprocessorLine(code []byte, i *int) Token {
+func preprocessorLine(code []byte, i *int, lineNr, column int) Token {
     c := byte('0')
     var line string
     
@@ -171,7 +179,7 @@ func preprocessorLine(code []byte, i *int) Token {
     
     (*i)-- // for will count up 1, so subtract it here
     
-    return Token{line, true}
+    return Token{line, true, lineNr, column}
 }
 
 // Returns the next character in code starting at i.

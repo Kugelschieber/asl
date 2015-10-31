@@ -1,6 +1,7 @@
 package parser
 
 import (
+    "strconv"
     "tokenizer"
 )
 
@@ -37,7 +38,7 @@ func (c *Compiler) accept(token string) bool {
 // Throws if current token does not match expected one.
 func (c *Compiler) expect(token string) {
 	if !c.tokenEqual(token, c.get()) {
-		panic("Parse error, expected '" + token + "' but was '" + c.get().Token + "'")
+		panic("Parse error, expected '" + token + "' but was '" + c.get().Token + "' in line "+strconv.Itoa(c.get().Line)+" at "+strconv.Itoa(c.get().Column))
 	}
 
 	c.next()
