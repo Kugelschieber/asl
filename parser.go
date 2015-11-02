@@ -1,14 +1,8 @@
-package parser
-
-import (
-	"tokenizer"
-)
-
-const new_line = "\r\n"
+package main
 
 // Parses tokens, validates code to a specific degree
 // and writes SQF code into desired location.
-func (c *Compiler) Parse(token []tokenizer.Token, prettyPrinting bool) string {
+func (c *Compiler) Parse(token []Token, prettyPrinting bool) string {
 	if !c.initParser(token, prettyPrinting) {
 	    return ""
 	}
@@ -230,13 +224,13 @@ func (c *Compiler) parseFunctionParameter() {
 	if c.accept("{") {
 		return
 	}
-	
+
 	c.appendOut("params [", false)
 
 	for !c.accept(")") {
 		name := c.get().Token
 		c.next()
-		
+
 		if c.accept("=") {
 		    c.next()
 		    value := c.get().Token
@@ -251,7 +245,7 @@ func (c *Compiler) parseFunctionParameter() {
 			c.appendOut(",", false)
 		}
 	}
-	
+
 	c.appendOut("];", true)
 }
 
@@ -291,13 +285,13 @@ func (c *Compiler) parseWaitUntil() {
     c.expect("(")
     c.appendOut("waitUntil {", false)
     c.parseExpression(true)
-    
+
     if c.accept(";") {
         c.next()
         c.appendOut(";", false)
         c.parseExpression(true)
     }
-    
+
     c.expect(")")
     c.expect(";")
     c.appendOut("};", true)
@@ -306,18 +300,18 @@ func (c *Compiler) parseWaitUntil() {
 func (c *Compiler) parseInlineCode() string {
     c.expect("code")
     c.expect("(")
-    
+
     code := c.get().Token
     c.next()
     output := "{}"
-    
+
     if len(code) > 2 {
         compiler := Compiler{}
-        output = "{"+compiler.Parse(tokenizer.Tokenize([]byte(code[1:len(code)-1])), false)+"}"
+        output = "{"+compiler.Parse(Tokenize([]byte(code[1:len(code)-1])), false)+"}"
     }
-    
+
     c.expect(")")
-    
+
     return output
 }
 
