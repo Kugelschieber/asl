@@ -1,11 +1,12 @@
-package main
+package parser
 
 import (
     "strconv"
+    "tokenizer"
 )
 
 type Compiler struct {
-    tokens []Token
+    tokens []tokenizer.Token
     tokenIndex int
     out string
     offset int
@@ -13,7 +14,7 @@ type Compiler struct {
 }
 
 // Initilizes the parser.
-func (c *Compiler) initParser(token []Token, prettyPrinting bool) bool {
+func (c *Compiler) initParser(token []tokenizer.Token, prettyPrinting bool) bool {
 	if len(token) == 0 {
 		return false
 	}
@@ -23,7 +24,7 @@ func (c *Compiler) initParser(token []Token, prettyPrinting bool) bool {
 	c.out = ""
 	c.offset = 0
 	c.pretty = prettyPrinting
-
+	
 	return true
 }
 
@@ -59,7 +60,7 @@ func (c *Compiler) next() {
 }
 
 // Returns current token or throws, if no more tokens are available.
-func (c *Compiler) get() Token {
+func (c *Compiler) get() tokenizer.Token {
 	if c.tokenIndex >= len(c.tokens) {
 		panic("No more tokens")
 	}
@@ -73,7 +74,7 @@ func (c *Compiler) end() bool {
 }
 
 // Checks if two strings match.
-func (c *Compiler) tokenEqual(a string, b Token) bool {
+func (c *Compiler) tokenEqual(a string, b tokenizer.Token) bool {
 	return a == b.Token
 }
 

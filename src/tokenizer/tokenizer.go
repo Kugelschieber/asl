@@ -1,4 +1,4 @@
-package main
+package tokenizer
 
 import (
 	"strings"
@@ -55,7 +55,7 @@ var keywords = []string{
 var whitespace = []byte{' ', '\n', '\t', '\r'}
 var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
 var preprocessor = byte('#')
-var new_line_byte = []byte{'\r', '\n'}
+var new_line = []byte{'\r', '\n'}
 
 // Tokenizes the given byte array into syntax tokens,
 // which can be parsed later.
@@ -67,8 +67,8 @@ func Tokenize(code []byte) []Token {
 	for i := 0; i < len(code); i++ {
 		c := code[i]
 		column++
-
-		if byteArrayContains(new_line_byte, c) {
+		
+		if byteArrayContains(new_line, c) {
 		    line++
 		    column = 0
 		}
@@ -157,28 +157,28 @@ func removeComments(code []byte) []byte {
 func preprocessorLine(code []byte, i *int, lineNr, column int) Token {
     c := byte('0')
     var line string
-
+    
     for *i < len(code) {
         c = code[*i]
-
-        if byteArrayContains(new_line_byte, c) {
+        
+        if byteArrayContains(new_line, c) {
             break
         }
-
+        
         line += string(c)
         (*i)++
     }
-
+    
     // read all new line characters (\r and \n)
     c = code[*i]
-
-    for byteArrayContains(new_line_byte, c) {
+    
+    for byteArrayContains(new_line, c) {
         (*i)++
         c = code[*i]
     }
-
+    
     (*i)-- // for will count up 1, so subtract it here
-
+    
     return Token{line, true, lineNr, column}
 }
 
