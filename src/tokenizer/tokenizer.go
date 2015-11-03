@@ -49,8 +49,7 @@ var keywords = []string{
 	"catch",
 	"exitwith",
 	"waituntil",
-	"code",
-	"in"}
+	"code"}
 
 var whitespace = []byte{' ', '\n', '\t', '\r'}
 var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"

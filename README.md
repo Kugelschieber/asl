@@ -11,6 +11,7 @@ Main reasons for ASL:
 * easy to learn and understand
 * full replacement of SQF
 * compatible with Arma wiki and commands
+* comfortable
 
 ## Usage
 
@@ -76,6 +77,8 @@ Controll structure syntax is C-like. Notice they are all using the same brackets
 ```
 if 1 < 2 {
     // ...
+} else { // no else if yet
+    // ...
 }
 
 while 1 < 2 {
@@ -122,7 +125,7 @@ var _x = add(1, 2);
 // result in _x is 3
 ```
 
-Functions support optional parameters by predefining them:
+Functions support predefined parameters:
 
 ```
 func add(_a = 0, _b = 0) {
@@ -146,7 +149,7 @@ addItem(someUnit)("NVGoogles");
 someUnit addItem "NVGoogles";
 ```
 
-Where the first brackets contain the parameters used in front of SQF command and the second ones behind SQF command. If more than one parameter is passed, it will be converted to an array.
+Where the first brackets contain the parameters used in front of SQF command and the second ones behind SQF command. If more than one parameter is passed, it will be converted to an array. This syntax can be used for **all** build in functions (also spawn and so on).
 
 ```
 foo(x, y, z)(1, 2, 3);
@@ -200,8 +203,7 @@ x = {y = 5;};
 ## Preprocessor
 
 The preprocessor works like the original one, with some limitations.
-Please visit the link at the bottom, to read about the preprocessor and how to use it. Generally, preprocessor lines must start with the hash key (#) and must stay in their own line. They are always printed as seperate lines.
-These features are not supported:
+Please visit the link at the bottom, to read about the preprocessor and how to use it. Generally, preprocessor lines must start with the hash key (#) and must stay in their own line. They are always printed as seperate lines. These features are not supported:
 
 * replacing parts of words
 * multi line preprocessor commands
@@ -243,12 +245,12 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 | exitwith |
 | waituntil |
 | code |
-| in |
 
 ## What's missing?
 
 The following features are not implemented yet, but will be in 1.1.0 or a future version:
 
+* else if
 * arrays within expressions (like someArray-[someEntity])
 
 There is a simple workaround for arrays within expressions:
