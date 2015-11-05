@@ -250,9 +250,11 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 
 The following features are not implemented yet, but will be in 1.1.0 or a future version:
 
+* scopes
 * else if
 * arrays within expressions (like someArray-[someEntity])
 
+scopes won't be supported, since they are a stupid concept and can be replaced by functions.
 There is a simple workaround for arrays within expressions:
 
 ```
