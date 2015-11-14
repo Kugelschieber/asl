@@ -94,6 +94,16 @@ func TestTokenizerPreprocessor(t *testing.T) {
 	compareTokens(t, &got, &want)
 }
 
+func TestTokenizerMask(t *testing.T) {
+	got := getTokens(t, "test/tokenizer_mask.asl")
+    //var y = code("var z = \"Hello \\"World\\"\";");
+	want := []string{"var", "x", "=", "\"Hello \\\"World\\\"\"", ";",
+	    "var", "y", "=", "code", "(", "\"var z = \\\"Hello \\\\\"World\\\\\"\\\";\"", ")", ";"}
+
+	compareLength(t, &got, &want)
+	compareTokens(t, &got, &want)
+}
+
 func compareLength(t *testing.T, got *[]tokenizer.Token, want *[]string) {
 	if len(*got) != len(*want) {
 		t.Error("Length of tokens got and expected tokens not equal, was:")
@@ -130,5 +140,5 @@ func getTokens(t *testing.T, file string) []tokenizer.Token {
 		t.FailNow()
 	}
 
-	return tokenizer.Tokenize(code)
+	return tokenizer.Tokenize(code, false)
 }

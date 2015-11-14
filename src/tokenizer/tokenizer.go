@@ -58,7 +58,11 @@ var new_line = []byte{'\r', '\n'}
 
 // Tokenizes the given byte array into syntax tokens,
 // which can be parsed later.
-func Tokenize(code []byte) []Token {
+func Tokenize(code []byte, doStripSlashes bool) []Token {
+    if doStripSlashes {
+        code = stripSlashes(code);
+    }
+    
 	code = removeComments(code)
 	tokens := make([]Token, 0)
 	token, mask, isstring, line, column := "", false, false, 0, 0
@@ -112,6 +116,28 @@ func Tokenize(code []byte) []Token {
 	}
 
 	return tokens
+}
+
+// Removes slashes from input code.
+// This is used for the "code" keyword for correct strings in resulting code.
+func stripSlashes(code []byte) []byte {
+    newcode := make([]byte, len(code))
+    j, mask := 0, false
+    
+    for i := 0; i < len(code); i++ {
+        c := code[i]
+        
+        if c == '\\' && !mask {
+			mask = true
+			continue
+		}
+        
+        newcode[j] = code[i]
+        mask = false
+        j++
+    }
+    
+    return newcode
 }
 
 // Removes all comments from input byte array.

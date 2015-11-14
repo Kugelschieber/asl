@@ -101,7 +101,7 @@ func compile(path string) {
             continue
         }
         
-    	token := tokenizer.Tokenize(code)
+    	token := tokenizer.Tokenize(code, false)
     	compiler := parser.Compiler{}
     	sqf := compiler.Parse(token, pretty)
     	

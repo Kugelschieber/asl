@@ -314,7 +314,7 @@ func (c *Compiler) parseInlineCode() string {
     
     if len(code) > 2 {
         compiler := Compiler{}
-        output = "{"+compiler.Parse(tokenizer.Tokenize([]byte(code[1:len(code)-1])), false)+"}"
+        output = "{"+compiler.Parse(tokenizer.Tokenize([]byte(code[1:len(code)-1]), true), false)+"}"
     }
     
     c.expect(")")

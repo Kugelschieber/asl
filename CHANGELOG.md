@@ -1,5 +1,10 @@
 # Changelog
 
+**1.1.1**
+
+* arrays can now be declared within expressions
+* code keyword bug fix
+
 **1.1.0**
 
 * changed syntax of foreach
