@@ -252,18 +252,14 @@ The following features are not implemented yet, but will be in 1.1.0 or a future
 
 * scopes
 * else if
-* arrays within expressions (like someArray-[someEntity])
+* selector in expression
 
 scopes won't be supported, since they are a stupid concept and can be replaced by functions.
-There is a simple workaround for arrays within expressions:
+
+Selectors in expressions do not work (yet):
 
 ```
-// want: ... forEach allCurators-[myCurator];
-
-var myCuratorArray = [myCurator]; // or a more complex expression within array
-foreach allCurators-myCuratorArray {
-	// ...
-}
+var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3
 ```
 
 ## Contribute

@@ -161,6 +161,13 @@ func TestParserPreprocessor(t *testing.T) {
 	equal(t, got, want)
 }
 
+func TestParserExpressionArray(t *testing.T) {
+	got := getCompiled(t, "test/parser_expression_array.asl")
+	want := "x = [1,2,3]-[2,3];\r\n"
+
+	equal(t, got, want)
+}
+
 func getCompiled(t *testing.T, file string) string {
 	code, err := ioutil.ReadFile(file)
 

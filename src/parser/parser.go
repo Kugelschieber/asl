@@ -70,34 +70,35 @@ func (c *Compiler) parseVar() {
 	if c.accept("=") {
 		c.next()
 		c.appendOut(" = ", false)
-
-		if c.accept("[") {
-			c.parseArray()
-		} else {
-			c.parseExpression(true)
-		}
+		c.parseExpression(true)
 	}
 
 	c.expect(";")
 	c.appendOut(";", true)
 }
 
-func (c *Compiler) parseArray() {
+func (c *Compiler) parseArray(out bool) string {
+    output := ""
 	c.expect("[")
-	c.appendOut("[", false)
+	output += "["
 
 	if !c.accept("]") {
-		c.parseExpression(true)
+		output += c.parseExpression(false)
 
 		for c.accept(",") {
 			c.next()
-			c.appendOut(",", false)
-			c.parseExpression(true)
+			output += ","+c.parseExpression(false)
 		}
 	}
 
 	c.expect("]")
-	c.appendOut("]", false)
+	output += "]"
+	
+	if out {
+	    c.appendOut(output, false)
+	}
+	
+	return output
 }
 
 func (c *Compiler) parseIf() {
@@ -463,6 +464,8 @@ func (c *Compiler) parseIdentifier() string {
 		name := c.get().Token
 		c.next()
 		output = "(" + c.parseFunctionCall(false, name) + ")"
+	} else if c.accept("[") {
+	    output += c.parseArray(false)
 	} else if c.seek("[") {
 	    output += "("+c.get().Token
 	    c.next()
