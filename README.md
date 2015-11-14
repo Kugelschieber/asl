@@ -68,6 +68,9 @@ var one = array[0];
 
 // accessing using a statement:
 var zwo = array[33/3-2];
+
+// it is possble to use arrays in expressions:
+var emptyArray = one-[0];
 ```
 
 ### Control structures
