@@ -6,4 +6,5 @@ An optional Java interface to make the compile procces of ASL faster and more us
 Maintained by yours truly: [654wak654](https://github.com/654wak654/)
 
 **Version 0.2.1:**
+
 Fixed some possible bugs, did some style fixes and other code adjustments. It's now is readable without getting cataracts. Mostly anyway...
