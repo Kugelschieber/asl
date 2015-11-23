@@ -288,7 +288,7 @@ public class Main extends javax.swing.JFrame {
                 BufferedReader br = new BufferedReader(new InputStreamReader(aslProcess.getInputStream()));
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.toLowerCase().contains("error")) {
+                    if (line.toLowerCase().contains("panic")) {
                         error = line;
                     }
                 }
