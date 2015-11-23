@@ -46,7 +46,7 @@ import javax.swing.plaf.ColorUIResource;
 public class Main extends javax.swing.JFrame {
 
     Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
-    boolean aslFix, outputDirFix, gaveError = false;
+    boolean inputError = false, outputError = false, aslError = false;
 
     public Main() {
         initComponents();
@@ -70,12 +70,24 @@ public class Main extends javax.swing.JFrame {
         chooser.setFileSelectionMode(fileType);
         chooser.setDialogTitle(title);
         String selectedPath = "";
-        if (chooser.showOpenDialog(null) == 0) {
+        if (chooser.showOpenDialog(null) == 0)
             selectedPath = chooser.getSelectedFile().toString();
-        } else {
+        else
             chooser.cancelSelection();
-        }
         return selectedPath;
+    }
+
+    private void setErrorCondition(int i, boolean j) {
+        if (i == 0) {
+            lblASLError.setText(j ? "asl.exe isn't in this location! You can click this message to download it." : " ");
+            aslError = j;
+        } else if (i == 1) {
+            lblInputError.setText(j ? "This folder doesn't exist!" : " ");
+            inputError = j;
+        } else {
+            lblOutputError.setText(j ? "Output folder doesn't exsist! Click this message to create it." : " ");
+            outputError = j;
+        }
     }
 
     private void initComponents() {
@@ -160,7 +172,7 @@ public class Main extends javax.swing.JFrame {
         lblInputSmall.setOpaque(true);
 
         lblOutputSmall.setFont(new java.awt.Font("Microsoft YaHei UI", 0, 10));
-        lblOutputSmall.setText("Directory that the compiled.sqf script(s) will be saved in.");
+        lblOutputSmall.setText("Directory that the compiled .sqf script(s) will be saved in.");
         lblOutputSmall.setOpaque(true);
 
         cbCompileAll.setFont(new java.awt.Font("Microsoft YaHei UI", 0, 11));
@@ -215,8 +227,8 @@ public class Main extends javax.swing.JFrame {
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jSeparator).addGroup(layout.createSequentialGroup().addGap(15, 15, 15).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(lblOutputError, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(lblInputError, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(lblASLError, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(lblASL).addComponent(lblASLSmall).addGroup(layout.createSequentialGroup().addComponent(txtASLDir, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(6, 6, 6).addComponent(btnASL)).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addComponent(txtOutputDir, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(lblOutput, javax.swing.GroupLayout.Alignment.LEADING)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(btnOutput)).addComponent(lblOutputSmall).addComponent(lblInput).addGroup(layout.createSequentialGroup().addComponent(txtInputDir, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(btnInput)).addComponent(lblInputSmall).addComponent(cbCompileAll).addComponent(cbPrettyPrinting))).addGap(0, 0, Short.MAX_VALUE))).addGap(24, 24, 24)).addGroup(layout.createSequentialGroup().addComponent(btnCompile, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(22, 22, 22)))));
-        layout.setVerticalGroup( layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(6, 6, 6).addComponent(lblASL).addGap(3, 3, 3).addComponent(lblASLSmall).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(txtASLDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(btnASL, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(4, 4, 4).addComponent(lblASLError).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(3, 3, 3).addComponent(lblInput).addGap(3, 3, 3).addComponent(lblInputSmall, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(txtInputDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(btnInput, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(4, 4, 4).addComponent(lblInputError).addGap(6, 6, 6).addComponent(lblOutput).addGap(3, 3, 3).addComponent(lblOutputSmall, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(6, 6, 6).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(txtOutputDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(btnOutput, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(4, 4, 4).addComponent(lblOutputError).addGap(6, 6, 6).addComponent(cbCompileAll).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(cbPrettyPrinting).addGap(11, 11, 11).addComponent(btnCompile, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(11, 11, 11)));
+        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jSeparator).addGroup(layout.createSequentialGroup().addGap(15, 15, 15).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(lblOutputError, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(lblInputError, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(lblASLError, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(lblASL).addComponent(lblASLSmall).addGroup(layout.createSequentialGroup().addComponent(txtASLDir, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(6, 6, 6).addComponent(btnASL)).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addComponent(txtOutputDir, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(lblOutput, javax.swing.GroupLayout.Alignment.LEADING)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(btnOutput)).addComponent(lblOutputSmall).addComponent(lblInput).addGroup(layout.createSequentialGroup().addComponent(txtInputDir, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(btnInput)).addComponent(lblInputSmall).addComponent(cbCompileAll).addComponent(cbPrettyPrinting))).addComponent(btnCompile, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(20, 20, 20)));
+        layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(6, 6, 6).addComponent(lblASL).addGap(3, 3, 3).addComponent(lblASLSmall).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(txtASLDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(btnASL, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(4, 4, 4).addComponent(lblASLError).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(3, 3, 3).addComponent(lblInput).addGap(3, 3, 3).addComponent(lblInputSmall, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(txtInputDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(btnInput, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(4, 4, 4).addComponent(lblInputError).addGap(6, 6, 6).addComponent(lblOutput).addGap(3, 3, 3).addComponent(lblOutputSmall, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(6, 6, 6).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(txtOutputDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(btnOutput, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(4, 4, 4).addComponent(lblOutputError).addGap(6, 6, 6).addComponent(cbCompileAll).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(cbPrettyPrinting).addGap(11, 11, 11).addComponent(btnCompile, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(11, 11, 11)));
 
         pack();
         setLocationRelativeTo(null);
@@ -229,9 +241,8 @@ public class Main extends javax.swing.JFrame {
             if (inputDir.exists()) {
                 prefs.put("inputDir", path);
                 txtInputDir.setText(path);
-            }
-            if (gaveError) {
-
+                if (inputError)
+                    setErrorCondition(1, false);
             }
         }
     }
@@ -243,9 +254,8 @@ public class Main extends javax.swing.JFrame {
             if (outputDir.exists()) {
                 prefs.put("outputDir", path);
                 txtOutputDir.setText(path);
-                if (outputDirFix) {
-                    lblOutputError.setText(" ");
-                }
+                if (outputError)
+                    setErrorCondition(2, false);
             }
         }
     }
@@ -257,81 +267,39 @@ public class Main extends javax.swing.JFrame {
             if (asl.exists()) {
                 prefs.put("aslDir", path);
                 txtASLDir.setText(path);
+                if (aslError)
+                    setErrorCondition(0, false);
             }
         }
     }
 
     private void btnCompileMouseClicked(java.awt.event.MouseEvent evt) {
         if (SwingUtilities.isLeftMouseButton(evt)) {
-            if (!new File(txtASLDir.getText()).exists()) {
-                lblASLError.setText("asl.exe isn't in this location! You can click this message to download it.");
-                return;
-            }
             JTextField[] dirFields = {txtASLDir, txtInputDir, txtOutputDir};
             for (byte i = 0; i < 3; i++) {
                 File bleh = new File(dirFields[i].getText());
-                if (!bleh.exists()) {
-                    gaveError = true;
-                    switch (i) {
-                        case 0:
-                            lblASLError.setText("asl.exe isn't in this location! You can click this message to download it.");
-                            aslFix = true;
-                            break;
-                        case 1:
-                            lblInputError.setText("This folder doesn't exist!");
-                            break;
-                        case 2:
-                            lblOutputError.setText("Output folder doesn't exsist! Click this message to create it.");
-                            outputDirFix = true;
-                            break;
-                    }
-                    return;
-                } else if (gaveError) {
-                    switch (i) {
-                        case 0:
-                            lblASLError.setText(" ");
-                            break;
-                        case 1:
-                            lblInputError.setText(" ");
-                            break;
-                        case 2:
-                            lblOutputError.setText(" ");
-                            outputDirFix = false;
-                            break;
-                    }
-                }
+                setErrorCondition(i, !bleh.exists());
             }
-            if (gaveError) {
+            if (aslError || inputError || outputError)
                 return;
-            }
-            //Rapid String declarations
-            String prettyPrinting = cbPrettyPrinting.isSelected() ? "-pretty" : "",
-                    compileAll = cbCompileAll.isSelected() ? "-r" : "",
-                    asl = txtASLDir.getText(),
-                    input = txtInputDir.getText(),
-                    output = txtOutputDir.getText(),
-                    aslError = " ";
+            String prettyPrinting = cbPrettyPrinting.isSelected() ? "-pretty" : "", compileAll = cbCompileAll.isSelected() ? "-r" : "", asl = txtASLDir.getText(), input = txtInputDir.getText(), output = txtOutputDir.getText(), error = " ";    
             try {
                 Process aslProcess = new ProcessBuilder(asl, compileAll, prettyPrinting, input, output).start();
                 BufferedReader br = new BufferedReader(new InputStreamReader(aslProcess.getInputStream()));
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.contains("Error")) {
-                        aslError = line;
+                    if (line.toLowerCase().contains("panic")) {
+                        error = line;
                     }
                 }
                 aslProcess.waitFor();
-                /*
-                 Heavily obsolete alternative:
-                 Runtime.getRuntime().exec("cmd /c start \"" + asl + "\" " + compileAll + prettyPrinting + "\"" + input + "\" \"" + output + "\"");
-                 */
             } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (!aslError.equals(" ")) {
-                DlgError error = new DlgError(this, true, aslError);
-                error.setLocationRelativeTo(this);
-                error.setVisible(true);
+            if (!error.equals(" ")) {
+                DlgError showError = new DlgError(this, true, error);
+                showError.setLocationRelativeTo(this);
+                showError.setVisible(true);
             }
         }
     }
@@ -345,23 +313,21 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void lblOutputErrorMouseClicked(java.awt.event.MouseEvent evt) {
-        if (SwingUtilities.isLeftMouseButton(evt) && outputDirFix) {
+        if (SwingUtilities.isLeftMouseButton(evt) && outputError) {
             new File(txtOutputDir.getText()).mkdirs();
-            outputDirFix = false;
-            lblOutputError.setText(" ");
+            setErrorCondition(2, false);
         }
     }
 
     private void lblASLErrorMouseClicked(java.awt.event.MouseEvent evt) {
-        if (SwingUtilities.isLeftMouseButton(evt) && aslFix) {
+        if (SwingUtilities.isLeftMouseButton(evt) && aslError) {
             try {
                 URI github = new URI("https://github.com/DeKugelschieber/asl/releases");
                 java.awt.Desktop.getDesktop().browse(github);
             } catch (URISyntaxException | IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-            aslFix = false;
-            lblASLError.setText(" ");
+            setErrorCondition(0, false);
         }
     }
 
@@ -382,7 +348,6 @@ public class Main extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify
     private javax.swing.JButton btnASL;
     private javax.swing.JButton btnCompile;
     private javax.swing.JButton btnInput;
@@ -402,5 +367,4 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField txtASLDir;
     private javax.swing.JTextField txtInputDir;
     private javax.swing.JTextField txtOutputDir;
-    // End of variables declaration
 }

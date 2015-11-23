@@ -25,6 +25,8 @@ package asl.gui;
 
 public class DlgError extends javax.swing.JDialog {
 
+    boolean isAbort = true;
+
     public DlgError(java.awt.Frame parent, boolean modal, String errorMessage) {
         super(parent, modal);
         initComponents();
@@ -32,6 +34,7 @@ public class DlgError extends javax.swing.JDialog {
     }
 
     private void initComponents() {
+
         lblError = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
 
@@ -59,8 +62,6 @@ public class DlgError extends javax.swing.JDialog {
         pack();
     }
 
-    // Variables declaration - do not modify
     private javax.swing.JLabel lblError;
     private javax.swing.JLabel lblTitle;
-    // End of variables declaration
 }
