@@ -14,10 +14,13 @@ An optional Java interface to make the compile procces of ASL faster and more us
 
 ##Syntax Higligthing
 **Notepad++**
-https://github.com/DeKugelschieber/asl/blob/master/tools/asl.xml
+https://github.com/654wak654/asl/blob/master/tools/asl.xml
+
 **Atom**
-*Soon™*
+*Soonâ„¢*
+
 **Visual Studio Code**
-*Soon™*
+*Soonâ„¢*
+
 **Sublime Text 2**
-*Also Soon™*
+*Also Soonâ„¢*
