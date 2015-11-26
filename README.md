@@ -234,7 +234,7 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 | var |
 | if |
 | while |
-| witch |
+| switch |
 | for |
 | foreach |
 | func |
