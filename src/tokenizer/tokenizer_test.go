@@ -1,9 +1,9 @@
 package tokenizer_test
 
 import (
-    "tokenizer"
 	"io/ioutil"
 	"testing"
+	"tokenizer"
 )
 
 func TestTokenizerVar(t *testing.T) {
@@ -96,9 +96,9 @@ func TestTokenizerPreprocessor(t *testing.T) {
 
 func TestTokenizerMask(t *testing.T) {
 	got := getTokens(t, "test/tokenizer_mask.asl")
-    //var y = code("var z = \"Hello \\"World\\"\";");
+	//var y = code("var z = \"Hello \\"World\\"\";");
 	want := []string{"var", "x", "=", "\"Hello \\\"World\\\"\"", ";",
-	    "var", "y", "=", "code", "(", "\"var z = \\\"Hello \\\\\"World\\\\\"\\\";\"", ")", ";"}
+		"var", "y", "=", "code", "(", "\"var z = \\\"Hello \\\\\"World\\\\\"\\\";\"", ")", ";"}
 
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)

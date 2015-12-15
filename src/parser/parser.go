@@ -10,7 +10,7 @@ const new_line = "\r\n"
 // and writes SQF code into desired location.
 func (c *Compiler) Parse(token []tokenizer.Token, prettyPrinting bool) string {
 	if !c.initParser(token, prettyPrinting) {
-	    return ""
+		return ""
 	}
 
 	for c.tokenIndex < len(token) {
@@ -21,9 +21,9 @@ func (c *Compiler) Parse(token []tokenizer.Token, prettyPrinting bool) string {
 }
 
 func (c *Compiler) parseBlock() {
-    if c.get().Preprocessor {
-        c.parsePreprocessor()
-    } else if c.accept("var") {
+	if c.get().Preprocessor {
+		c.parsePreprocessor()
+	} else if c.accept("var") {
 		c.parseVar()
 	} else if c.accept("if") {
 		c.parseIf()
@@ -42,9 +42,9 @@ func (c *Compiler) parseBlock() {
 	} else if c.accept("try") {
 		c.parseTryCatch()
 	} else if c.accept("exitwith") {
-	    c.parseExitWith()
+		c.parseExitWith()
 	} else if c.accept("waituntil") {
-	    c.parseWaitUntil()
+		c.parseWaitUntil()
 	} else if c.accept("case") || c.accept("default") {
 		return
 	} else {
@@ -57,9 +57,9 @@ func (c *Compiler) parseBlock() {
 }
 
 func (c *Compiler) parsePreprocessor() {
-    // we definitely want a new line before and after
-    c.appendOut(new_line+c.get().Token+new_line, false)
-    c.next()
+	// we definitely want a new line before and after
+	c.appendOut(new_line+c.get().Token+new_line, false)
+	c.next()
 }
 
 func (c *Compiler) parseVar() {
@@ -78,7 +78,7 @@ func (c *Compiler) parseVar() {
 }
 
 func (c *Compiler) parseArray(out bool) string {
-    output := ""
+	output := ""
 	c.expect("[")
 	output += "["
 
@@ -87,17 +87,17 @@ func (c *Compiler) parseArray(out bool) string {
 
 		for c.accept(",") {
 			c.next()
-			output += ","+c.parseExpression(false)
+			output += "," + c.parseExpression(false)
 		}
 	}
 
 	c.expect("]")
 	output += "]"
-	
+
 	if out {
-	    c.appendOut(output, false)
+		c.appendOut(output, false)
 	}
-	
+
 	return output
 }
 
@@ -231,20 +231,20 @@ func (c *Compiler) parseFunctionParameter() {
 	if c.accept("{") {
 		return
 	}
-	
+
 	c.appendOut("params [", false)
 
 	for !c.accept(")") {
 		name := c.get().Token
 		c.next()
-		
+
 		if c.accept("=") {
-		    c.next()
-		    value := c.get().Token
-		    c.next()
-		    c.appendOut("[\""+name+"\","+value+"]", false)
+			c.next()
+			value := c.get().Token
+			c.next()
+			c.appendOut("[\""+name+"\","+value+"]", false)
 		} else {
-		    c.appendOut("\""+name+"\"", false)
+			c.appendOut("\""+name+"\"", false)
 		}
 
 		if !c.accept(")") {
@@ -252,7 +252,7 @@ func (c *Compiler) parseFunctionParameter() {
 			c.appendOut(",", false)
 		}
 	}
-	
+
 	c.appendOut("];", true)
 }
 
@@ -279,47 +279,47 @@ func (c *Compiler) parseTryCatch() {
 }
 
 func (c *Compiler) parseExitWith() {
-    c.expect("exitwith")
-    c.expect("{")
-    c.appendOut("if (true) exitWith {", true)
-    c.parseBlock()
-    c.expect("}")
-    c.appendOut("};", true)
+	c.expect("exitwith")
+	c.expect("{")
+	c.appendOut("if (true) exitWith {", true)
+	c.parseBlock()
+	c.expect("}")
+	c.appendOut("};", true)
 }
 
 func (c *Compiler) parseWaitUntil() {
-    c.expect("waituntil")
-    c.expect("(")
-    c.appendOut("waitUntil {", false)
-    c.parseExpression(true)
-    
-    if c.accept(";") {
-        c.next()
-        c.appendOut(";", false)
-        c.parseExpression(true)
-    }
-    
-    c.expect(")")
-    c.expect(";")
-    c.appendOut("};", true)
+	c.expect("waituntil")
+	c.expect("(")
+	c.appendOut("waitUntil {", false)
+	c.parseExpression(true)
+
+	if c.accept(";") {
+		c.next()
+		c.appendOut(";", false)
+		c.parseExpression(true)
+	}
+
+	c.expect(")")
+	c.expect(";")
+	c.appendOut("};", true)
 }
 
 func (c *Compiler) parseInlineCode() string {
-    c.expect("code")
-    c.expect("(")
-    
-    code := c.get().Token
-    c.next()
-    output := "{}"
-    
-    if len(code) > 2 {
-        compiler := Compiler{}
-        output = "{"+compiler.Parse(tokenizer.Tokenize([]byte(code[1:len(code)-1]), true), false)+"}"
-    }
-    
-    c.expect(")")
-    
-    return output
+	c.expect("code")
+	c.expect("(")
+
+	code := c.get().Token
+	c.next()
+	output := "{}"
+
+	if len(code) > 2 {
+		compiler := Compiler{}
+		output = "{" + compiler.Parse(tokenizer.Tokenize([]byte(code[1:len(code)-1]), true), false) + "}"
+	}
+
+	c.expect(")")
+
+	return output
 }
 
 // Everything that does not start with a keyword.
@@ -459,19 +459,19 @@ func (c *Compiler) parseIdentifier() string {
 	output := ""
 
 	if c.accept("code") {
-	    output += c.parseInlineCode()
+		output += c.parseInlineCode()
 	} else if c.seek("(") && !c.accept("!") && !c.accept("-") {
 		name := c.get().Token
 		c.next()
 		output = "(" + c.parseFunctionCall(false, name) + ")"
 	} else if c.accept("[") {
-	    output += c.parseArray(false)
+		output += c.parseArray(false)
 	} else if c.seek("[") {
-	    output += "("+c.get().Token
-	    c.next()
-	    c.expect("[")
-	    output += " select ("+c.parseExpression(false)+"))"
-	    c.expect("]")
+		output += "(" + c.get().Token
+		c.next()
+		c.expect("[")
+		output += " select (" + c.parseExpression(false) + "))"
+		c.expect("]")
 	} else if c.accept("!") || c.accept("-") {
 		output = c.get().Token
 		c.next()

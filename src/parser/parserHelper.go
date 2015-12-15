@@ -1,16 +1,16 @@
 package parser
 
 import (
-    "strconv"
-    "tokenizer"
+	"strconv"
+	"tokenizer"
 )
 
 type Compiler struct {
-    tokens []tokenizer.Token
-    tokenIndex int
-    out string
-    offset int
-    pretty bool
+	tokens     []tokenizer.Token
+	tokenIndex int
+	out        string
+	offset     int
+	pretty     bool
 }
 
 // Initilizes the parser.
@@ -24,7 +24,7 @@ func (c *Compiler) initParser(token []tokenizer.Token, prettyPrinting bool) bool
 	c.out = ""
 	c.offset = 0
 	c.pretty = prettyPrinting
-	
+
 	return true
 }
 
@@ -38,7 +38,7 @@ func (c *Compiler) accept(token string) bool {
 // Throws if current token does not match expected one.
 func (c *Compiler) expect(token string) {
 	if !c.tokenEqual(token, c.get()) {
-		panic("Parse error, expected '" + token + "' but was '" + c.get().Token + "' in line "+strconv.Itoa(c.get().Line)+" at "+strconv.Itoa(c.get().Column))
+		panic("Parse error, expected '" + token + "' but was '" + c.get().Token + "' in line " + strconv.Itoa(c.get().Line) + " at " + strconv.Itoa(c.get().Column))
 	}
 
 	c.next()
