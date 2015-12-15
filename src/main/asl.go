@@ -41,6 +41,7 @@ func usage() {
 	fmt.Println("<output directory> output directory, directory structure will be created corresponding to input directory")
 }
 
+// Parses compiler flags.
 func flags(flag string) bool {
 	flag = strings.ToLower(flag)
 
@@ -63,6 +64,7 @@ func flags(flag string) bool {
 	return false
 }
 
+// Creates a list of all ASL files to compile.
 func readAslFiles(path string) {
 	dir, err := ioutil.ReadDir(path)
 
@@ -90,28 +92,57 @@ func readAslFiles(path string) {
 	}
 }
 
+// Recovers and prints thrown error.
+func recoverCompileError(file string, waiter chan bool) {
+	if r := recover(); r != nil {
+		fmt.Println("Compile error in file "+file+":", r)
+	}
+
+	waiter <- true // the show must go on
+}
+
+// Compiles a single ASL file.
+func compileFile(path string, file ASLFile, waiter chan bool) {
+	defer recoverCompileError(file.in, waiter)
+
+	// read file
+	out := filepath.FromSlash(path + PathSeparator + file.out + PathSeparator + file.newname + sqfextension)
+	fmt.Println(file.in + " -> " + out)
+	code, err := ioutil.ReadFile(file.in)
+
+	if err != nil {
+		fmt.Println("Error reading file: " + file.in)
+		return
+	}
+
+	// compile
+	token := tokenizer.Tokenize(code, false)
+	compiler := parser.Compiler{}
+	sqf := compiler.Parse(token, pretty)
+
+	os.MkdirAll(filepath.FromSlash(path+PathSeparator+file.out), 0777)
+	err = ioutil.WriteFile(out, []byte(sqf), 0666)
+
+	if err != nil {
+		fmt.Println("Error writing file: " + file.out)
+		fmt.Println(err)
+	}
+
+	waiter <- true // done
+}
+
+// Compiles ASL files concurrently.
 func compile(path string) {
+	waiter := make(chan bool, len(aslFiles))
+
+	// fire compile
 	for i := 0; i < len(aslFiles); i++ {
-		out := filepath.FromSlash(path + PathSeparator + aslFiles[i].out + PathSeparator + aslFiles[i].newname + sqfextension)
-		fmt.Println(aslFiles[i].in + " -> " + out)
-		code, err := ioutil.ReadFile(aslFiles[i].in)
+		go compileFile(path, aslFiles[i], waiter)
+	}
 
-		if err != nil {
-			fmt.Println("Error reading file: " + aslFiles[i].in)
-			continue
-		}
-
-		token := tokenizer.Tokenize(code, false)
-		compiler := parser.Compiler{}
-		sqf := compiler.Parse(token, pretty)
-
-		os.MkdirAll(filepath.FromSlash(path+PathSeparator+aslFiles[i].out), 0777)
-		err = ioutil.WriteFile(out, []byte(sqf), 0666)
-
-		if err != nil {
-			fmt.Println("Error writing file: " + aslFiles[i].out)
-			fmt.Println(err)
-		}
+	// wait until all files are compiled
+	for i := 0; i < len(aslFiles); i++ {
+		<-waiter
 	}
 }
 

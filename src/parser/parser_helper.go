@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"strconv"
 	"tokenizer"
 )
@@ -38,7 +39,7 @@ func (c *Compiler) accept(token string) bool {
 // Throws if current token does not match expected one.
 func (c *Compiler) expect(token string) {
 	if !c.tokenEqual(token, c.get()) {
-		panic("Parse error, expected '" + token + "' but was '" + c.get().Token + "' in line " + strconv.Itoa(c.get().Line) + " at " + strconv.Itoa(c.get().Column))
+		panic(errors.New("Parse error, expected '" + token + "' but was '" + c.get().Token + "' in line " + strconv.Itoa(c.get().Line) + " at " + strconv.Itoa(c.get().Column)))
 	}
 
 	c.next()
@@ -62,7 +63,7 @@ func (c *Compiler) next() {
 // Returns current token or throws, if no more tokens are available.
 func (c *Compiler) get() tokenizer.Token {
 	if c.tokenIndex >= len(c.tokens) {
-		panic("No more tokens")
+		panic(errors.New("No more tokens"))
 	}
 
 	return c.tokens[c.tokenIndex]
