@@ -8,12 +8,14 @@ import (
 	"path/filepath"
 	"strings"
 	"tokenizer"
+	"types"
 )
 
 const (
 	version       = "1.2.0"
 	extension     = ".asl"
 	sqfextension  = ".sqf"
+	typeinfo      = "types"
 	PathSeparator = string(os.PathSeparator)
 )
 
@@ -45,23 +47,32 @@ func usage() {
 func flags(flag string) bool {
 	flag = strings.ToLower(flag)
 
-	if flag[0] == '-' {
-		if flag == "-v" {
-			fmt.Println("asl version " + version)
-			exit = true
-		} else if flag == "-r" {
-			recursive = true
-		} else if flag == "-pretty" {
-			pretty = true
-		} else if flag == "--help" {
-			usage()
-			exit = true
-		}
-
-		return true
+	if flag[0] != '-' {
+		return false
 	}
 
-	return false
+	if flag == "-v" {
+		fmt.Println("asl version " + version)
+		exit = true
+	} else if flag == "-r" {
+		recursive = true
+	} else if flag == "-pretty" {
+		pretty = true
+	} else if flag == "--help" {
+		usage()
+		exit = true
+	}
+
+	return true
+}
+
+// Loads types from types file.
+// If none is provided, an error will be printed.
+func loadTypes() {
+	if err := types.LoadTypes(typeinfo); err != nil {
+		fmt.Println("No 'types' file provided. Please add type information to this file from 'supportInfo' script command output.")
+		exit = true
+	}
 }
 
 // Creates a list of all ASL files to compile.
@@ -158,6 +169,13 @@ func main() {
 	var i int
 	for i = 1; i < len(args) && flags(args[i]); i++ {
 	}
+
+	if exit {
+		return
+	}
+
+	// load type information
+	loadTypes()
 
 	if exit {
 		return
