@@ -11,50 +11,52 @@ type Token struct {
 	Column       int
 }
 
-var delimiter = []byte{
-	'=',
-	';',
-	'{',
-	'}',
-	'(',
-	')',
-	'[',
-	']',
-	'<',
-	'>',
-	'!',
-	',',
-	':',
-	'&',
-	'|',
-	'+',
-	'-',
-	'*',
-	'/'} // TODO: modulo?
+var (
+	delimiter = []byte{
+		'=',
+		';',
+		'{',
+		'}',
+		'(',
+		')',
+		'[',
+		']',
+		'<',
+		'>',
+		'!',
+		',',
+		':',
+		'&',
+		'|',
+		'+',
+		'-',
+		'*',
+		'/'} // TODO: modulo?
 
-var keywords = []string{
-	"var",
-	"if",
-	"while",
-	"switch",
-	"for",
-	"foreach",
-	"func",
-	"true",
-	"false",
-	"case",
-	"default",
-	"return",
-	"try",
-	"catch",
-	"exitwith",
-	"waituntil",
-	"code"}
+	keywords = []string{
+		"var",
+		"if",
+		"while",
+		"switch",
+		"for",
+		"foreach",
+		"func",
+		"true",
+		"false",
+		"case",
+		"default",
+		"return",
+		"try",
+		"catch",
+		"exitwith",
+		"waituntil",
+		"code"}
 
-var whitespace = []byte{' ', '\n', '\t', '\r'}
-var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
-var preprocessor = byte('#')
-var new_line = []byte{'\r', '\n'}
+	whitespace   = []byte{' ', '\n', '\t', '\r'}
+	identifier   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+	preprocessor = byte('#')
+	new_line     = []byte{'\r', '\n'}
+)
 
 // Tokenizes the given byte array into syntax tokens,
 // which can be parsed later.
