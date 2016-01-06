@@ -2,6 +2,7 @@ package parser
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"tokenizer"
 	"types"
@@ -376,8 +377,8 @@ func (c *Compiler) parseFunctionCall(out bool, name string) string {
 
 	if buildin != nil {
 		// check parameter count
-		if paramCount < buildin.ArgsCount {
-			panic(errors.New("Function expected " + strconv.Itoa(buildin.ArgsCount) + " parameter but found " + strconv.Itoa(paramCount)))
+		if paramCount < buildin.ArgsLeft+buildin.ArgsRight {
+			panic(errors.New("Function expected " + strconv.Itoa(buildin.ArgsLeft+buildin.ArgsRight) + " parameter but found " + strconv.Itoa(paramCount)))
 		}
 
 		if buildin.Type == types.NULL {
@@ -411,7 +412,15 @@ func (c *Compiler) parseUnaryFunction(name, paramsStr string, paramCount int) st
 }
 
 func (c *Compiler) parseBinaryFunction(name string, params []string, buildin *types.FunctionType) string {
+	// FIXME number of elements can't be determined if array is parameter
 	output := ""
+
+	fmt.Println(len(params))
+	fmt.Println(buildin.ArgsLeft)
+	fmt.Println(buildin.ArgsRight)
+	fmt.Println(params[0])
+	fmt.Println(params[1])
+	fmt.Println(params[2])
 
 	if buildin.ArgsLeft == 1 {
 		output = params[0] + " "
@@ -431,15 +440,15 @@ func (c *Compiler) parseBinaryFunction(name string, params []string, buildin *ty
 
 	output += name
 
-	if buildin.ArgsCount-buildin.ArgsLeft == 1 {
+	if buildin.ArgsRight-buildin.ArgsLeft == 1 {
 		output += " " + params[1]
 	} else {
 		output += " ["
 
-		for i := buildin.ArgsLeft; i < buildin.ArgsCount; i++ {
+		for i := buildin.ArgsLeft; i < buildin.ArgsRight; i++ {
 			output += params[i]
 
-			if i != buildin.ArgsCount-1 {
+			if i != buildin.ArgsRight-buildin.ArgsLeft-1 {
 				output += ","
 			}
 		}

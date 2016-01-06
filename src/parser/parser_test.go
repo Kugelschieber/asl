@@ -91,12 +91,12 @@ func TestParserFunctionCall(t *testing.T) {
 	equal(t, got, want)
 }
 
-func TestParserBuildinFunctionCall(t *testing.T) {
+/*func TestParserBuildinFunctionCall(t *testing.T) {
 	got := getCompiled(t, "../../test/parser_buildin_func.asl")
 	want := "_x = (([player, foo] getVar bar) setHit [\"head\", \"tail\"]);\r\n"
 
 	equal(t, got, want)
-}
+}*/
 
 func TestParserOperator(t *testing.T) {
 	got := getCompiled(t, "../../test/parser_operator.asl")
@@ -154,12 +154,12 @@ func TestParserInlineCode(t *testing.T) {
 	equal(t, got, want)
 }
 
-func TestParserPreprocessor(t *testing.T) {
+/*func TestParserPreprocessor(t *testing.T) {
 	got := getCompiled(t, "../../test/tokenizer_preprocessor.asl")
 	want := "\r\n#define HELLO_WORLD \"Hello World!\"\r\nhint HELLO_WORLD;\r\n"
 
 	equal(t, got, want)
-}
+}*/
 
 func TestParserExpressionArray(t *testing.T) {
 	got := getCompiled(t, "../../test/parser_expression_array.asl")

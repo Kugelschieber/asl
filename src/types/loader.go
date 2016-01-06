@@ -7,8 +7,9 @@ import (
 
 const (
 	// type for object types
-	TYPE = 1
-	NAN  = "NaN"
+	TYPE  = 1
+	NAN   = "NaN"
+	ARRAY = "ARRAY"
 
 	// types for functions
 	NULL   = 2
@@ -22,8 +23,8 @@ const (
 type FunctionType struct {
 	Name      string
 	Type      int // one of the constants NULL, UNARY, BINARY
-	ArgsCount int
-	ArgsLeft  int // number of args on left side for binary functions
+	ArgsLeft  int
+	ArgsRight int // number of args on left side for binary functions
 }
 
 var functions []FunctionType
@@ -89,7 +90,14 @@ func parseUnaryFunction(line string) {
 	}
 
 	args := getArgs(parts[1])
-	functions = append(functions, FunctionType{parts[0], UNARY, len(args) - getNaNArgs(args), 0})
+
+	var argsCount int
+
+	if args[0] != ARRAY {
+		argsCount = len(args) - getNaNArgs(args)
+	}
+
+	functions = append(functions, FunctionType{parts[0], UNARY, argsCount, 0})
 }
 
 func parseBinaryFunction(line string) {
@@ -100,10 +108,20 @@ func parseBinaryFunction(line string) {
 	}
 
 	argsLeft := getArgs(parts[0])
-	argsLeftCount := len(argsLeft) - getNaNArgs(argsLeft)
 	argsRight := getArgs(parts[2])
-	argsRightCount := len(argsRight) - getNaNArgs(argsRight)
-	functions = append(functions, FunctionType{parts[1], BINARY, argsLeftCount + argsRightCount, argsLeftCount})
+
+	var argsLeftCount int
+	var argsRightCount int
+
+	if argsLeft[0] != ARRAY {
+		argsLeftCount = len(argsLeft) - getNaNArgs(argsLeft)
+	}
+
+	if argsRight[0] != ARRAY {
+		argsRightCount = len(argsRight) - getNaNArgs(argsRight)
+	}
+
+	functions = append(functions, FunctionType{parts[1], BINARY, argsLeftCount, argsRightCount})
 }
 
 func getParts(line string) []string {
