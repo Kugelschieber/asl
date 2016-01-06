@@ -2,7 +2,6 @@ package parser
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"tokenizer"
 	"types"
@@ -221,7 +220,7 @@ func (c *Compiler) parseFunction() {
 	c.expect("func")
 
 	// check for build in function
-	if buildin, _ := types.GetFunction(c.get().Token); buildin == true {
+	if buildin := types.GetFunction(c.get().Token); buildin != nil {
 		panic(errors.New(c.get().Token + " is a build in function, choose a different name"))
 	}
 
@@ -369,42 +368,27 @@ func (c *Compiler) parseFunctionCall(out bool, name string) string {
 	output := ""
 
 	c.expect("(")
-	params, paramCount := c.parseParameter(false)
+	paramsStr, params, paramCount := c.parseParameter(false)
 	c.expect(")")
 
 	// buildin function
-	exists, buildin := types.GetFunction(name)
+	buildin := types.GetFunction(name)
 
-	if exists {
+	if buildin != nil {
 		// check parameter count
-		if exists && paramCount < buildin.ArgsCount {
+		if paramCount < buildin.ArgsCount {
 			panic(errors.New("Function expected " + strconv.Itoa(buildin.ArgsCount) + " parameter but found " + strconv.Itoa(paramCount)))
 		}
 
 		if buildin.Type == types.NULL {
 			output = name
 		} else if buildin.Type == types.UNARY {
-			if paramCount == 1 {
-				output = name + " " + params
-			} else {
-				output = "[" + params + "] call " + name
-			}
+			output = c.parseUnaryFunction(name, paramsStr, paramCount)
 		} else {
-			// TODO
+			output = c.parseBinaryFunction(name, params, buildin)
 		}
-
-		fmt.Println(name)
-		/*if leftParamCount > 1 {
-			leftParams = "[" + leftParams + "]"
-		}
-
-		if leftParamCount > 0 {
-			output = leftParams + " " + name + " " + rightParams
-		} else {
-			output = name + " " + rightParams
-		}*/
 	} else {
-		output = "[" + params + "] call " + name
+		output = "[" + paramsStr + "] call " + name
 	}
 
 	if out {
@@ -414,12 +398,67 @@ func (c *Compiler) parseFunctionCall(out bool, name string) string {
 	return output
 }
 
-func (c *Compiler) parseParameter(out bool) (string, int) {
+func (c *Compiler) parseUnaryFunction(name, paramsStr string, paramCount int) string {
 	output := ""
+
+	if paramCount == 1 {
+		output = name + " " + paramsStr
+	} else {
+		output = "[" + paramsStr + "] call " + name
+	}
+
+	return output
+}
+
+func (c *Compiler) parseBinaryFunction(name string, params []string, buildin *types.FunctionType) string {
+	output := ""
+
+	if buildin.ArgsLeft == 1 {
+		output = params[0] + " "
+	} else {
+		output = "["
+
+		for i := 0; i < buildin.ArgsLeft; i++ {
+			output += params[i]
+
+			if i != buildin.ArgsLeft-1 {
+				output += ","
+			}
+		}
+
+		output += "] "
+	}
+
+	output += name
+
+	if buildin.ArgsCount-buildin.ArgsLeft == 1 {
+		output += " " + params[1]
+	} else {
+		output += " ["
+
+		for i := buildin.ArgsLeft; i < buildin.ArgsCount; i++ {
+			output += params[i]
+
+			if i != buildin.ArgsCount-1 {
+				output += ","
+			}
+		}
+
+		output += "]"
+	}
+
+	return output
+}
+
+func (c *Compiler) parseParameter(out bool) (string, []string, int) {
+	output := ""
+	params := make([]string, 0)
 	count := 0
 
 	for !c.accept(")") {
-		output += c.parseExpression(out)
+		expr := c.parseExpression(out)
+		output += expr
+		params = append(params, expr)
 		count++
 
 		if !c.accept(")") {
@@ -432,7 +471,7 @@ func (c *Compiler) parseParameter(out bool) (string, int) {
 		c.appendOut(output, false)
 	}
 
-	return output, count
+	return output, params, count
 }
 
 func (c *Compiler) parseExpression(out bool) string {

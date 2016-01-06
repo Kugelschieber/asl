@@ -29,17 +29,17 @@ type FunctionType struct {
 var functions []FunctionType
 
 // Returns function type information by name.
-// If not found, the first parameter will be false.
-func GetFunction(name string) (bool, FunctionType) {
+// If not found, the parameter will be nil.
+func GetFunction(name string) *FunctionType {
 	name = strings.ToLower(name)
 
 	for _, function := range functions {
 		if function.Name == name {
-			return true, function
+			return &function
 		}
 	}
 
-	return false, FunctionType{}
+	return nil
 }
 
 // Loads type information from file.
