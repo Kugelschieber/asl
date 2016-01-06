@@ -8,6 +8,7 @@ import (
 const (
 	// type for object types
 	TYPE = 1
+	NAN  = "NaN"
 
 	// types for functions
 	NULL   = 2
@@ -22,6 +23,7 @@ type FunctionType struct {
 	Name      string
 	Type      int // one of the constants NULL, UNARY, BINARY
 	ArgsCount int
+	ArgsLeft  int // number of args on left side for binary functions
 }
 
 var functions []FunctionType
@@ -29,6 +31,8 @@ var functions []FunctionType
 // Returns function type information by name.
 // If not found, the first parameter will be false.
 func GetFunction(name string) (bool, FunctionType) {
+	name = strings.ToLower(name)
+
 	for _, function := range functions {
 		if function.Name == name {
 			return true, function
@@ -74,7 +78,7 @@ func parseTypes(content string) {
 
 func parseNullFunction(line string) {
 	parts := getParts(line)
-	functions = append(functions, FunctionType{parts[0], NULL, 0})
+	functions = append(functions, FunctionType{parts[0], NULL, 0, 0})
 }
 
 func parseUnaryFunction(line string) {
@@ -85,7 +89,7 @@ func parseUnaryFunction(line string) {
 	}
 
 	args := getArgs(parts[1])
-	functions = append(functions, FunctionType{parts[0], UNARY, len(args)})
+	functions = append(functions, FunctionType{parts[0], UNARY, len(args) - getNaNArgs(args), 0})
 }
 
 func parseBinaryFunction(line string) {
@@ -96,8 +100,10 @@ func parseBinaryFunction(line string) {
 	}
 
 	argsLeft := getArgs(parts[0])
+	argsLeftCount := len(argsLeft) - getNaNArgs(argsLeft)
 	argsRight := getArgs(parts[2])
-	functions = append(functions, FunctionType{parts[1], BINARY, len(argsLeft) + len(argsRight)})
+	argsRightCount := len(argsRight) - getNaNArgs(argsRight)
+	functions = append(functions, FunctionType{parts[1], BINARY, argsLeftCount + argsRightCount, argsLeftCount})
 }
 
 func getParts(line string) []string {
@@ -107,4 +113,16 @@ func getParts(line string) []string {
 
 func getArgs(part string) []string {
 	return strings.Split(part, ",")
+}
+
+func getNaNArgs(args []string) int {
+	nan := 0
+
+	for _, arg := range args {
+		if arg == NAN {
+			nan++
+		}
+	}
+
+	return nan
 }

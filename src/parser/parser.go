@@ -1,7 +1,11 @@
 package parser
 
 import (
+	"errors"
+	"fmt"
+	"strconv"
 	"tokenizer"
+	"types"
 )
 
 const new_line = "\r\n"
@@ -215,6 +219,12 @@ func (c *Compiler) parseForeach() {
 
 func (c *Compiler) parseFunction() {
 	c.expect("func")
+
+	// check for build in function
+	if buildin, _ := types.GetFunction(c.get().Token); buildin == true {
+		panic(errors.New(c.get().Token + " is a build in function, choose a different name"))
+	}
+
 	c.appendOut(c.get().Token+" = {", true)
 	c.next()
 	c.expect("(")
@@ -359,30 +369,42 @@ func (c *Compiler) parseFunctionCall(out bool, name string) string {
 	output := ""
 
 	c.expect("(")
-	leftParams, leftParamCount := c.parseParameter(false)
+	params, paramCount := c.parseParameter(false)
 	c.expect(")")
 
-	if c.accept("(") {
-		// buildin function
-		c.next()
-		rightParams, rightParamCount := c.parseParameter(false)
-		c.expect(")")
+	// buildin function
+	exists, buildin := types.GetFunction(name)
 
-		if leftParamCount > 1 {
-			leftParams = "[" + leftParams + "]"
+	if exists {
+		// check parameter count
+		if exists && paramCount < buildin.ArgsCount {
+			panic(errors.New("Function expected " + strconv.Itoa(buildin.ArgsCount) + " parameter but found " + strconv.Itoa(paramCount)))
 		}
 
-		if rightParamCount > 1 {
-			rightParams = "[" + rightParams + "]"
+		if buildin.Type == types.NULL {
+			output = name
+		} else if buildin.Type == types.UNARY {
+			if paramCount == 1 {
+				output = name + " " + params
+			} else {
+				output = "[" + params + "] call " + name
+			}
+		} else {
+			// TODO
+		}
+
+		fmt.Println(name)
+		/*if leftParamCount > 1 {
+			leftParams = "[" + leftParams + "]"
 		}
 
 		if leftParamCount > 0 {
 			output = leftParams + " " + name + " " + rightParams
 		} else {
 			output = name + " " + rightParams
-		}
+		}*/
 	} else {
-		output = "[" + leftParams + "] call " + name
+		output = "[" + params + "] call " + name
 	}
 
 	if out {

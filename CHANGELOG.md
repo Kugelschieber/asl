@@ -1,5 +1,13 @@
 # Changelog
 
+**1.2.0**
+
+* better error output
+* concurrent compiling
+* errors are handled per file and won't stop the whole compilation
+* function name check for build in functions
+* function parameter count check for build in functions
+
 **1.1.1**
 
 * arrays can now be declared within expressions
