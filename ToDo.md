@@ -14,6 +14,7 @@
 * ~~better error reporting~~
     - ~~recover panic~~
     - ~~line, column~~
+* type check for functions
 
 ## Special cases
 

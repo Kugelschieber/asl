@@ -48,6 +48,7 @@ func LoadTypes(path string) error {
 	}
 
 	data := strings.Replace(win_new_line, unix_new_line, string(content), -1) // make this work on windows and unix
+	functions = make([]FunctionType, 0)
 	parseTypes(data)
 
 	return nil
@@ -73,29 +74,37 @@ func parseTypes(content string) {
 
 func parseNullFunction(line string) {
 	parts := getParts(line)
-
-	for _, part := range parts {
-
-	}
+	functions = append(functions, FunctionType{parts[0], NULL, 0})
 }
 
 func parseUnaryFunction(line string) {
 	parts := getParts(line)
 
-	for _, part := range parts {
-
+	if len(parts) < 2 {
+		return
 	}
+
+	args := getArgs(parts[1])
+	functions = append(functions, FunctionType{parts[0], UNARY, len(args)})
 }
 
 func parseBinaryFunction(line string) {
 	parts := getParts(line)
 
-	for _, part := range parts {
-
+	if len(parts) < 3 {
+		return
 	}
+
+	argsLeft := getArgs(parts[0])
+	argsRight := getArgs(parts[2])
+	functions = append(functions, FunctionType{parts[1], BINARY, len(argsLeft) + len(argsRight)})
 }
 
 func getParts(line string) []string {
 	line = line[2:]
 	return strings.Split(line, " ")
+}
+
+func getArgs(part string) []string {
+	return strings.Split(part, ",")
 }
