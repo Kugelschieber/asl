@@ -141,6 +141,8 @@ var _x = add();
 // result in _x is 0
 ```
 
+When trying to define a function with a name that exists in the build in function set, you'll get an compile error.
+
 ### Call build in commands
 
 To call SQF build in commands (like hint, getDir, addItem, ...) we have to use a different syntax.
@@ -159,6 +161,13 @@ foo(x, y, z)(1, 2, 3);
 
 // output:
 [x, y, z] foo [1, 2, 3];
+```
+
+If the build in function does not accept parameters or only on one side (unary function), it can be called with a single pair of brackets:
+
+```
+hint("your text");
+shownWatch();
 ```
 
 ### Special functions
@@ -251,7 +260,7 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 
 ## What's missing?
 
-The following features are not implemented yet, but will be in 1.1.0 or a future version:
+The following features are not implemented yet, but will be in 1.3.0 or a future version:
 
 * scopes
 * else if
@@ -262,7 +271,7 @@ scopes won't be supported, since they are a stupid concept and can be replaced b
 Selectors in expressions do not work (yet):
 
 ```
-var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3
+var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3, but does not work
 ```
 
 ## Contribute
@@ -276,6 +285,11 @@ For further information you can read the SQF tutorial and documentation of scrip
 * [Arma Wiki](https://community.bistudio.com/wiki/Main_Page)
 * [Scripting commands](https://community.bistudio.com/wiki/Category:Scripting_Commands_Arma_3)
 * [Scripting preprocessor](https://community.bistudio.com/wiki/PreProcessor_Commands)
+
+Interesting pages to visit:
+
+* [Bohemia forum topic](https://forums.bistudio.com/topic/185649-asl-arma-scripting-language-compiler/)
+* [Armaholic page](http://www.armaholic.com/page.php?id=29720)
 
 ## License
 

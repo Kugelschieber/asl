@@ -6,7 +6,7 @@
 * concurrent compiling
 * errors are handled per file and won't stop the whole compilation
 * function name check for build in functions
-* function parameter count check for build in functions
+* simpler syntax for "null" and unary buildin functions
 
 **1.1.1**
 
