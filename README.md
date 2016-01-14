@@ -36,6 +36,19 @@ asl [-v|-r|-pretty|--help] <input directory> <output directory>
 asl ./missions/myMission/myScripts ./missions/myMission/compiledScripts
 ```
 
+Since 1.2.0 ASL requires a [supportInfo](https://community.bistudio.com/wiki/supportInfo) file, which must be generated, named "types" and placed right next to the binary. So if you have the asl.exe there must also be a file called types right next to it. The content looks like:
+
+```
+...
+t:DIARY_RECORD
+t:LOCATION
+b:ARRAY waypointattachobject SCALAR,OBJECT
+b:OBJECT,GROUP enableattack BOOL
+...
+```
+
+A current types file will be delivered with the current release, but not updated when Arma is.
+
 ## Syntax
 
 ### Comments
