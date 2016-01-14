@@ -2,8 +2,6 @@ package parser
 
 import (
 	"errors"
-	"fmt"
-	"strconv"
 	"tokenizer"
 	"types"
 )
@@ -369,24 +367,19 @@ func (c *Compiler) parseFunctionCall(out bool, name string) string {
 	output := ""
 
 	c.expect("(")
-	paramsStr, params, paramCount := c.parseParameter(false)
+	paramsStr, paramCount := c.parseParameter(false)
 	c.expect(")")
 
 	// buildin function
 	buildin := types.GetFunction(name)
 
 	if buildin != nil {
-		// check parameter count
-		if paramCount < buildin.ArgsLeft+buildin.ArgsRight {
-			panic(errors.New("Function expected " + strconv.Itoa(buildin.ArgsLeft+buildin.ArgsRight) + " parameter but found " + strconv.Itoa(paramCount)))
-		}
-
 		if buildin.Type == types.NULL {
 			output = name
 		} else if buildin.Type == types.UNARY {
 			output = c.parseUnaryFunction(name, paramsStr, paramCount)
 		} else {
-			output = c.parseBinaryFunction(name, params, buildin)
+			output = c.parseBinaryFunction(name, paramsStr, buildin, paramCount)
 		}
 	} else {
 		output = "[" + paramsStr + "] call " + name
@@ -411,63 +404,37 @@ func (c *Compiler) parseUnaryFunction(name, paramsStr string, paramCount int) st
 	return output
 }
 
-func (c *Compiler) parseBinaryFunction(name string, params []string, buildin *types.FunctionType) string {
-	// FIXME number of elements can't be determined if array is parameter
+func (c *Compiler) parseBinaryFunction(name string, leftParamsStr string, buildin *types.FunctionType, paramCount int) string {
 	output := ""
 
-	fmt.Println(len(params))
-	fmt.Println(buildin.ArgsLeft)
-	fmt.Println(buildin.ArgsRight)
-	fmt.Println(params[0])
-	fmt.Println(params[1])
-	fmt.Println(params[2])
+	c.next()
+	rightParamsStr, rightParamCount := c.parseParameter(false)
+	c.expect(")")
 
-	if buildin.ArgsLeft == 1 {
-		output = params[0] + " "
-	} else {
-		output = "["
-
-		for i := 0; i < buildin.ArgsLeft; i++ {
-			output += params[i]
-
-			if i != buildin.ArgsLeft-1 {
-				output += ","
-			}
-		}
-
-		output += "] "
+	if paramCount > 1 {
+		leftParamsStr = "[" + leftParamsStr + "]"
 	}
 
-	output += name
+	if rightParamCount > 1 {
+		rightParamsStr = "[" + rightParamsStr + "]"
+	}
 
-	if buildin.ArgsRight-buildin.ArgsLeft == 1 {
-		output += " " + params[1]
+	if paramCount > 0 {
+		output = leftParamsStr + " " + name + " " + rightParamsStr
 	} else {
-		output += " ["
-
-		for i := buildin.ArgsLeft; i < buildin.ArgsRight; i++ {
-			output += params[i]
-
-			if i != buildin.ArgsRight-buildin.ArgsLeft-1 {
-				output += ","
-			}
-		}
-
-		output += "]"
+		output = name + " " + rightParamsStr
 	}
 
 	return output
 }
 
-func (c *Compiler) parseParameter(out bool) (string, []string, int) {
+func (c *Compiler) parseParameter(out bool) (string, int) {
 	output := ""
-	params := make([]string, 0)
 	count := 0
 
 	for !c.accept(")") {
 		expr := c.parseExpression(out)
 		output += expr
-		params = append(params, expr)
 		count++
 
 		if !c.accept(")") {
@@ -480,7 +447,7 @@ func (c *Compiler) parseParameter(out bool) (string, []string, int) {
 		c.appendOut(output, false)
 	}
 
-	return output, params, count
+	return output, count
 }
 
 func (c *Compiler) parseExpression(out bool) string {

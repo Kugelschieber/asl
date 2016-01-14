@@ -5,6 +5,11 @@ import (
 	"parser"
 	"testing"
 	"tokenizer"
+	"types"
+)
+
+const (
+	types_file = "../../test/types"
 )
 
 func TestParserDeclaration(t *testing.T) {
@@ -91,12 +96,32 @@ func TestParserFunctionCall(t *testing.T) {
 	equal(t, got, want)
 }
 
-/*func TestParserBuildinFunctionCall(t *testing.T) {
-	got := getCompiled(t, "../../test/parser_buildin_func.asl")
-	want := "_x = (([player, foo] getVar bar) setHit [\"head\", \"tail\"]);\r\n"
+func TestParserNullBuildinFunctionCall(t *testing.T) {
+	types.LoadTypes(types_file)
+
+	got := getCompiled(t, "../../test/parser_null_buildin_func.asl")
+	want := "_volume = (radioVolume);\r\n"
 
 	equal(t, got, want)
-}*/
+}
+
+func TestParserUnaryBuildinFunctionCall(t *testing.T) {
+	types.LoadTypes(types_file)
+
+	got := getCompiled(t, "../../test/parser_unary_buildin_func.asl")
+	want := "_isReady = (unitReady soldier);\r\n"
+
+	equal(t, got, want)
+}
+
+func TestParserBinaryBuildinFunctionCall(t *testing.T) {
+	types.LoadTypes(types_file)
+
+	got := getCompiled(t, "../../test/parser_binary_buildin_func.asl")
+	want := "someCar setHit [\"motor\", 1];\r\n"
+
+	equal(t, got, want)
+}
 
 func TestParserOperator(t *testing.T) {
 	got := getCompiled(t, "../../test/parser_operator.asl")
@@ -154,12 +179,14 @@ func TestParserInlineCode(t *testing.T) {
 	equal(t, got, want)
 }
 
-/*func TestParserPreprocessor(t *testing.T) {
+func TestParserPreprocessor(t *testing.T) {
+	types.LoadTypes(types_file)
+
 	got := getCompiled(t, "../../test/tokenizer_preprocessor.asl")
 	want := "\r\n#define HELLO_WORLD \"Hello World!\"\r\nhint HELLO_WORLD;\r\n"
 
 	equal(t, got, want)
-}*/
+}
 
 func TestParserExpressionArray(t *testing.T) {
 	got := getCompiled(t, "../../test/parser_expression_array.asl")

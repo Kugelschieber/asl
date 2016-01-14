@@ -88,7 +88,7 @@ func TestTokenizerInlineCode(t *testing.T) {
 
 func TestTokenizerPreprocessor(t *testing.T) {
 	got := getTokens(t, "../../test/tokenizer_preprocessor.asl")
-	want := []string{"#define HELLO_WORLD \"Hello World!\"", "hint", "(", ")", "(", "HELLO_WORLD", ")", ";"}
+	want := []string{"#define HELLO_WORLD \"Hello World!\"", "hint", "(", "HELLO_WORLD", ")", ";"}
 
 	compareLength(t, &got, &want)
 	compareTokens(t, &got, &want)
