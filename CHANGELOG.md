@@ -1,5 +1,9 @@
 # Changelog
 
+**1.2.1**
+
+* bugfix: new line after while for pretty printing
+
 **1.2.0**
 
 * better error output
