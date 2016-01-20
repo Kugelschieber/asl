@@ -131,7 +131,7 @@ func (c *Compiler) parseWhile() {
 	c.expect("{")
 	c.parseBlock()
 	c.expect("}")
-	c.appendOut("};", false)
+	c.appendOut("};", true)
 }
 
 func (c *Compiler) parseSwitch() {
