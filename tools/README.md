@@ -9,7 +9,7 @@ Feel free to contribute with another text editor's syntax higligthing plugin.
 ##ASL GUI <img src="https://img.shields.io/badge/version-1.1.0.0-orange.svg" alt="version">
 An optional Java interface to make the compile procces of ASL faster and more user-friendly. It's released under the MIT licence just like the core project. It also helps with error reporting of asl.
 
-**Version 1.1.00**
+**Version 1.1.0.0**
 - New Arma 3-themed look, and error reporting straight from asl.
 - Program now depends on asl.exe, they need to be in the same directory.
 
