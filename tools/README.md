@@ -3,6 +3,7 @@ A visual tool set to ease the work of asl developers.
 Maintained by yours truly: [654wak654](https://github.com/654wak654/)
 
 **Notepad++ Syntax Higligthing**: https://github.com/DeKugelschieber/asl/blob/master/tools/asl.xml
+
 Feel free to contribute with another text editor's syntax higligthing plugin.
 
 ##ASL GUI <img src="https://img.shields.io/badge/version-1.1.0.0-orange.svg" alt="version">
