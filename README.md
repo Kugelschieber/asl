@@ -15,7 +15,7 @@ Main reasons for ASL:
 
 ## Usage
 
-ASL is a command line tool. After you have downloaded it, navigation to the binary and execute it:
+ASL is a command line tool. After you have downloaded it, navigate to the binary and execute it:
 
 ```
 asl [-v|-r|-pretty|--help] <input directory> <output directory>
