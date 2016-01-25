@@ -18,7 +18,7 @@ Main reasons for ASL:
 ASL is a command line tool. After you have downloaded it, navigate to the binary and execute it:
 
 ```
-asl [-v|-r|-pretty|--help] <input directory> <output directory>
+asl.exe [-v|-r|-pretty|--help] <input directory> <output directory>
 ```
 
 | Parameter | Optional/Required | Meaning |
@@ -33,7 +33,7 @@ asl [-v|-r|-pretty|--help] <input directory> <output directory>
 **Example:**
 
 ```
-asl ./missions/myMission/myScripts ./missions/myMission/compiledScripts
+asl.exe ./missions/myMission/myScripts ./missions/myMission/compiledScripts
 ```
 
 Since 1.2.0 ASL requires a [supportInfo](https://community.bistudio.com/wiki/supportInfo) file, which must be generated, named "types" and placed right next to the binary. So if you have the asl.exe there must also be a file called types right next to it. The content looks like:
