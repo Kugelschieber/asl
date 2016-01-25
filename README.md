@@ -21,14 +21,14 @@ ASL is a command line tool. After you have downloaded it, navigate to the binary
 asl.exe [-v|-r|-pretty|--help] <input directory> <output directory>
 ```
 
-| Parameter | Optional/Required | Meaning |
-| --------- | ----------------- | ------- |
-| -v | optional | Shows ASL version. |
+| Parameter | Optional/Required | Description |
+| --------- | ----------------- | ----------- |
+| -v | optional | Show ASL version. |
 | -r | optional | Read input directory recursively. |
 | -pretty | optional | Enable pretty printing to SQF. |
 | --help | optional | Show usage. |
-| input directory | required | Directory to read ASL files from (use ./ for relative paths). |
-| output directory | required | Directory for SQF output. Can be the same as input directory (use ./ for relative paths). |
+| input directory | required | Input directory for ASL files (use ./ for relative paths). |
+| output directory | required | Output directory for SQF files. Can be the same as input directory (use ./ for relative paths). |
 
 **Example:**
 
@@ -36,7 +36,7 @@ asl.exe [-v|-r|-pretty|--help] <input directory> <output directory>
 asl.exe ./missions/myMission/myScripts ./missions/myMission/compiledScripts
 ```
 
-Since 1.2.0 ASL requires a [supportInfo](https://community.bistudio.com/wiki/supportInfo) file, which must be generated, named "types" and placed right next to the binary. So if you have the asl.exe there must also be a file called types right next to it. The content looks like:
+Since 1.2.0 ASL requires a [supportInfo](https://community.bistudio.com/wiki/supportInfo) file, which must be generated, named "types" and placed right next to the binary. The content looks like:
 
 ```
 ...
@@ -47,7 +47,7 @@ b:OBJECT,GROUP enableattack BOOL
 ...
 ```
 
-A current types file will be delivered with the current release, but not updated when Arma is.
+The types file will be delivered with the current release, but not updated when Arma is.
 
 ## Syntax
 
@@ -83,12 +83,12 @@ var one = array[0];
 var zwo = array[33/3-2];
 
 // it is possble to use arrays in expressions:
-var emptyArray = one-[0];
+var emptyArray = one-[1];
 ```
 
 ### Control structures
 
-Controll structure syntax is C-like. Notice they are all using the same brackets and do not require to set a semicolon at the end, unlike in SQF.
+Controll structure syntax is C-like. Notice the same brackets for all structures and no semicolon at the end, unlike in SQF:
 
 ```
 if 1 < 2 {
@@ -101,13 +101,16 @@ while 1 < 2 {
     // ...
 }
 
-for var _i = 0; _i < 100; _i = _i+1 { // var before identifier is optional
+for var _i = 0; _i < 100; _i = _i+1 {
     // ...
 }
 
-foreach unit => allUnits { // foreach, iterates over all units in this case
-    // element is available as "unit" here
-    // _x is still available due to how SQF works!
+for _i = 0; _i < 100; _i = _i+1 { // same as above, var is optional before identifier "_i"
+    // ...
+}
+
+foreach _unit => allUnits { // iterates over all units in this case
+    // element is available as "_unit" AND "_x" here ("_x" is used by SQF's foreach)
 }
 
 switch x { // there is no "break" in SQF
@@ -119,10 +122,10 @@ switch x { // there is no "break" in SQF
         // ...
 }
 
-try {
-    // ...
+try { // handles errors in "catch" block
+    // errors thrown here...
 } catch {
-    // ...
+    // ... will be handled here
 }
 ```
 
@@ -136,9 +139,7 @@ func add(_a, _b) {
 }
 
 // Call it:
-
-var _x = add(1, 2);
-// result in _x is 3
+var _x = add(1, 2); // result in _x is 3
 ```
 
 Functions support predefined parameters:
@@ -149,16 +150,14 @@ func add(_a = 0, _b = 0) {
 }
 
 // Call it:
-
-var _x = add();
-// result in _x is 0
+var _x = add(); // result in _x is 0
 ```
 
-When trying to define a function with a name that exists in the build in function set, you'll get an compile error.
+When trying to define a function with a name that exists in SQF's build in function set, you'll get an compile error. So declaring "func hint()..." won't compile.
 
 ### Call build in commands
 
-To call SQF build in commands (like hint, getDir, addItem, ...) we have to use a different syntax.
+To call SQF build in commands (like hint, getDir, addItem, ...) use the same syntax when using functions. An exception are "binary" functions. These are functions which accept parameters on both sides of the function name. Here is an example for "addItem":
 
 ```
 addItem(someUnit)("NVGoogles");
@@ -167,7 +166,7 @@ addItem(someUnit)("NVGoogles");
 someUnit addItem "NVGoogles";
 ```
 
-Where the first brackets contain the parameters used in front of SQF command and the second ones behind SQF command. If more than one parameter is passed, it will be converted to an array. This syntax can be used for **all** build in functions (also spawn and so on).
+Where the first brackets contain the parameters used in front of SQF command and the second ones the parameters behind the SQF command. If more than one parameter is passed, it will be converted to an array. This syntax can be used for **all** build in functions.
 
 ```
 foo(x, y, z)(1, 2, 3);
@@ -176,7 +175,7 @@ foo(x, y, z)(1, 2, 3);
 [x, y, z] foo [1, 2, 3];
 ```
 
-If the build in function does not accept parameters or only on one side (unary function), it can be called with a single pair of brackets:
+If the build in function accepts no parameters (null function) or on one side only (unary function), it can be called with a single pair of brackets:
 
 ```
 hint("your text");
@@ -185,9 +184,9 @@ shownWatch();
 
 ### Special functions
 
-There are some special functions in SQF, which also require special syntax in ASL. The examples presented here show how they are written in ASL and what the output will look like. Remember that ASL is case sensitive!
+There are some special functions in SQF, which also require special syntax in ASL. The examples presented here shows how they are written in ASL and what the output will look like. Remember that ASL is case sensitive!
 
-**exitWith**
+**exitwith**
 
 ```
 exitwith { // NOT exitWith!
@@ -200,7 +199,7 @@ if (true) exitWith {
 };
 ```
 
-**waitUntil**
+**waituntil**
 
 ```
 waituntil(condition); // NOT waitUntil!
@@ -215,10 +214,9 @@ waitUntil {expression;condition};
 
 **code**
 
-The code function is used to compile inline code. This does **not** replace SQF compile buildin function, but will return the contained ASL code as SQF.
+The code function is used to compile inline code. This does **not** replace SQF's compile build in function, but will return the contained ASL code as SQF:
 
 ```
-// input:
 var x = code("var y = 5;"); // pass as string
 
 // output:
@@ -228,14 +226,14 @@ x = {y = 5;};
 ## Preprocessor
 
 The preprocessor works like the original one, with some limitations.
-Please visit the link at the bottom, to read about the preprocessor and how to use it. Generally, preprocessor lines must start with the hash key (#) and must stay in their own line. They are always printed as seperate lines. These features are not supported:
+Please visit the link at the bottom, to read about the preprocessor and how to use it. Generally, preprocessor lines must start with the hash key (#) and must stay in their own line. They are always printed as seperate lines in SQF. These features are not supported:
 
 * replacing parts of words
 * multi line preprocessor commands
-* __EXEC (not used in SQF anyway)
+* EXEC (not used in SQF anyway)
 
-If you use *__EXEC*, it will be replaced by a function call to it ([] call __EXEC).
-*__LINE__* and *__FILE__* can be used, since they are identifiers:
+If you use *EXEC*, it will be replaced by a function call to it ([] call __EXEC).
+*LINE* and *FILE* can be used like normal identifiers:
 
 ```
 if __LINE__ == 22 {
@@ -249,7 +247,7 @@ if __FILE__ == "myScript.sqf" {
 
 ## List of all keywords
 
-Keywords should not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in function names should not be used neither.
+Keywords must not be used as identifiers. Here is a full list of all keywords in ASL. Remember that build in function names must not be used neither, else you'll get an compile error.
 
 | Keyword |
 | ------- |
@@ -273,18 +271,18 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 
 ## What's missing?
 
-The following features are not implemented yet, but will be in 1.3.0 or a future version:
+The following features are not implemented yet, but maybe will be in 1.3.0 or a future version:
 
 * scopes
 * else if
 * selector in expression
 
-scopes won't be supported, since they are a stupid concept and can be replaced by functions.
+scopes won't be supported, since it's a stupid concept and can be replaced by functions.
 
-Selectors in expressions do not work (yet):
+Selectors in expressions do not work (yet), so this is not possible:
 
 ```
-var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3, but does not work
+var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3
 ```
 
 ## Contribute
