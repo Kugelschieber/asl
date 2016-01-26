@@ -36,6 +36,19 @@ asl [-v|-r|-pretty|--help] <input directory> <output directory>
 asl ./missions/myMission/myScripts ./missions/myMission/compiledScripts
 ```
 
+Since 1.2.0 ASL requires a [supportInfo](https://community.bistudio.com/wiki/supportInfo) file, which must be generated, named "types" and placed right next to the binary. So if you have the asl.exe there must also be a file called types right next to it. The content looks like:
+
+```
+...
+t:DIARY_RECORD
+t:LOCATION
+b:ARRAY waypointattachobject SCALAR,OBJECT
+b:OBJECT,GROUP enableattack BOOL
+...
+```
+
+A current types file will be delivered with the current release, but not updated when Arma is.
+
 ## Syntax
 
 ### Comments
@@ -68,6 +81,9 @@ var one = array[0];
 
 // accessing using a statement:
 var zwo = array[33/3-2];
+
+// it is possble to use arrays in expressions:
+var emptyArray = one-[0];
 ```
 
 ### Control structures
@@ -138,6 +154,8 @@ var _x = add();
 // result in _x is 0
 ```
 
+When trying to define a function with a name that exists in the build in function set, you'll get an compile error.
+
 ### Call build in commands
 
 To call SQF build in commands (like hint, getDir, addItem, ...) we have to use a different syntax.
@@ -156,6 +174,13 @@ foo(x, y, z)(1, 2, 3);
 
 // output:
 [x, y, z] foo [1, 2, 3];
+```
+
+If the build in function does not accept parameters or only on one side (unary function), it can be called with a single pair of brackets:
+
+```
+hint("your text");
+shownWatch();
 ```
 
 ### Special functions
@@ -231,7 +256,7 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 | var |
 | if |
 | while |
-| witch |
+| switch |
 | for |
 | foreach |
 | func |
@@ -248,22 +273,18 @@ Keywords should not be used as identifiers. Here is a full list of all keywords 
 
 ## What's missing?
 
-The following features are not implemented yet, but will be in 1.1.0 or a future version:
+The following features are not implemented yet, but will be in 1.3.0 or a future version:
 
 * scopes
 * else if
-* arrays within expressions (like someArray-[someEntity])
+* selector in expression
 
 scopes won't be supported, since they are a stupid concept and can be replaced by functions.
-There is a simple workaround for arrays within expressions:
+
+Selectors in expressions do not work (yet):
 
 ```
-// want: ... forEach allCurators-[myCurator];
-
-var myCuratorArray = [myCurator]; // or a more complex expression within array
-foreach allCurators-myCuratorArray {
-	// ...
-}
+var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3, but does not work
 ```
 
 ## Contribute
@@ -277,6 +298,11 @@ For further information you can read the SQF tutorial and documentation of scrip
 * [Arma Wiki](https://community.bistudio.com/wiki/Main_Page)
 * [Scripting commands](https://community.bistudio.com/wiki/Category:Scripting_Commands_Arma_3)
 * [Scripting preprocessor](https://community.bistudio.com/wiki/PreProcessor_Commands)
+
+Interesting pages to visit:
+
+* [Bohemia forum topic](https://forums.bistudio.com/topic/185649-asl-arma-scripting-language-compiler/)
+* [Armaholic page](http://www.armaholic.com/page.php?id=29720)
 
 ## License
 

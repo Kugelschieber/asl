@@ -6,14 +6,15 @@
 * ~~pretty/minified printing~~
 * ~~usage~~
 * ~~recursive compiling~~
-* concurrent compiling
+* ~~concurrent compiling~~
 * ~~inline buildin function call -> foo(a)(bar(x)(y));~~
 * ~~negative values e.g. -1, operator !~~
 * ~~tokenizer splits commands like "format" -> for, mat~~
 * ~~try ... catch~~
-* better error reporting
-    - recover panic
-    - line, column
+* ~~better error reporting~~
+    - ~~recover panic~~
+    - ~~line, column~~
+* type check for functions
 
 ## Special cases
 

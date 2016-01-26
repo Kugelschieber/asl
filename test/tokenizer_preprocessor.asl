@@ -1,2 +1,2 @@
 #define HELLO_WORLD "Hello World!"
-hint()(HELLO_WORLD);
+hint(HELLO_WORLD);

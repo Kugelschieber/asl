@@ -5,60 +5,66 @@ import (
 )
 
 type Token struct {
-	Token string
+	Token        string
 	Preprocessor bool
-	Line int
-	Column int
+	Line         int
+	Column       int
 }
 
-var delimiter = []byte{
-	'=',
-	';',
-	'{',
-	'}',
-	'(',
-	')',
-	'[',
-	']',
-	'<',
-	'>',
-	'!',
-	',',
-	':',
-	'&',
-	'|',
-	'+',
-	'-',
-	'*',
-	'/'} // TODO: modulo?
+var (
+	delimiter = []byte{
+		'=',
+		';',
+		'{',
+		'}',
+		'(',
+		')',
+		'[',
+		']',
+		'<',
+		'>',
+		'!',
+		',',
+		':',
+		'&',
+		'|',
+		'+',
+		'-',
+		'*',
+		'/'} // TODO: modulo?
 
-var keywords = []string{
-	"var",
-	"if",
-	"while",
-	"switch",
-	"for",
-	"foreach",
-	"func",
-	"true",
-	"false",
-	"case",
-	"default",
-	"return",
-	"try",
-	"catch",
-	"exitwith",
-	"waituntil",
-	"code"}
+	keywords = []string{
+		"var",
+		"if",
+		"while",
+		"switch",
+		"for",
+		"foreach",
+		"func",
+		"true",
+		"false",
+		"case",
+		"default",
+		"return",
+		"try",
+		"catch",
+		"exitwith",
+		"waituntil",
+		"code"}
 
-var whitespace = []byte{' ', '\n', '\t', '\r'}
-var identifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
-var preprocessor = byte('#')
-var new_line = []byte{'\r', '\n'}
+	whitespace   = []byte{' ', '\n', '\t', '\r'}
+	identifier   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+	preprocessor = byte('#')
+	new_line     = []byte{'\r', '\n'}
+)
 
 // Tokenizes the given byte array into syntax tokens,
 // which can be parsed later.
-func Tokenize(code []byte) []Token {
+func Tokenize(code []byte, doStripSlashes bool) []Token {
+	if doStripSlashes {
+		code = stripSlashes(code)
+	}
+
 	code = removeComments(code)
 	tokens := make([]Token, 0)
 	token, mask, isstring, line, column := "", false, false, 0, 0
@@ -66,10 +72,10 @@ func Tokenize(code []byte) []Token {
 	for i := 0; i < len(code); i++ {
 		c := code[i]
 		column++
-		
+
 		if byteArrayContains(new_line, c) {
-		    line++
-		    column = 0
+			line++
+			column = 0
 		}
 
 		// string masks (backslash)
@@ -91,8 +97,8 @@ func Tokenize(code []byte) []Token {
 		} else {
 			// preprocessor, delimeter, keyword or variable/expression
 			if c == preprocessor {
-			    tokens = append(tokens, preprocessorLine(code, &i, line, column))
-			    token = ""
+				tokens = append(tokens, preprocessorLine(code, &i, line, column))
+				token = ""
 			} else if byteArrayContains(delimiter, c) {
 				if token != "" {
 					tokens = append(tokens, Token{token, false, line, column})
@@ -112,6 +118,28 @@ func Tokenize(code []byte) []Token {
 	}
 
 	return tokens
+}
+
+// Removes slashes from input code.
+// This is used for the "code" keyword for correct strings in resulting code.
+func stripSlashes(code []byte) []byte {
+	newcode := make([]byte, len(code))
+	j, mask := 0, false
+
+	for i := 0; i < len(code); i++ {
+		c := code[i]
+
+		if c == '\\' && !mask {
+			mask = true
+			continue
+		}
+
+		newcode[j] = code[i]
+		mask = false
+		j++
+	}
+
+	return newcode
 }
 
 // Removes all comments from input byte array.
@@ -154,31 +182,31 @@ func removeComments(code []byte) []byte {
 
 // Reads preprocessor command until end of line
 func preprocessorLine(code []byte, i *int, lineNr, column int) Token {
-    c := byte('0')
-    var line string
-    
-    for *i < len(code) {
-        c = code[*i]
-        
-        if byteArrayContains(new_line, c) {
-            break
-        }
-        
-        line += string(c)
-        (*i)++
-    }
-    
-    // read all new line characters (\r and \n)
-    c = code[*i]
-    
-    for byteArrayContains(new_line, c) {
-        (*i)++
-        c = code[*i]
-    }
-    
-    (*i)-- // for will count up 1, so subtract it here
-    
-    return Token{line, true, lineNr, column}
+	c := byte('0')
+	var line string
+
+	for *i < len(code) {
+		c = code[*i]
+
+		if byteArrayContains(new_line, c) {
+			break
+		}
+
+		line += string(c)
+		(*i)++
+	}
+
+	// read all new line characters (\r and \n)
+	c = code[*i]
+
+	for byteArrayContains(new_line, c) {
+		(*i)++
+		c = code[*i]
+	}
+
+	(*i)-- // for will count up 1, so subtract it here
+
+	return Token{line, true, lineNr, column}
 }
 
 // Returns the next character in code starting at i.
