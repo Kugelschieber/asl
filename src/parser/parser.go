@@ -372,7 +372,7 @@ func (c *Compiler) parseFunctionCall(out bool, name string) string {
 
 	// buildin function
 	buildin := types.GetFunction(name)
-
+	
 	if buildin != nil {
 		if buildin.Type == types.NULL {
 			output = name
@@ -398,7 +398,7 @@ func (c *Compiler) parseUnaryFunction(name, paramsStr string, paramCount int) st
 	if paramCount == 1 {
 		output = name + " " + paramsStr
 	} else {
-		output = "[" + paramsStr + "] call " + name
+		output = name + " [" + paramsStr + "]"
 	}
 
 	return output
