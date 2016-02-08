@@ -35,7 +35,7 @@ func TestParserIf(t *testing.T) {
 
 func TestParserWhile(t *testing.T) {
 	got := getCompiled(t, "../../test/tokenizer_while.asl")
-	want := "while {true} do {\r\n};"
+	want := "while {true} do {\r\n};\r\n"
 
 	equal(t, got, want)
 }
@@ -191,6 +191,14 @@ func TestParserPreprocessor(t *testing.T) {
 func TestParserExpressionArray(t *testing.T) {
 	got := getCompiled(t, "../../test/parser_expression_array.asl")
 	want := "x = [1,2,3]-[2,3];\r\n"
+
+	equal(t, got, want)
+}
+
+// bugfix: unary function parsing (e.g. "format")
+func TestBugfixParserUnaryFunction(t *testing.T) {
+	got := getCompiled(t, "../../test/bugfix_unary_func_format.asl")
+	want := "format [\"%1 %2\", \"value1\", \"value2\"];\r\n[\"a\", \"b\", \"c\"] call someFunc;\r\n"
 
 	equal(t, got, want)
 }

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOROOT/bin
+export GOPATH=/home/marvin/Projekte/asl
+go run src/main/asl.go $1 $2
