@@ -3,6 +3,7 @@
 **1.2.1**
 
 * bugfix: new line after while for pretty printing
+* bugfix: build in unary function with multiple arguments
 
 **1.2.0**
 
