@@ -1,5 +1,9 @@
 # Changelog
 
+**1.2.2**
+
+* bugfix: deadlock on compiling multile files at once
+
 **1.2.1**
 
 * bugfix: new line after while for pretty printing

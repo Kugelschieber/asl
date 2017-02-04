@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	version       = "1.2.1"
+	version       = "1.2.2"
 	extension     = ".asl"
 	sqfextension  = ".sqf"
 	typeinfo      = "types"
@@ -104,17 +104,15 @@ func readAslFiles(path string) {
 }
 
 // Recovers and prints thrown error.
-func recoverCompileError(file string, waiter chan bool) {
+func recoverCompileError(file string) {
 	if r := recover(); r != nil {
 		fmt.Println("Compile error in file "+file+":", r)
 	}
-
-	waiter <- true // the show must go on
 }
 
 // Compiles a single ASL file.
-func compileFile(path string, file ASLFile, waiter chan bool) {
-	defer recoverCompileError(file.in, waiter)
+func compileFile(path string, file ASLFile) {
+	defer recoverCompileError(file.in)
 
 	// read file
 	out := filepath.FromSlash(path + PathSeparator + file.out + PathSeparator + file.newname + sqfextension)
@@ -138,22 +136,12 @@ func compileFile(path string, file ASLFile, waiter chan bool) {
 		fmt.Println("Error writing file: " + file.out)
 		fmt.Println(err)
 	}
-
-	waiter <- true // done
 }
 
-// Compiles ASL files concurrently.
+// Compiles ASL files.
 func compile(path string) {
-	waiter := make(chan bool, len(aslFiles))
-
-	// fire compile
 	for i := 0; i < len(aslFiles); i++ {
-		go compileFile(path, aslFiles[i], waiter)
-	}
-
-	// wait until all files are compiled
-	for i := 0; i < len(aslFiles); i++ {
-		<-waiter
+		compileFile(path, aslFiles[i])
 	}
 }
 
