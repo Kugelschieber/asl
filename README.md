@@ -80,7 +80,7 @@ var array = [1, 2, 3];
 var one = array[0];
 
 // accessing using a statement:
-var zwo = array[33/3-2];
+var two = array[33/3-2];
 
 // it is possble to use arrays in expressions:
 var emptyArray = one-[1];
@@ -153,7 +153,7 @@ func add(_a = 0, _b = 0) {
 var _x = add(); // result in _x is 0
 ```
 
-When trying to define a function with a name that exists in SQF's build in function set, you'll get an compile error. So declaring "func hint()..." won't compile.
+When trying to define a function with a name that exists in SQF's build in function set, you'll get an compile error. So declaring `func hint()...` won't compile.
 
 ### Call build in commands
 
