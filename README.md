@@ -271,15 +271,19 @@ Keywords must not be used as identifiers. Here is a full list of all keywords in
 
 ## What's missing?
 
-The following features are not implemented yet, but maybe will be in 1.3.0 or a future version:
+The following features are not implemented yet, but might be in a future version:
 
-* scopes
-* else if
-* selector in expression
+**scopes**
 
-scopes won't be supported, since it's a stupid concept and can be replaced by functions.
+Scopes won't be supported, since it's a stupid concept and can be replaced by functions.
 
-Selectors in expressions do not work (yet), so this is not possible:
+**else if**
+
+Planned.
+
+**Selector in expression**
+
+Selectors in expressions do not work yet, so this is not possible:
 
 ```
 var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3
@@ -287,7 +291,7 @@ var x = ([1, 2, 3]-[1, 2])[0]; // should result in 3
 
 ## Contribute
 
-To contribute please create pull requests or explain your ideas in the issue section on GitHub. Report any bugs or incompatible ASL <-> SQF syntax you can find.
+To contribute, please create pull requests or explain your ideas in the issue section on GitHub. Report any bugs or incompatible ASL <-> SQF syntax you can find with a short example.
 
 ## Further information
 
